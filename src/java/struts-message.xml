@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd" >
+<struts>
+	<package name="message" extends="default" namespace="/">
+		<action name="listMessage" class="com.nfledmedia.sorm.action.MessageAction" method="queryMessageList">
+		</action>
+		<action name="setMessageRead" class="com.nfledmedia.sorm.action.MessageAction" method="dealMessageRead">
+		</action>
+		<action name="countNotReadMessage" class="com.nfledmedia.sorm.action.MessageAction" method="countNotReadMessage">
+		</action>
+		<action name="deleteMessage" class="com.nfledmedia.sorm.action.MessageAction" method="deleteMessage">
+		</action>
+	</package>
+</struts>

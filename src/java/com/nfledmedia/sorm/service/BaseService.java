@@ -1,0 +1,144 @@
+package com.nfledmedia.sorm.service;
+
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.nfledmedia.sorm.cons.TypeCollections;
+import com.nfledmedia.sorm.dao.AttributeDAO;
+import com.nfledmedia.sorm.dao.ChannelDAO;
+import com.nfledmedia.sorm.dao.ClienttypeDAO;
+import com.nfledmedia.sorm.dao.IndustryDAO;
+import com.nfledmedia.sorm.dao.LedDAO;
+import com.nfledmedia.sorm.dao.PlaystrategyDAO;
+import com.nfledmedia.sorm.dao.PublishdetailDAO;
+import com.nfledmedia.sorm.entity.Attribute;
+import com.nfledmedia.sorm.entity.Channel;
+import com.nfledmedia.sorm.entity.Clienttype;
+import com.nfledmedia.sorm.entity.Industry;
+import com.nfledmedia.sorm.entity.Led;
+import com.nfledmedia.sorm.entity.Publishdetail;
+
+/**
+ * 
+ * @author PC-FAN
+ *
+ */
+@Service
+public class BaseService {
+	@Resource
+	private LedDAO ledDAO;
+	@Resource
+	private AttributeDAO attributeDAO;
+	@Resource
+	private ClienttypeDAO clienttypeDAO;
+	@Resource
+	private ChannelDAO channelDAO;
+	@Resource
+	private IndustryDAO industryDAO;
+	@Resource
+	private PublishdetailDAO publishdetailDAO;
+	@Resource
+	private PlaystrategyDAO playstrategyDAO;
+
+
+	public List ledList() {
+		return ledDAO.findByState(TypeCollections.LED_ACTIVE_STATE);
+	}
+
+	public List clienttypeList() {
+		return clienttypeDAO.findAll();
+
+	}
+
+	public List attributeList() {
+		return attributeDAO.findAll();
+	}
+
+	public List industryList() {
+		return industryDAO.findAll();
+	}
+
+	public List channelList() {
+		return channelDAO.findAll();
+	}
+
+	public PublishdetailDAO getPublishdetailDAO() {
+		return publishdetailDAO;
+	}
+
+	public void setPublishdetailDAO(PublishdetailDAO publishdetailDAO) {
+		this.publishdetailDAO = publishdetailDAO;
+	}
+
+	public List<?> clientsList() {
+		List<Publishdetail> pbsdtlList = publishdetailDAO.findAll();
+		List<String> strList = new ArrayList<String>();
+		Set cset = new HashSet();
+		for (Publishdetail pbd : pbsdtlList) {
+			cset.add(pbd.getClient());
+		}
+		for (Object object : cset) {
+			strList.add((String) object);
+		}
+		return strList;
+
+	}
+	
+	/**
+	 * 根据ledId获取开关屏时间
+	 * @param id
+	 * @return
+	 */
+	public Time[] returnSETimeByLedId(Integer id){
+		Led l =  ledDAO.findById(id);
+		Time[] setime = {l.getStarttime(), l.getEndtime()};
+		return setime;
+	}
+	
+	public Led getLedById(Integer id) {
+		return ledDAO.findById(id);
+	}
+	
+	public Channel getChannelById(Integer id){
+		return channelDAO.findById(id);
+	}
+	
+	public Industry getIndustryByIndustryid(Short industryid){
+		return industryDAO.findById(industryid);
+	}
+	
+	public Clienttype getClienttypeById(Short id){
+		return clienttypeDAO.findById(id);
+	}
+	
+	public Attribute getAttributeById(Short id){
+		return attributeDAO.findById(id);
+	}
+	
+	public Attribute getAttributeByName(String attrname) {
+		return (Attribute) attributeDAO.findByArrtibutename(attrname).get(0);
+	}
+
+	public Led getLedByName(String ledName) {
+		// TODO Auto-generated method stub
+		return (Led) ledDAO.findByName(ledName).get(0);
+	}
+	
+	/**
+	 * 返回所有播放策略
+	 * @return
+	 */
+	public List<?> strategyList() {
+		// TODO Auto-generated method stub
+		return playstrategyDAO.findAll();
+	}
+}

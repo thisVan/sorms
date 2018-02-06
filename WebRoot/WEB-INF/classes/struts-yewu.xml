@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd" >
+<struts>
+	<package name="yewu" extends="default" namespace="/">
+		<action name="yewulist" class="com.nfledmedia.sorm.action.YewuAction">
+		</action>
+		<action name="getAllLed" class="com.nfledmedia.sorm.action.YewuAction" method="getAllLed">
+		</action>
+		<action name="getAllIndustry" class="com.nfledmedia.sorm.action.YewuAction" method="getAllIndustry">
+		</action>
+		<action name="getAllClient" class="com.nfledmedia.sorm.action.YewuAction" method="getAllClient">
+		</action>
+		<action name="getAllClients" class="com.nfledmedia.sorm.action.YewuAction" method="getAllClients">
+		</action>
+		<action name="getAllRegion" class="com.nfledmedia.sorm.action.YewuAction" method="getAllRegion">
+		</action>
+
+		<action name="ywyyejilist" class="com.nfledmedia.sorm.action.YewuAction" method="ywyyejilist">
+		</action>
+
+		<action name="dingdanguanliList" class="com.nfledmedia.sorm.action.YewuAction" method="dingdanguanliList">
+		</action>
+		<action name="dingdanDetailList" class="com.nfledmedia.sorm.action.YewuAction" method="dingdanDetailList">
+		</action>
+		<action name="dingdanDetailListExport" class="com.nfledmedia.sorm.action.YewuAction" method="dingdanDetailListExport">
+		</action>
+
+		<action name="getTop10_annual_Led_Occupy" class="com.nfledmedia.sorm.action.YewuAction" method="getTop10_annual_Led_Occupy">
+		</action>
+		<action name="renkanshuManageList" class="com.nfledmedia.sorm.action.YewuAction" method="renkanshuManageList">
+		</action>
+		<action name="orderUpdatePage" class="com.nfledmedia.sorm.action.YewuAction" method="orderUpdatePage">
+			<result>/WEB-INF/pages/orderUpdatePage.jsp</result>
+		</action>
+		<action name="updateRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="updateRenkanshu">
+		</action>
+		<action name="orderAuditList" class="com.nfledmedia.sorm.action.YewuAction" method="orderAuditList">
+		</action>
+		<action name="myOrderAuditList" class="com.nfledmedia.sorm.action.YewuAction" method="myOrderAuditList">
+		</action>
+		<action name="batchAudit" class="com.nfledmedia.sorm.action.OrderAuditAction" method="batchAudit">
+		</action>
+		<action name="Audit" class="com.nfledmedia.sorm.action.OrderAuditAction" method="Audit">
+		</action>
+
+		<action name="renkanshuAudit" class="com.nfledmedia.sorm.action.OrderAuditAction" method="renkanshuAudit">
+		</action>
+
+		<action name="deleteOrder" class="com.nfledmedia.sorm.action.OrderAuditAction" method="deleteOrder">
+		</action>
+		<action name="downOrder" class="com.nfledmedia.sorm.action.OrderAuditAction" method="downOrder">
+		</action>
+		<action name="upOrderPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="upOrderPage">
+			<result>/WEB-INF/pages/upOrderPage.jsp</result>
+		</action>
+
+		<action name="updateOrderPage" class="com.nfledmedia.sorm.action.YewuAction" method="updateOrderPage">
+			<result>/WEB-INF/pages/updateOrderPage.jsp</result>
+		</action>
+
+		<action name="upOrder" class="com.nfledmedia.sorm.action.YewuAction" method="upOrder">
+		</action>
+		<action name="getPieData" class="com.nfledmedia.sorm.action.YewuAction" method="getPieData">
+			<result>/WEB-INF/pages/getPieData.jsp</result>
+		</action>
+		<action name="auditPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="auditPage">
+			<result>/WEB-INF/pages/auditPage.jsp</result>
+		</action>
+
+		<action name="auditRenkanshuPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="auditRenkanshuPage">
+			<result>/WEB-INF/pages/auditRenkanshuPage.jsp</result>
+		</action>
+		<action name="getFukuansByRenkanbianhao" class="com.nfledmedia.sorm.action.OrderAuditAction" method="getFukuansByRenkanbianhao">
+		</action>
+		<action name="fillIndustryClassify" class="com.nfledmedia.sorm.action.YewuAction" method="fillIndustryClassify">
+		</action>
+		<action name="fillYewuyuanList" class="com.nfledmedia.sorm.action.YewuAction" method="fillYewuyuanList">
+		</action>
+		<action name="myAuditOrderUpdatePage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="myAuditOrderUpdatePage">
+			<result>/WEB-INF/pages/myAuditOrderUpdatePage.jsp</result>
+		</action>
+
+		<action name="updatemyAuidtOrder" class="com.nfledmedia.sorm.action.YewuAction" method="updatemyAuidtOrder">
+		</action>
+
+		<action name="renkanshuAuditList" class="com.nfledmedia.sorm.action.YewuAction" method="renkanshuAuditList">
+		</action>
+		<action name="renkanshuAuditList_Alter" class="com.nfledmedia.sorm.action.RenkanAction" method="renkanshuAuditList_Alter">
+		</action>
+
+		<action name="OrderListForNewRenkanshu" class="com.nfledmedia.sorm.action.YewuAction" method="OrderListForNewRenkanshu">
+		</action>
+
+		<action name="renkanshuOrderAudit" class="com.nfledmedia.sorm.action.YewuAction" method="renkanshuOrderAudit">
+		</action>
+
+		<action name="updateRenkanshuAuditPage" class="com.nfledmedia.sorm.action.RenkanAction" method="updateRenkanshuAuditPage">
+			<result>/WEB-INF/pages/updateRenkanshuAuditPage.jsp</result>
+		</action>
+
+		<action name="RenkanshuAlterAudit" class="com.nfledmedia.sorm.action.RenkanAction" method="RenkanshuAlterAudit">
+		</action>
+
+		<action name="deleteRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="deleteRenkanshu">
+		</action>
+		<action name="getLedSum" class="com.nfledmedia.sorm.action.YewuAction" method="getLedSum">
+		</action>
+		<action name="ledSumListExport" class="com.nfledmedia.sorm.action.YewuAction" method="ledSumListExport">
+		</action>
+		<action name="ywyyejilistExport" class="com.nfledmedia.sorm.action.YewuAction" method="ywyyejilistExport">
+		</action>
+
+		<action name="avgScreenOccuRateList" class="com.nfledmedia.sorm.action.YewuAction" method="avgScreenOccuRateList">
+		</action>
+		<action name="avgScreenOccuRateListExport" class="com.nfledmedia.sorm.action.YewuAction" method="avgScreenOccuRateListExport">
+		</action>
+		<action name="getTop10_annual_Led_Sum" class="com.nfledmedia.sorm.action.YewuAction" method="getTop10_annual_Led_Sum">
+		</action>
+		<action name="industryAnnualSumExport" class="com.nfledmedia.sorm.action.YewuAction" method="industryAnnualSumExport">
+		</action>
+		<action name="industryAnnualOccupyExport" class="com.nfledmedia.sorm.action.YewuAction" method="industryAnnualOccupyExport">
+		</action>
+		<action name="getContracts" class="com.nfledmedia.sorm.action.CollectionAction" method="getContracts">
+		</action>
+		<action name="saveCollection" class="com.nfledmedia.sorm.action.CollectionAction" method="saveCollection">
+		</action>
+		<action name="collectionManageList" class="com.nfledmedia.sorm.action.CollectionAction" method="collectionManageList">
+		</action>
+		<action name="annualIndustryReportAno" class="com.nfledmedia.sorm.action.YewuAction" method="annualIndustryReportAno">
+		</action>
+		<action name="annualIndustryReportSum" class="com.nfledmedia.sorm.action.YewuAction" method="annualIndustryReportSum">
+		</action>
+		<action name="annualLedAmountReportAno" class="com.nfledmedia.sorm.action.YewuAction" method="annualLedAmountReportAno">
+		</action>
+		<action name="employeePerformanceReport" class="com.nfledmedia.sorm.action.YewuAction" method="employeePerformanceReport">
+		</action>
+		<action name="getInfo4PieModal" class="com.nfledmedia.sorm.action.YewuAction" method="getInfo4PieModal">
+		</action>
+		<action name="getClientAdverManageChartStat" class="com.nfledmedia.sorm.action.YewuAction" method="getClientAdverManageChartStat">
+		</action>
+		<action name="getAdverInfo" class="com.nfledmedia.sorm.action.YewuAction" method="getAdverInfo">
+		</action>
+		<action name="getAdverDetail" class="com.nfledmedia.sorm.action.YewuAction" method="getAdverDetail">
+		</action>
+		<action name="deleteUser" class="com.nfledmedia.sorm.action.UserAction" method="deleteUser">
+		</action>
+		<action name="fukuanAuditPageForNewRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="fukuanAuditPageForNewRenkanshu">
+		</action>
+		<action name="fukuanAuditAlterPageRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="fukuanAuditAlterPageRenkanshu">
+		</action>
+		<action name="getOrderByRenkanshu" class="com.nfledmedia.sorm.action.YewuAction" method="getOrderByRenkanshu">
+		</action>
+		<action name="addOrder" class="com.nfledmedia.sorm.action.YewuAction" method="addOrder">
+		</action>
+		<action name="getClientAdverDist" class="com.nfledmedia.sorm.action.YewuAction" method="getClientAdverDist">
+		</action>
+		<action name="getAdverLedDistChart" class="com.nfledmedia.sorm.action.YewuAction" method="getAdverLedDistChart">
+		</action>
+		<action name="addYwymubiao" class="com.nfledmedia.sorm.action.YewuAction" method="addYwymubiao">
+		</action>
+		<action name="avgOccuRateListByScreen" class="com.nfledmedia.sorm.action.YewuAction" method="avgOccuRateListByScreen">
+		</action>
+		<action name="accountReceivedStatistics" class="com.nfledmedia.sorm.action.YewuAction" method="accountReceivedStatistics">
+		</action>
+		<action name="getAnnualIndustryReportDetail" class="com.nfledmedia.sorm.action.YewuAction" method="getAnnualIndustryReportDetail">
+		</action>
+		<action name="getMonthlySignedAmountOfLed" class="com.nfledmedia.sorm.action.YewuAction" method="getMonthlySignedAmountOfLed">
+		</action>
+		<action name="getMonthlySignedAmountDetail" class="com.nfledmedia.sorm.action.YewuAction" method="getMonthlySignedAmountDetail">
+		</action>
+		<action name="amountDigestedStatistics" class="com.nfledmedia.sorm.action.YewuAction" method="amountDigestedStatistics">
+		</action>
+		<action name="myRenkanshuWaitForAuditList" class="com.nfledmedia.sorm.action.YewuAction" method="myRenkanshuWaitForAuditList">
+		</action>
+		<action name="myRenkanshuPassedList" class="com.nfledmedia.sorm.action.YewuAction" method="myRenkanshuPassedList">
+		</action>
+		<action name="myRenkanshuNoPassedList" class="com.nfledmedia.sorm.action.YewuAction" method="myRenkanshuNoPassedList">
+		</action>
+		<action name="updateMyAddRenkanshuPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="updateMyAddRenkanshuPage">
+			<result>/WEB-INF/pages/updateMyAddRenkanshuPage.jsp</result>
+		</action>
+		<action name="updateMyRenkanshuPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="updateMyRenkanshuPage">
+			<result>/WEB-INF/pages/updateMyRenkanshuPage.jsp</result>
+		</action>
+		<action name="orderauditList" class="com.nfledmedia.sorm.action.YewuAction" method="orderauditList">
+		</action>
+		<action name="getFukuanauditsByRenkanbianhao" class="com.nfledmedia.sorm.action.OrderAuditAction" method="getFukuanauditsByRenkanbianhao">
+		</action>
+		<action name="updateRenkanshuaudit" class="com.nfledmedia.sorm.action.RenkanAction" method="updateRenkanshuaudit">
+		</action>
+		<action name="downOrderForRenkanshuaudit" class="com.nfledmedia.sorm.action.OrderAuditAction" method="downOrderForRenkanshuaudit">
+		</action>
+		<action name="addOrderForRenkanshuaudit" class="com.nfledmedia.sorm.action.YewuAction" method="addOrderForRenkanshuaudit">
+		</action>
+		<action name="updateOrderForRenkanshuaudit" class="com.nfledmedia.sorm.action.YewuAction" method="updateOrderForRenkanshuaudit">
+		</action>
+		<action name="getUnapprovedRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="getUnapprovedRenkanshu">
+		</action>
+		<action name="getApprovedRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="getApprovedRenkanshu">
+		</action>
+
+		<action name="seeAuditRenkanshuPage" class="com.nfledmedia.sorm.action.RenkanAction" method="seeAuditRenkanshuPage">
+			<result>/WEB-INF/pages/seeAuditRenkanshuPage.jsp</result>
+		</action>
+		<action name="yewuList4SeeRenkanshu" class="com.nfledmedia.sorm.action.YewuAction" method="yewuList4SeeRenkanshu">
+		</action>
+		<action name="fukuanPage4SeePassedNewRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="fukuanPage4SeePassedNewRenkanshu">
+		</action>
+	</package>
+</struts>
+

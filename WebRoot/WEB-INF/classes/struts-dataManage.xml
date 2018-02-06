@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="dataManage" extends="default" namespace="/">
+
+		<!-- =============================认刊书提交================================= -->
+		<action name="saveAdcontract" class="com.nfledmedia.sorm.action.RenkanAction" method="saverenkan">
+			<!-- 添加成功 -->
+			<result name="success">/WEB-INF/pages/renkanshusuccess.jsp</result>
+			<result name="failed">/WEB-INF/pages/renkantypein.jsp</result>
+			<result name="input">/input.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+
+		<!-- =============================收款提交================================= -->
+		<action name="shoukuan_save" class="com.nfledmedia.sorm.action.ShoukuanAction" method="save">
+			<!-- 保存成功 -->
+			<result name="shoukuansave_success">/WEB-INF/pages/shoukuansuccess.jsp</result>
+			<result name="shoukuansave_failure">/WEB-INF/pages/shoukuantypein.jsp</result>
+			<result name="input">/input.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+
+		<!-- =============================合同保存================================= -->
+		<action name="saveContractInfo" class="com.nfledmedia.sorm.action.ContractAction" method="saveContractInfo">
+			<!-- 保存成功 -->
+			<result name="success">/WEB-INF/pages/contractsuccess.jsp</result>
+			<result name="failed">/WEB-INF/pages/contracttypein.jsp</result>
+			<result name="input">/input.jsp</result>
+			<result name="error">/error.jsp</result>
+		</action>
+		
+		<action name="returnLedSSTime" class="com.nfledmedia.sorm.action.YewuAction" method="returnLedSSTime">
+		</action>
+		<action name="updateOrder" class="com.nfledmedia.sorm.action.RenkanAction" method="updateOrder">
+		</action>
+		<action name="deletethisOrder" class="com.nfledmedia.sorm.action.RenkanAction" method="deletethisOrder">
+		</action>
+		<action name="screenOccuRateListByDate" class="com.nfledmedia.sorm.action.YewuAction" method="screenOccuRateListByDate">
+		</action>
+		<action name="adcontentStatisticExport" class="com.nfledmedia.sorm.action.YewuAction" method="adcontentStatisticExport">
+		</action>
+		<action name="publishArrangementExport" class="com.nfledmedia.sorm.action.YewuAction" method="publishArrangementExport">
+		</action>
+		
+		<action name="checkContractno" class="com.nfledmedia.sorm.action.ContractAction" method="checkContractnoDuplicate">
+		</action>
+		<action name="checkAccount" class="com.nfledmedia.sorm.action.UserAction" method="checkAccount">
+		</action>
+		<action name="addUserInfo" class="com.nfledmedia.sorm.action.UserAction" method="addUserInfo">
+		</action>
+		<action name="userlist" class="com.nfledmedia.sorm.action.UserAction" method="userlist">
+		</action>
+		<action name="ywyMubiaolist" class="com.nfledmedia.sorm.action.UserAction" method="ywyMubiaolist">
+		</action>
+		<action name="ywyMubiaolistGrid" class="com.nfledmedia.sorm.action.UserAction" method="ywyMubiaolistGrid">
+		</action>
+		<action name="getYwymubiaoById" class="com.nfledmedia.sorm.action.UserAction" method="getYwymubiaoById">
+		</action>
+		<action name="editYwymubiao" class="com.nfledmedia.sorm.action.UserAction" method="editYwymubiao">
+		</action>
+		<action name="delYwymubiao" class="com.nfledmedia.sorm.action.UserAction" method="delYwymubiao">
+		</action>
+		<action name="getAllDepartment" class="com.nfledmedia.sorm.action.UserAction" method="getAllDepartment">
+		</action>
+		<action name="getAllRole" class="com.nfledmedia.sorm.action.UserAction" method="getAllRole">
+		</action>
+		<action name="updateUserInfo" class="com.nfledmedia.sorm.action.UserAction" method="updateUserInfo">
+		</action>
+		<action name="publishResourceExport" class="com.nfledmedia.sorm.action.YewuAction" method="publishResourceExport">
+		</action>
+	</package>
+
+</struts>    
