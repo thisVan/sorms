@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Industry;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.Industry;
  * @see com.nfledmedia.sorm.entity.Industry
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class IndustryDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(IndustryDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(IndustryDAO.class);
 	// property constants
 	public static final String INDUSTRYNAME = "industryname";
 
@@ -56,8 +57,7 @@ public class IndustryDAO extends HibernateDaoSupport {
 	public Industry findById(java.lang.Short id) {
 		log.debug("getting Industry instance with id: " + id);
 		try {
-			Industry instance = (Industry) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Industry", id);
+			Industry instance = (Industry) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Industry", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -69,8 +69,7 @@ public class IndustryDAO extends HibernateDaoSupport {
 		log.debug("finding Industry instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -79,11 +78,9 @@ public class IndustryDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Industry instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Industry instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Industry as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Industry as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -109,8 +106,7 @@ public class IndustryDAO extends HibernateDaoSupport {
 	public Industry merge(Industry detachedInstance) {
 		log.debug("merging Industry instance");
 		try {
-			Industry result = (Industry) getHibernateTemplate().merge(
-					detachedInstance);
+			Industry result = (Industry) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -142,6 +138,6 @@ public class IndustryDAO extends HibernateDaoSupport {
 	}
 
 	public static IndustryDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (IndustryDAO) ctx.getBean("IndustryDAO");
+		return (IndustryDAO) ctx.getBean("industryDAO");
 	}
 }

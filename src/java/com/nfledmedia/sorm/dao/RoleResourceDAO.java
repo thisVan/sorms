@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.RoleResource;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.RoleResource;
  * @see com.nfledmedia.sorm.entity.RoleResource
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class RoleResourceDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(RoleResourceDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(RoleResourceDAO.class);
 
 	// property constants
 
@@ -56,8 +57,7 @@ public class RoleResourceDAO extends HibernateDaoSupport {
 	public RoleResource findById(com.nfledmedia.sorm.entity.RoleResourceId id) {
 		log.debug("getting RoleResource instance with id: " + id);
 		try {
-			RoleResource instance = (RoleResource) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.RoleResource", id);
+			RoleResource instance = (RoleResource) getHibernateTemplate().get("com.nfledmedia.sorm.entity.RoleResource", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -69,8 +69,7 @@ public class RoleResourceDAO extends HibernateDaoSupport {
 		log.debug("finding RoleResource instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -79,11 +78,9 @@ public class RoleResourceDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding RoleResource instance with property: "
-				+ propertyName + ", value: " + value);
+		log.debug("finding RoleResource instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from RoleResource as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from RoleResource as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -105,8 +102,7 @@ public class RoleResourceDAO extends HibernateDaoSupport {
 	public RoleResource merge(RoleResource detachedInstance) {
 		log.debug("merging RoleResource instance");
 		try {
-			RoleResource result = (RoleResource) getHibernateTemplate().merge(
-					detachedInstance);
+			RoleResource result = (RoleResource) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -137,8 +133,7 @@ public class RoleResourceDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public static RoleResourceDAO getFromApplicationContext(
-			ApplicationContext ctx) {
-		return (RoleResourceDAO) ctx.getBean("RoleResourceDAO");
+	public static RoleResourceDAO getFromApplicationContext(ApplicationContext ctx) {
+		return (RoleResourceDAO) ctx.getBean("roleResourceDAO");
 	}
 }

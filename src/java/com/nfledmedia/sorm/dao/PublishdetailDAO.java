@@ -184,7 +184,7 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	}
 
 	public static PublishdetailDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (PublishdetailDAO) ctx.getBean("PublishdetailDAO");
+		return (PublishdetailDAO) ctx.getBean("publishdetailDAO");
 	}
 
 	/**
@@ -198,8 +198,8 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	public List getResourceListAll(String startdate, String enddate, String ledname) {
 		List lst = null;
 		try {
-			String hql = LED_START_END_DISTINCT + " where p.ledname ='" + ledname + "' and p.date >= '" + startdate
-					+ "' and p.date <= '" + enddate + "'" + " order by p.attributename ";
+			String hql = LED_START_END_DISTINCT + " where p.ledname ='" + ledname + "' and p.date >= '" + startdate + "' and p.date <= '"
+					+ enddate + "'" + " order by p.attributename ";
 			lst = find(hql);
 		} catch (Exception e) {
 			e.printStackTrace();

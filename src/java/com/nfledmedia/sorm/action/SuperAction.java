@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.util.ServletContextAware;
+import org.springframework.stereotype.Controller;
 
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -20,16 +21,11 @@ import com.opensymphony.xwork2.ActionSupport;
  * 
  * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-public class SuperAction extends ActionSupport implements ServletRequestAware,
-		ServletResponseAware, ServletContextAware {
 
-	/**
-	 * serialVersionUID:TODO
-	 * 
-	 * @since JDK 1.6
-	 */
+public class SuperAction extends ActionSupport implements ServletRequestAware, ServletResponseAware, ServletContextAware {
 
 	private static final long serialVersionUID = 1L;
+	
 	protected HttpServletResponse response; // 相应对象
 	protected HttpServletRequest request; // 请求对象
 	protected HttpSession session; // 会话对象

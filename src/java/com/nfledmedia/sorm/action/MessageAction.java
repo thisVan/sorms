@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import com.nfledmedia.sorm.cons.CommonConstant;
@@ -24,9 +26,11 @@ import com.nfledmedia.sorm.util.PageToJson;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ModelDriven;
 
-@Service("messageAction")
+@Controller
 public class MessageAction extends SuperAction implements ModelDriven<Message> {
 
+	private static final long serialVersionUID = 1L;
+	
 	private String ids;
 	private String id;
 	private int page;
@@ -34,6 +38,7 @@ public class MessageAction extends SuperAction implements ModelDriven<Message> {
 	private String sord;
 	private int rows;
 
+	@Autowired
 	private MessageService messageService;
 
 	@Override
@@ -133,9 +138,6 @@ public class MessageAction extends SuperAction implements ModelDriven<Message> {
 		this.ids = ids;
 	}
 
-	public void setMessageService(MessageService messageService) {
-		this.messageService = messageService;
-	}
 
 	public String getId() {
 		return id;

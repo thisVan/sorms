@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Role;
 
@@ -21,6 +22,7 @@ import com.nfledmedia.sorm.entity.Role;
  * @see com.nfledmedia.sorm.entity.Role
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class RoleDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(RoleDAO.class);
 	// property constants
@@ -56,8 +58,7 @@ public class RoleDAO extends HibernateDaoSupport {
 	public Role findById(java.lang.Short id) {
 		log.debug("getting Role instance with id: " + id);
 		try {
-			Role instance = (Role) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Role", id);
+			Role instance = (Role) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Role", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -69,8 +70,7 @@ public class RoleDAO extends HibernateDaoSupport {
 		log.debug("finding Role instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -79,11 +79,9 @@ public class RoleDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Role instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Role instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Role as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Role as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -145,6 +143,6 @@ public class RoleDAO extends HibernateDaoSupport {
 	}
 
 	public static RoleDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (RoleDAO) ctx.getBean("RoleDAO");
+		return (RoleDAO) ctx.getBean("roleDAO");
 	}
 }

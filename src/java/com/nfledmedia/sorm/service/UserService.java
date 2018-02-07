@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,32 +22,15 @@ import com.nfledmedia.sorm.entity.User;
  * 
  * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-@Entity
 @Transactional
-@Service("userService")
+@Service
 public class UserService {
 
 	// 注入userDao
-	@ManyToOne
+	@Autowired
 	private UserDAO userDAO;
-	
+	@Autowired
 	private RoleDAO roleDAO;
-	
-	public void setRoleDAO(RoleDAO roleDAO) {
-		this.roleDAO = roleDAO;
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public RoleDAO getRoleDAO() {
-		return roleDAO;
-	}
 
 	/**
 	 * 
@@ -77,7 +61,6 @@ public class UserService {
 			System.out.println("no， login failed");
 			return false;
 		}
-
 	}
 	
 	public User chkAndBackPojo(User u){
@@ -98,7 +81,6 @@ public class UserService {
 			}
 		}
 		return user;
-		
 	}
 	
 

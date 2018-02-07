@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Resource;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.Resource;
  * @see com.nfledmedia.sorm.entity.Resource
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class ResourceDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(ResourceDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(ResourceDAO.class);
 	// property constants
 	public static final String NAME = "name";
 	public static final String URL = "url";
@@ -58,8 +59,7 @@ public class ResourceDAO extends HibernateDaoSupport {
 	public Resource findById(java.lang.Short id) {
 		log.debug("getting Resource instance with id: " + id);
 		try {
-			Resource instance = (Resource) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Resource", id);
+			Resource instance = (Resource) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Resource", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -71,8 +71,7 @@ public class ResourceDAO extends HibernateDaoSupport {
 		log.debug("finding Resource instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -81,11 +80,9 @@ public class ResourceDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Resource instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Resource instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Resource as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Resource as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -119,8 +116,7 @@ public class ResourceDAO extends HibernateDaoSupport {
 	public Resource merge(Resource detachedInstance) {
 		log.debug("merging Resource instance");
 		try {
-			Resource result = (Resource) getHibernateTemplate().merge(
-					detachedInstance);
+			Resource result = (Resource) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -152,6 +148,6 @@ public class ResourceDAO extends HibernateDaoSupport {
 	}
 
 	public static ResourceDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (ResourceDAO) ctx.getBean("ResourceDAO");
+		return (ResourceDAO) ctx.getBean("resourceDAO");
 	}
 }

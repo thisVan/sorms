@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,15 +31,16 @@ import com.nfledmedia.sorm.util.TypeNullProcess;
  * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
 @Transactional
-@Service("yewuService")
+@Service
 public class YewuService {
 
+	@Autowired
 	private LedDAO ledDAO;
-
+	@Autowired
 	private IndustryDAO industryDAO;
-
+	@Autowired
 	private UserDAO userDAO;
-
+	@Autowired
 	private PublishdetailDAO publishdetailDAO;
 
 	// @SuppressWarnings("unchecked")
@@ -1017,38 +1019,6 @@ public class YewuService {
 	 */
 	public List<Led> getAllAvaiLed() {
 		return ledDAO.findAllAvailable();
-	}
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public LedDAO getLedDAO() {
-		return ledDAO;
-	}
-
-	public void setLedDAO(LedDAO ledDAO) {
-		this.ledDAO = ledDAO;
-	}
-
-	public IndustryDAO getIndustryDAO() {
-		return industryDAO;
-	}
-
-	public void setIndustryDAO(IndustryDAO industryDAO) {
-		this.industryDAO = industryDAO;
-	}
-
-	public PublishdetailDAO getPublishdetailDAO() {
-		return publishdetailDAO;
-	}
-
-	public void setPublishdetailDAO(PublishdetailDAO publishdetailDAO) {
-		this.publishdetailDAO = publishdetailDAO;
 	}
 
 }

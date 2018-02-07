@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.Entity;
 
 import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.nfledmedia.sorm.dao.IndustryDAO;
@@ -32,49 +33,22 @@ import com.nfledmedia.sorm.util.Page;
  * 
  * @version jdk1.7
  * 
- *          Copyright (c) 2016, bolven@qq.com All Rights Reserved.
+ * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
 @Entity
-@Service("renkanshuService")
+@Service
 public class RenkanshuService {
 	// 注入DAO
+	@Autowired
 	private IndustryDAO industryDAO;
+	@Autowired
 	private UserDAO userDAO;
+	@Autowired
 	private MessageDAO messageDAO;
+	@Autowired
 	private OrderDAO orderDAO;
+	@Autowired
 	private PublishdetailDAO publishdetailDAO;
-
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public IndustryDAO getIndustryDAO() {
-		return industryDAO;
-	}
-
-	public MessageDAO getMessageDAO() {
-		return messageDAO;
-	}
-
-	public OrderDAO getOrderDAO() {
-		return orderDAO;
-	}
-
-	public void setOrderDAO(OrderDAO orderDAO) {
-		this.orderDAO = orderDAO;
-	}
-	
-	public PublishdetailDAO getPublishdetailDAO() {
-		return publishdetailDAO;
-	}
-
-	public void setPublishdetailDAO(PublishdetailDAO publishdetailDAO) {
-		this.publishdetailDAO = publishdetailDAO;
-	}
 
 	public Page getRenkanshuManageList(String sidx, String sord, int pageNo, int pageSize) {
 		System.out.println("???????????yewuService:getYewuList:sidx:" + sidx);
@@ -306,13 +280,6 @@ public class RenkanshuService {
 //		renkanshuremarkDAO.save(renkanshuremark);
 //	}
 
-	public void setIndustryDAO(IndustryDAO industryDAO) {
-		this.industryDAO = industryDAO;
-	}
-
-	public void setMessageDAO(MessageDAO messageDAO) {
-		this.messageDAO = messageDAO;
-	}
 
 	public List<Order> getOrderByLed(Integer id) {
 		// TODO Auto-generated method stub

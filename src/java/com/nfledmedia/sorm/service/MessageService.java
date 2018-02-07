@@ -3,6 +3,7 @@ package com.nfledmedia.sorm.service;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,12 +11,11 @@ import com.nfledmedia.sorm.dao.MessageDAO;
 import com.nfledmedia.sorm.entity.Message;
 import com.nfledmedia.sorm.util.Page;
 
-@Entity
 @Transactional
-@Service("messageService")
+@Service
 public class MessageService {
 
-	@ManyToOne
+	@Autowired
 	private MessageDAO messageDAO;
 
 	public Page getMessageList(Integer user, String sidx, String sord,
@@ -62,14 +62,6 @@ public class MessageService {
 			message.setHasRead(2);
 			messageDAO.merge(message);
 		}
-	}
-
-	public MessageDAO getMessageDAO() {
-		return messageDAO;
-	}
-
-	public void setMessageDAO(MessageDAO messageDAO) {
-		this.messageDAO = messageDAO;
 	}
 
 	public void saveMessage(Message message) {

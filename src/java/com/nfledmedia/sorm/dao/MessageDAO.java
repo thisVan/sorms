@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.nfledmedia.sorm.entity.Message;
@@ -27,6 +28,7 @@ import com.nfledmedia.sorm.util.Page;
  * @see com.nfledmedia.sorm.entity.Message
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class MessageDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(MessageDAO.class);
 	// property constants
@@ -41,10 +43,8 @@ public class MessageDAO extends HibernateDaoSupport {
 		getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_EAGER);
 	}
 
-	public Page getMessageList(Integer user, String sidx, String sord,
-			int pageNo, int pageSize) {
-		return pagedQuery(GET_MESSAGES_LIST + " order by m." + sidx + " "
-				+ sord, pageNo, pageSize, user);
+	public Page getMessageList(Integer user, String sidx, String sord, int pageNo, int pageSize) {
+		return pagedQuery(GET_MESSAGES_LIST + " order by m." + sidx + " " + sord, pageNo, pageSize, user);
 	}
 
 	public long countNotreadMessage(Integer userId) {
@@ -57,13 +57,11 @@ public class MessageDAO extends HibernateDaoSupport {
 		return (Long) countlist.get(0);
 	}
 
-	public Page pagedQuery(String hql, int pageNo, int pageSize,
-			Object... values) {
+	public Page pagedQuery(String hql, int pageNo, int pageSize, Object... values) {
 		// Assert.hasText(hql);
 		// Assert.isTrue(pageNo >= 1, "页码应该不小于1");
 		// Count查询
-		String countQueryString = " select count (*) "
-				+ removeSelect(removeOrders(hql));
+		String countQueryString = " select count (*) " + removeSelect(removeOrders(hql));
 		// System.out.print(hql);
 		// System.out.print( getHibernateTemplate().find(countQueryString,
 		// values));
@@ -75,8 +73,7 @@ public class MessageDAO extends HibernateDaoSupport {
 		// 实际查询返回分页对象
 		int startIndex = Page.getStartOfPage(pageNo, pageSize);
 		Query query = createQuery(hql, values);
-		List list = query.setFirstResult(startIndex).setMaxResults(pageSize)
-				.list();
+		List list = query.setFirstResult(startIndex).setMaxResults(pageSize).list();
 
 		return new Page(startIndex, totalCount, pageSize, list);
 	}
@@ -88,8 +85,7 @@ public class MessageDAO extends HibernateDaoSupport {
 	 */
 	private static String removeOrders(String hql) {
 		// Assert.hasText(hql);
-		Pattern p = Pattern.compile("order\\s*by[\\w|\\W|\\s|\\S]*",
-				Pattern.CASE_INSENSITIVE);
+		Pattern p = Pattern.compile("order\\s*by[\\w|\\W|\\s|\\S]*", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(hql);
 		StringBuffer sb = new StringBuffer();
 		while (m.find()) {
@@ -107,8 +103,7 @@ public class MessageDAO extends HibernateDaoSupport {
 	private static String removeSelect(String hql) {
 		// Assert.hasText(hql);
 		int beginPos = hql.toLowerCase().indexOf("from");
-		Assert.isTrue(beginPos != -1, " hql : " + hql
-				+ " must has a keyword 'from'");
+		Assert.isTrue(beginPos != -1, " hql : " + hql + " must has a keyword 'from'");
 		return hql.substring(beginPos);
 	}
 
@@ -134,11 +129,8 @@ public class MessageDAO extends HibernateDaoSupport {
 	}
 
 	public void save(Message transientInstance) {
-		System.out
-				.println(".....................进入messageDAO中的save方法....................");
-		System.out.println(transientInstance.getContent() + "  "
-				+ transientInstance.getHasRead() + "  "
-				+ transientInstance.getTime());
+		System.out.println(".....................进入messageDAO中的save方法....................");
+		System.out.println(transientInstance.getContent() + "  " + transientInstance.getHasRead() + "  " + transientInstance.getTime());
 		log.debug("saving Message instance");
 		try {
 			getHibernateTemplate().save(transientInstance);
@@ -175,8 +167,7 @@ public class MessageDAO extends HibernateDaoSupport {
 	public Message findById(java.lang.Long id) {
 		log.debug("getting Message instance with id: " + id);
 		try {
-			Message instance = (Message) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Message", id);
+			Message instance = (Message) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Message", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -188,8 +179,7 @@ public class MessageDAO extends HibernateDaoSupport {
 		log.debug("finding Message instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -198,11 +188,9 @@ public class MessageDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Message instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Message instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Message as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Message as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -233,8 +221,7 @@ public class MessageDAO extends HibernateDaoSupport {
 		System.out.println("~~~~~~~~~~~~MessageDAO~~~~~~~~~~~~~~~~~");
 		log.debug("merging Message instance");
 		try {
-			Message result = (Message) getHibernateTemplate().merge(
-					detachedInstance);
+			Message result = (Message) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (Exception re) {
@@ -273,6 +260,6 @@ public class MessageDAO extends HibernateDaoSupport {
 	}
 
 	public static MessageDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (MessageDAO) ctx.getBean("MessageDAO");
+		return (MessageDAO) ctx.getBean("messageDAO");
 	}
 }

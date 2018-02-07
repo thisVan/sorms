@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
@@ -23,6 +24,7 @@ import com.nfledmedia.sorm.entity.Led;
  * @see com.nfledmedia.sorm.entity.Led
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class LedDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(LedDAO.class);
 	// property constants
@@ -72,8 +74,7 @@ public class LedDAO extends HibernateDaoSupport {
 	public Led findById(java.lang.Integer id) {
 		log.debug("getting Led instance with id: " + id);
 		try {
-			Led instance = (Led) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Led", id);
+			Led instance = (Led) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Led", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -85,8 +86,7 @@ public class LedDAO extends HibernateDaoSupport {
 		log.debug("finding Led instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -95,11 +95,9 @@ public class LedDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Led instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Led instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Led as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Led as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -181,12 +179,13 @@ public class LedDAO extends HibernateDaoSupport {
 			throw re;
 		}
 	}
-	
+
 	/**
 	 * 返回所有激活的Led
+	 * 
 	 * @return
 	 */
-	public List findAllAvailable(){
+	public List findAllAvailable() {
 		return findByState(TypeCollections.LED_ACTIVE_STATE);
 	}
 
@@ -225,6 +224,6 @@ public class LedDAO extends HibernateDaoSupport {
 	}
 
 	public static LedDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (LedDAO) ctx.getBean("LedDAO");
+		return (LedDAO) ctx.getBean("ledDAO");
 	}
 }

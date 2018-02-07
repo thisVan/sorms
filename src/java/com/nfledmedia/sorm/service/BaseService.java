@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.jar.Attributes.Name;
 
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.nfledmedia.sorm.cons.TypeCollections;
@@ -34,19 +36,19 @@ import com.nfledmedia.sorm.entity.Publishdetail;
  */
 @Service
 public class BaseService {
-	@Resource
+	@Autowired
 	private LedDAO ledDAO;
-	@Resource
+	@Autowired
 	private AttributeDAO attributeDAO;
-	@Resource
+	@Autowired
 	private ClienttypeDAO clienttypeDAO;
-	@Resource
+	@Autowired
 	private ChannelDAO channelDAO;
-	@Resource
+	@Autowired
 	private IndustryDAO industryDAO;
-	@Resource
+	@Autowired
 	private PublishdetailDAO publishdetailDAO;
-	@Resource
+	@Autowired
 	private PlaystrategyDAO playstrategyDAO;
 
 

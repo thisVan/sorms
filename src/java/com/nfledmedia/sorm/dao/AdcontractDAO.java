@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Adcontract;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.Adcontract;
  * @see com.nfledmedia.sorm.entity.Adcontract
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class AdcontractDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(AdcontractDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(AdcontractDAO.class);
 	// property constants
 	public static final String SN = "sn";
 	public static final String CLIENT = "client";
@@ -60,8 +61,7 @@ public class AdcontractDAO extends HibernateDaoSupport {
 	public Adcontract findById(java.lang.Integer id) {
 		log.debug("getting Adcontract instance with id: " + id);
 		try {
-			Adcontract instance = (Adcontract) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Adcontract", id);
+			Adcontract instance = (Adcontract) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Adcontract", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -73,8 +73,7 @@ public class AdcontractDAO extends HibernateDaoSupport {
 		log.debug("finding Adcontract instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -83,11 +82,9 @@ public class AdcontractDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Adcontract instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Adcontract instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Adcontract as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Adcontract as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -129,8 +126,7 @@ public class AdcontractDAO extends HibernateDaoSupport {
 	public Adcontract merge(Adcontract detachedInstance) {
 		log.debug("merging Adcontract instance");
 		try {
-			Adcontract result = (Adcontract) getHibernateTemplate().merge(
-					detachedInstance);
+			Adcontract result = (Adcontract) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -162,6 +158,6 @@ public class AdcontractDAO extends HibernateDaoSupport {
 	}
 
 	public static AdcontractDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (AdcontractDAO) ctx.getBean("AdcontractDAO");
+		return (AdcontractDAO) ctx.getBean("adcontractDAO");
 	}
 }

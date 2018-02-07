@@ -1,15 +1,9 @@
 package com.nfledmedia.sorm.action;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.math.MathContext;
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -24,34 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.sound.sampled.DataLine;
-
-import jxl.CellView;
-import jxl.Workbook;
-import jxl.format.Alignment;
-import jxl.format.Font;
-import jxl.format.VerticalAlignment;
-import jxl.write.Label;
-import jxl.write.WritableCellFormat;
-import jxl.write.WritableFont;
-import jxl.write.WritableSheet;
-import jxl.write.WritableWorkbook;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
-import com.nfledmedia.sorm.dao.AdcontractDAO;
 import com.nfledmedia.sorm.entity.Adcontract;
-import com.nfledmedia.sorm.entity.Attribute;
-import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Publishdetail;
@@ -59,20 +38,33 @@ import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
-import com.nfledmedia.sorm.util.ExcelUtil;
 import com.nfledmedia.sorm.util.Page;
 import com.nfledmedia.sorm.util.PageToJson;
 import com.nfledmedia.sorm.util.TypeNullProcess;
 import com.opensymphony.xwork2.ActionContext;
-import com.opensymphony.xwork2.ModelDriven;
 
-@Service("yewuAction")
+import jxl.Workbook;
+import jxl.format.Alignment;
+import jxl.format.VerticalAlignment;
+import jxl.write.Label;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
+import jxl.write.WritableWorkbook;
+
+@Controller
 public class YewuAction extends SuperAction {
 
+	private static final long serialVersionUID = 1L;
 	// 注入service
+	@Autowired
 	private YewuService yewuService;
+	@Autowired
 	private BaseService baseService;
+	@Autowired
 	private AdcontractService adcontractService;
+	@Autowired
+	private RenkanshuService renkanshuService;
 
 	// 参数
 	private int page;
@@ -183,16 +175,6 @@ public class YewuAction extends SuperAction {
 
 	public void setRenkanshuauditId(Integer renkanshuauditId) {
 		this.renkanshuauditId = renkanshuauditId;
-	}
-
-	public RenkanshuService renkanshuService;
-
-	public RenkanshuService getRenkanshuService() {
-		return renkanshuService;
-	}
-
-	public void setRenkanshuService(RenkanshuService renkanshuService) {
-		this.renkanshuService = renkanshuService;
 	}
 
 	public String getDateRangeSQL() {
@@ -329,7 +311,7 @@ public class YewuAction extends SuperAction {
 	public String publishResourceExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat mdf = new SimpleDateFormat("MM-dd");
-		//DecimalFormat df = new DecimalFormat("#.##%");
+		// DecimalFormat df = new DecimalFormat("#.##%");
 		DecimalFormat df = new DecimalFormat("#.#%");
 		List<Object[]> queryResult = renkanshuService.publishResourceList(startTime, endTime, ledId);
 		List distinctQueryResult = new ArrayList();
@@ -1288,7 +1270,7 @@ public class YewuAction extends SuperAction {
 		for (int i = 0, size = leds.size(); i < size; i++) {
 
 			ledName = ((Led) leds.get(i)).getName();
-			System.out.println("key:" + mapBofang.get(ledName));
+			// System.out.println("key:" + mapBofang.get(ledName));
 			if (mapBofang.containsKey(ledName)) {
 				try {
 					ledOccuRate = Double.parseDouble(mapBofang.get(ledName).toString()) / (Integer) mapTotal.get(ledName) * 100;
@@ -1309,7 +1291,7 @@ public class YewuAction extends SuperAction {
 		jsonObject1.put("ledOccuRate", ledOccus);
 
 		jsonObject.put("ledOccuRates", jsonObject1);
-		jsonObject.put("errorMsg", "服务器错误！");
+		// jsonObject.put("errorMsg", "服务器错误！");
 		sentMsg(jsonObject.toString());
 		return null;
 	}
@@ -1410,7 +1392,7 @@ public class YewuAction extends SuperAction {
 		}
 		return str;
 	}
-	
+
 	public String getAllClients() throws JSONException, IOException {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("clients", baseService.clientsList());
@@ -1488,37 +1470,6 @@ public class YewuAction extends SuperAction {
 
 	public void setTid(Integer tid) {
 		this.tid = tid;
-	}
-
-	public YewuService getYewuService() {
-		return yewuService;
-	}
-
-	public void setYewuService(YewuService yewuService) {
-		this.yewuService = yewuService;
-	}
-
-	/**
-	 * @return the baseService
-	 */
-	public BaseService getBaseService() {
-		return baseService;
-	}
-
-	/**
-	 * @param baseService
-	 *            the baseService to set
-	 */
-	public void setBaseService(BaseService baseService) {
-		this.baseService = baseService;
-	}
-
-	public AdcontractService getAdcontractService() {
-		return adcontractService;
-	}
-
-	public void setAdcontractService(AdcontractService adcontractService) {
-		this.adcontractService = adcontractService;
 	}
 
 	public Integer getYewuId() {

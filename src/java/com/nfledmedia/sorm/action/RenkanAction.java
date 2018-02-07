@@ -14,7 +14,8 @@ import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
@@ -38,10 +39,21 @@ import com.opensymphony.xwork2.ActionContext;
  * 
  * @version jdk1.7 Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-@Service("renkanAction")
+@Controller
 public class RenkanAction extends SuperAction {
 
 	private static final long serialVersionUID = 1L;
+
+	// 注入service
+	@Autowired
+	private YewuService yewuService;
+	@Autowired
+	private AdcontractService adcontractService;
+	@Autowired
+	private RenkanshuService renkanshuService;
+	@Autowired
+	private BaseService baseService;
+
 	private int page;
 	private String sidx;
 	private String sord;
@@ -65,24 +77,6 @@ public class RenkanAction extends SuperAction {
 	private Channel channel;
 	private Attribute attribute;
 	private Clienttype clienttype;
-
-	// 注入service
-	private YewuService yewuService;
-	private AdcontractService adcontractService;
-	private RenkanshuService renkanshuService;
-	private BaseService baseService;
-
-	public RenkanshuService getRenkanshuService() {
-		return renkanshuService;
-	}
-
-	public BaseService getBaseService() {
-		return baseService;
-	}
-
-	public void setBaseService(BaseService baseService) {
-		this.baseService = baseService;
-	}
 
 	public Adcontract getAdcontract() {
 		return adcontract;
@@ -148,14 +142,6 @@ public class RenkanAction extends SuperAction {
 		this.adcontractdate = adcontractdate;
 	}
 
-	public AdcontractService getAdcontractService() {
-		return adcontractService;
-	}
-
-	public void setAdcontractService(AdcontractService adcontractService) {
-		this.adcontractService = adcontractService;
-	}
-
 	// 无法接受的数据使用string接收
 	private String kanlizongjia;
 	private Integer renkanshuauditId;
@@ -167,7 +153,7 @@ public class RenkanAction extends SuperAction {
 	private String deleteRenkanshu_Reason;
 	private String deleteRenkanshu_id;
 
-	// 获取数据
+	// 获取表单数组数据
 	private String[] fabuneirongledtable;
 	private String[] shanghuadianweiledtable;
 	private String[] hangyeleixingledtable;
@@ -392,7 +378,8 @@ public class RenkanAction extends SuperAction {
 			adcontract.setChannel(cha);
 
 			adcontract.setcreatetime(new Timestamp(System.currentTimeMillis()));
-			adcontract.setState(TypeCollections.ADCONTRACT_ACTIVE_STATE);;
+			adcontract.setState(TypeCollections.ADCONTRACT_ACTIVE_STATE);
+			;
 			System.out.println(adcontract.toString());
 			List<Order> ordList = new ArrayList<Order>();
 
@@ -414,17 +401,17 @@ public class RenkanAction extends SuperAction {
 				ord.setStartdate(sdf.parse(startdateledtable[i]));
 				ord.setEnddate(sdf.parse(enddateledtable[i]));
 				// 前台time时间格式转换
-				if(starttimeledtable[i].length() == 5){
+				if (starttimeledtable[i].length() == 5) {
 					ord.setStarttime(Time.valueOf(starttimeledtable[i] + ":00"));
-				}else {
+				} else {
 					ord.setStarttime(Time.valueOf(starttimeledtable[i]));
 				}
-				if(endtimeledtable[i].length() == 5){
+				if (endtimeledtable[i].length() == 5) {
 					ord.setEndtime(Time.valueOf(endtimeledtable[i] + ":00"));
-				}else {
+				} else {
 					ord.setEndtime(Time.valueOf(endtimeledtable[i]));
 				}
-				
+
 				ord.setState(TypeCollections.ORDER_STATE_ACTIVE);
 				System.out.println(ord.toString());
 				ordList.add(ord);
@@ -490,11 +477,10 @@ public class RenkanAction extends SuperAction {
 		return null;
 
 	}
-	
-	public String deletethisOrder() throws JSONException, IOException{
+
+	public String deletethisOrder() throws JSONException, IOException {
 		String tip = "";
 		Order ordp = adcontractService.getOrderById(order.getId());
-
 
 		if (adcontractService.deleteOrder(ordp)) {
 			tip = "删除成功！";

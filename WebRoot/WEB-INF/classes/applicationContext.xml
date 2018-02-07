@@ -15,11 +15,7 @@
 	<!-- 注册注解的后台处理类 -->
     <context:annotation-config />
     <!-- 指明使用注解的类的包 -->
-	<context:component-scan base-package="com.nfledmedia.sorm.service"
-		use-default-filters="false" />
-	<context:component-scan base-package="com.nfledmedia.sorm.dao" />
-	<context:component-scan base-package="com.nfledmedia.sorm.test" />
-
+	<context:component-scan base-package="com.nfledmedia.sorm.*" use-default-filters="false" />
 
 	<!-- 导入jdbc配置文件 -->
 	<bean id="propertyConfigurer"
@@ -41,8 +37,7 @@
 	</bean>
 
 	<!-- 采用Spring的配置替换 hibernate.cfg.xml的，基于注解的配置方式 -->
-	<bean id="sessionFactory"
-		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -57,54 +52,13 @@
 				<prop key="hibernate.autoReconnect">true</prop>
 			</props>
 		</property>
-
+		
 		<!-- 映射资源配置 -->
-		<property name="mappingResources">
+		<property name="mappingLocations">
 			<list>
-				<value>
-					com/nfledmedia/sorm/entity/Led.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Role.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Resource.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Message.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Industry.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/RoleResource.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/User.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Clienttype.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Playstrategy.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Publishdetail.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Attribute.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Channel.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Adcontract.hbm.xml
-				</value>
-				<value>
-					com/nfledmedia/sorm/entity/Order.hbm.xml
-				</value>
+				<value>classpath:com/nfledmedia/sorm/entity/*.hbm.xml</value>
 			</list>
-		</property>
+		</property>		
 	</bean>
 
 	<!-- 事务管理 -->
@@ -129,284 +83,70 @@
 	</aop:config>
 
 	<!-- 配置登录操作 -->
-	<bean id="userAction" class="com.nfledmedia.sorm.action.UserAction">
-		<property name="userService">
-			<ref bean="userService" />
-		</property>
-	</bean>
-	<bean id="userService" class="com.nfledmedia.sorm.service.UserService">
-		<property name="userDAO">
-			<ref bean="UserDAO" />
-		</property>
-		<property name="roleDAO">
-			<ref bean="RoleDAO" />
-		</property>
-	</bean>
+	<bean id="userAction" class="com.nfledmedia.sorm.action.UserAction"></bean>
+	
+	<bean id="userService" class="com.nfledmedia.sorm.service.UserService"></bean>
 
 	<!-- 配置页面跳转操作 -->
-	<bean id="directionAction" class="com.nfledmedia.sorm.action.DirectionAction">
-		<property name="roleService">
-			<ref bean="roleService" />
-		</property>
-		<property name="userService">
-			<ref bean="userService" />
-		</property>
-		<property name="resourceService">
-			<ref bean="resourceService" />
-		</property>
-		<property name="baseService">
-			<ref bean="baseService" />
-		</property>
-	</bean>
-
-	<bean id="roleService" class="com.nfledmedia.sorm.service.RoleService">
-		<property name="roleDAO">
-			<ref bean="RoleDAO" />
-		</property>
-	</bean>
-
-	<bean id="resourceService" class="com.nfledmedia.sorm.service.ResourceService">
-		<property name="resourceDAO">
-			<ref bean="ResourceDAO" />
-		</property>
-	</bean>
-	<bean id="ledService" class="com.nfledmedia.sorm.service.LedService">
-		<property name="ledDAO">
-			<ref bean="LedDAO" />
-		</property>
-	</bean>
-	<bean id="baseService" class="com.nfledmedia.sorm.service.BaseService">
-<!-- 		<property name="ledDAO">
-			<ref bean="LedDAO" />
-		</property>
-		<property name="attributeDAO">
-			<ref bean="AttributeDAO" />
-		</property>
-		<property name="clienttypeDAO">
-			<ref bean="ClienttypeDAO" />
-		</property>
-		<property name="industryDAO">
-			<ref bean="IndustryDAO" />
-		</property>
-		<property name="channelDAO">
-			<ref bean="ChannelDAO" />
-		</property>
-		<property name="publishdetailDAO">
-			<ref bean="PublishdetailDAO" />
-		</property>
-		<property name="playstrategyDAO">
-			<ref bean="PlaystrategyDAO" />
-		</property> -->
-	</bean>
+	<bean id="directionAction" class="com.nfledmedia.sorm.action.DirectionAction"></bean>
+	
+	<bean id="roleService" class="com.nfledmedia.sorm.service.RoleService"></bean>
+	<bean id="resourceService" class="com.nfledmedia.sorm.service.ResourceService"></bean>
+	<bean id="ledService" class="com.nfledmedia.sorm.service.LedService"></bean>
+  	<bean id="baseService" class="com.nfledmedia.sorm.service.BaseService"></bean>
 
 	<!-- 配置单据保存 -->
-	<bean id="renkanAction" class="com.nfledmedia.sorm.action.RenkanAction">
-		<property name="adcontractService">
-			<ref bean="adcontractService" />
-		</property>
-	</bean>
+	<bean id="renkanAction" class="com.nfledmedia.sorm.action.RenkanAction"></bean>
 
-	<bean id="adcontractService" class="com.nfledmedia.sorm.service.AdcontractService">
-		<property name="ledDAO">
-			<ref bean="LedDAO" />
-		</property>
-		<property name="industryDAO">
-			<ref bean="IndustryDAO" />
-		</property>
-		<property name="attributeDAO">
-			<ref bean="AttributeDAO" />
-		</property>
-		<property name="adcontractDAO">
-			<ref bean="AdcontractDAO" />
-		</property>
-		<property name="userDAO">
-			<ref bean="UserDAO" />
-		</property>
-		<property name="clienttypeDAO">
-			<ref bean="ClienttypeDAO" />
-		</property>
-		<property name="orderDAO">
-			<ref bean="OrderDAO" />
-		</property>
-		<property name="publishdetailDAO">
-			<ref bean="PublishdetailDAO" />
-		</property>
-	</bean>
+	<bean id="adcontractService" class="com.nfledmedia.sorm.service.AdcontractService"></bean>
 
 
 	<!-- 配置业务逻辑 -->
-	<bean id="yewuAction" class="com.nfledmedia.sorm.action.YewuAction">
-		<property name="yewuService">
-			<ref bean="yewuService" />
-		</property>
-		<property name="renkanshuService">
-			<ref bean="renkanshuService" />
-		</property>
-		<property name="baseService">
-			<ref bean="baseService" />
-		</property>
-		<property name="adcontractService">
-			<ref bean="adcontractService" />
-		</property>
-	</bean>
-	<bean id="yewuService" class="com.nfledmedia.sorm.service.YewuService">
-
-		<property name="ledDAO">
-			<ref bean="LedDAO" />
-		</property>
-		<property name="industryDAO">
-			<ref bean="IndustryDAO" />
-		</property>
-		<property name="userDAO">
-			<ref bean="UserDAO" />
-		</property>
-		<property name="publishdetailDAO">
-			<ref bean="PublishdetailDAO" />
-		</property>
-	</bean>
-	<bean id="renkanshuService" class="com.nfledmedia.sorm.service.RenkanshuService">
-		<property name="industryDAO">
-			<ref bean="IndustryDAO" />
-		</property>
-		<property name="orderDAO">
-			<ref bean="OrderDAO" />
-		</property>
-		<property name="publishdetailDAO">
-			<ref bean="PublishdetailDAO" />
-		</property>
-	</bean>
-
-
-	<bean id="UserDAO" class="com.nfledmedia.sorm.dao.UserDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="LedDAO" class="com.nfledmedia.sorm.dao.LedDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="RoleDAO" class="com.nfledmedia.sorm.dao.RoleDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="ResourceDAO" class="com.nfledmedia.sorm.dao.ResourceDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="IndustryDAO" class="com.nfledmedia.sorm.dao.IndustryDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="ClienttypeDAO" class="com.nfledmedia.sorm.dao.ClienttypeDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="OrderDAO" class="com.nfledmedia.sorm.dao.OrderDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="ChannelDAO" class="com.nfledmedia.sorm.dao.ChannelDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="AdcontractDAO" class="com.nfledmedia.sorm.dao.AdcontractDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="AttributeDAO" class="com.nfledmedia.sorm.dao.AttributeDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="RoleResourceDAO" class="com.nfledmedia.sorm.dao.RoleResourceDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="PublishdetailDAO" class="com.nfledmedia.sorm.dao.PublishdetailDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
-	<bean id="PlaystrategyDAO" class="com.nfledmedia.sorm.dao.PlaystrategyDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
-	</bean>
+	<bean id="yewuAction" class="com.nfledmedia.sorm.action.YewuAction"></bean>
 	
-	
+	<bean id="yewuService" class="com.nfledmedia.sorm.service.YewuService"></bean>
+	<bean id="renkanshuService" class="com.nfledmedia.sorm.service.RenkanshuService"></bean>
+
 	<bean id="userDAO" class="com.nfledmedia.sorm.dao.UserDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="ledDAO" class="com.nfledmedia.sorm.dao.LedDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="roleDAO" class="com.nfledmedia.sorm.dao.RoleDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="resourceDAO" class="com.nfledmedia.sorm.dao.ResourceDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="industryDAO" class="com.nfledmedia.sorm.dao.IndustryDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="clienttypeDAO" class="com.nfledmedia.sorm.dao.ClienttypeDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="orderDAO" class="com.nfledmedia.sorm.dao.OrderDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="channelDAO" class="com.nfledmedia.sorm.dao.ChannelDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="adcontractDAO" class="com.nfledmedia.sorm.dao.AdcontractDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="attributeDAO" class="com.nfledmedia.sorm.dao.AttributeDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="roleResourceDAO" class="com.nfledmedia.sorm.dao.RoleResourceDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="publishdetailDAO" class="com.nfledmedia.sorm.dao.PublishdetailDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<bean id="playstrategyDAO" class="com.nfledmedia.sorm.dao.PlaystrategyDAO">
-		<property name="sessionFactory">
-			<ref bean="sessionFactory" />
-		</property>
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="messageDAO" class="com.nfledmedia.sorm.dao.MessageDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 </beans>

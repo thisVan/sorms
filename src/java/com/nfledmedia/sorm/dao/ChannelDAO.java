@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Channel;
 
@@ -21,6 +22,7 @@ import com.nfledmedia.sorm.entity.Channel;
  * @see com.nfledmedia.sorm.entity.Channel
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class ChannelDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(ChannelDAO.class);
 	// property constants
@@ -146,6 +148,6 @@ public class ChannelDAO extends HibernateDaoSupport {
 	}
 
 	public static ChannelDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (ChannelDAO) ctx.getBean("ChannelDAO");
+		return (ChannelDAO) ctx.getBean("channelDAO");
 	}
 }

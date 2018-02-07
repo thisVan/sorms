@@ -1,8 +1,7 @@
 package com.nfledmedia.sorm.action;
 
-import java.util.List;
-
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.BaseService;
@@ -14,70 +13,25 @@ import com.nfledmedia.sorm.service.YewuService;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ModelDriven;
 
-@SuppressWarnings("serial")
-@Service("directionAction")
-public class DirectionAction extends SuperAction implements
-		ModelDriven<User> {
-	/**
-	 * @author rthtr
-	 */
+@Controller
+public class DirectionAction extends SuperAction implements ModelDriven<User> {
+
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private RoleService roleService;
+	@Autowired
 	private YewuService yewuService;
+	@Autowired
 	private LedService ledService;
+	@Autowired
 	private BaseService baseService;
+	@Autowired
 	private UserService userService;
-	
-	
-	private Integer ywyId;
-
-	public LedService getLedService() {
-		return ledService;
-	}
-
-	public void setLedService(LedService ledService) {
-		this.ledService = ledService;
-	}
-
-	public BaseService getBaseService() {
-		return baseService;
-	}
-
-	public void setBaseService(BaseService baseService) {
-		this.baseService = baseService;
-	}
-
-	public RoleService getRoleService() {
-		return roleService;
-	}
-
-	public YewuService getYewuService() {
-		return yewuService;
-	}
-	
-
-	
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
-
+	@Autowired
 	private ResourceService resourceService;
-	
 
-	public ResourceService getResourceService() {
-		return resourceService;
-	}
-
-	public void setResourceService(ResourceService resourceService) {
-		this.resourceService = resourceService;
-	}
-
-	public void setRoleService(RoleService roleService) {
-		this.roleService = roleService;
-	}
+	private Integer ywyId;
 
 	public Integer getYwyId() {
 		return ywyId;
@@ -87,10 +41,6 @@ public class DirectionAction extends SuperAction implements
 		this.ywyId = ywyId;
 	}
 
-	public void setYewuService(YewuService yewuService) {
-		this.yewuService = yewuService;
-	}	
-	
 	public String pingmustatistic() throws Exception {
 		return SUCCESS;
 	}
@@ -116,7 +66,7 @@ public class DirectionAction extends SuperAction implements
 		System.out.println(baseService.industryList().size());
 		return SUCCESS;
 	}
-	
+
 	public String screenOccupancyRate() throws Exception {
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("ledList", baseService.ledList());
@@ -125,11 +75,11 @@ public class DirectionAction extends SuperAction implements
 
 	public String renkanshuManage() throws Exception {
 		ActionContext ctx = ActionContext.getContext();
-		//ctx.put("clients", baseService.clientsList());
+		// ctx.put("clients", baseService.clientsList());
 		ctx.put("ledList", baseService.ledList());
 		return SUCCESS;
 	}
-	
+
 	public String avgScreenOccupancyRate() throws Exception {
 		return SUCCESS;
 	}
@@ -170,7 +120,6 @@ public class DirectionAction extends SuperAction implements
 		return SUCCESS;
 	}
 
-
 	public String hangyestatistic() throws Exception {
 		return SUCCESS;
 	}
@@ -186,8 +135,7 @@ public class DirectionAction extends SuperAction implements
 	public String renkanshuListAuditPage() throws Exception {
 		return SUCCESS;
 	}
-	
-	
+
 	public String contractAuditListPage() throws Exception {
 
 		return SUCCESS;
@@ -196,7 +144,7 @@ public class DirectionAction extends SuperAction implements
 	public String myAuditContractListPage() {
 		return SUCCESS;
 	}
-	
+
 	public String accountReceivedStatisticsPage() {
 		return SUCCESS;
 	}
@@ -204,16 +152,15 @@ public class DirectionAction extends SuperAction implements
 	public String amountDigestedStatisticsPage() {
 		return SUCCESS;
 	}
-	
+
 	public String avgOccupancyRateByScreen() {
 		return SUCCESS;
 	}
-
 
 	@Override
 	public User getModel() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }

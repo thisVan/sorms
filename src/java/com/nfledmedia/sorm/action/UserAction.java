@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +29,11 @@ import com.opensymphony.xwork2.ModelDriven;
  * 
  * @version jdk1.7 Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-@Controller("userAction")
+@Controller
 public class UserAction extends SuperAction implements ModelDriven<User> {
 
-	/**
-	 * serialVersionUID:TODO
-	 * 
-	 * @since JDK 1.6
-	 */
-
 	private static final long serialVersionUID = 1L;
+	
 	private String returnURL;
 	private User user;
 	private String oldPassword;
@@ -68,10 +64,9 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	// 注入userservice
-	@javax.annotation.Resource
+	@Autowired
 	private UserService userService;
-
-	@javax.annotation.Resource
+	@Autowired
 	private YewuService yewuService;
 
 	private void sentMsg(String content) throws IOException {
@@ -87,7 +82,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	public String login() {
 		System.out.println("loginAuto:" + usernameAuto);
 		ActionContext ctx = ActionContext.getContext();
-		if (usernameAuto != null && !usernameAuto.equals("")) {
+		if (usernameAuto != null && !"".equals(usernameAuto)) {
 			User userAuto = new User();
 			user.setPassword(MD5Util.encrypt32(user.getPassword()));
 			userAuto.setUsername(usernameAuto);
@@ -105,6 +100,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 				System.out.println("~~~~~~~~~~UserAction(returnURL):" + returnURL);
 				return "login_success";
 			} else {
+				request.setAttribute("message", "用户名或密码错误，请重新登录！");
 				return "login_failure";
 			}
 		} else {

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Clienttype;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.Clienttype;
  * @see com.nfledmedia.sorm.entity.Clienttype
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class ClienttypeDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(ClienttypeDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(ClienttypeDAO.class);
 	// property constants
 	public static final String CTYPEDESC = "ctypedesc";
 
@@ -56,8 +57,7 @@ public class ClienttypeDAO extends HibernateDaoSupport {
 	public Clienttype findById(java.lang.Short id) {
 		log.debug("getting Clienttype instance with id: " + id);
 		try {
-			Clienttype instance = (Clienttype) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Clienttype", id);
+			Clienttype instance = (Clienttype) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Clienttype", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -69,8 +69,7 @@ public class ClienttypeDAO extends HibernateDaoSupport {
 		log.debug("finding Clienttype instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -79,11 +78,9 @@ public class ClienttypeDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Clienttype instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Clienttype instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Clienttype as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Clienttype as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -109,8 +106,7 @@ public class ClienttypeDAO extends HibernateDaoSupport {
 	public Clienttype merge(Clienttype detachedInstance) {
 		log.debug("merging Clienttype instance");
 		try {
-			Clienttype result = (Clienttype) getHibernateTemplate().merge(
-					detachedInstance);
+			Clienttype result = (Clienttype) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -142,6 +138,6 @@ public class ClienttypeDAO extends HibernateDaoSupport {
 	}
 
 	public static ClienttypeDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (ClienttypeDAO) ctx.getBean("ClienttypeDAO");
+		return (ClienttypeDAO) ctx.getBean("clienttypeDAO");
 	}
 }

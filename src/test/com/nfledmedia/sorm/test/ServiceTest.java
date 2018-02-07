@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.entity.Led;
+import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
 
@@ -31,6 +33,9 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 
 	@Resource
 	LedDAO ledDAO;
+	
+	@Autowired
+	BaseService baseService;
 
 	@Test
 	public void calAvgScreenOccuRate4AllScreenTest() {
@@ -64,6 +69,12 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 		for (Object object : lst) {
 			System.out.println(object);
 		}
+	}
+	
+	@Test
+	public void baseServiceTest(){
+		System.out.println(baseService.clientsList());
+		System.out.println(baseService.ledList());
 	}
 
 	public void printMap(Map<String, Object> map) {

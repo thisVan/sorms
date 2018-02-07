@@ -5,31 +5,23 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.dao.ResourceDAO;
 
-@Entity
 @Transactional
-@Service("resourceService")
+@Service
 public class ResourceService {
 	/**
 	 * @author rthtr
 	 */
-	@ManyToOne
+	@Autowired
 	private ResourceDAO resourceDAO;
 
 	public List getAllResource() {
 		return resourceDAO.findAll();
-	}
-
-	public ResourceDAO getResourceDAO() {
-		return resourceDAO;
-	}
-
-	public void setResourceDAO(ResourceDAO resourceDAO) {
-		this.resourceDAO = resourceDAO;
 	}
 
 }

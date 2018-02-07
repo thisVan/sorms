@@ -143,6 +143,6 @@ public class PlaystrategyDAO extends HibernateDaoSupport {
 	}
 
 	public static PlaystrategyDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (PlaystrategyDAO) ctx.getBean("PlaystrategyDAO");
+		return (PlaystrategyDAO) ctx.getBean("playstrategyDAO");
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +21,10 @@ import com.nfledmedia.sorm.entity.Led;
  * 
  * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-@Entity
 @Transactional
-@Service("ledService")
+@Service
 public class LedService {
-	@ManyToOne
+	@Autowired
 	private LedDAO ledDAO;
 
 /*	public Page getPingmuguanliList(String sidx, String sord, int pageNo,
@@ -115,12 +115,5 @@ public class LedService {
 		
 	}
 
-	public LedDAO getLedDAO() {
-		return ledDAO;
-	}
-
-	public void setLedDAO(LedDAO ledDAO) {
-		this.ledDAO = ledDAO;
-	}
 
 }

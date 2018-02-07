@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.User;
 
@@ -21,6 +22,7 @@ import com.nfledmedia.sorm.entity.User;
  * @see com.nfledmedia.sorm.entity.User
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class UserDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(UserDAO.class);
 	// property constants
@@ -58,8 +60,7 @@ public class UserDAO extends HibernateDaoSupport {
 	public User findById(java.lang.Integer id) {
 		log.debug("getting User instance with id: " + id);
 		try {
-			User instance = (User) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.User", id);
+			User instance = (User) getHibernateTemplate().get("com.nfledmedia.sorm.entity.User", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -71,8 +72,7 @@ public class UserDAO extends HibernateDaoSupport {
 		log.debug("finding User instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -81,11 +81,9 @@ public class UserDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding User instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding User instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from User as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from User as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -155,6 +153,6 @@ public class UserDAO extends HibernateDaoSupport {
 	}
 
 	public static UserDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (UserDAO) ctx.getBean("UserDAO");
+		return (UserDAO) ctx.getBean("userDAO");
 	}
 }

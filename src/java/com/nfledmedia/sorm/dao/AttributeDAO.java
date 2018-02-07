@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.entity.Attribute;
 
@@ -21,9 +22,9 @@ import com.nfledmedia.sorm.entity.Attribute;
  * @see com.nfledmedia.sorm.entity.Attribute
  * @author MyEclipse Persistence Tools
  */
+@Repository
 public class AttributeDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory
-			.getLogger(AttributeDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(AttributeDAO.class);
 	// property constants
 	public static final String ARRTIBUTENAME = "arrtibutename";
 	public static final String ATTRIBUTEDESC = "attributedesc";
@@ -57,8 +58,7 @@ public class AttributeDAO extends HibernateDaoSupport {
 	public Attribute findById(java.lang.Short id) {
 		log.debug("getting Attribute instance with id: " + id);
 		try {
-			Attribute instance = (Attribute) getHibernateTemplate().get(
-					"com.nfledmedia.sorm.entity.Attribute", id);
+			Attribute instance = (Attribute) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Attribute", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -70,8 +70,7 @@ public class AttributeDAO extends HibernateDaoSupport {
 		log.debug("finding Attribute instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
-			log.debug("find by example successful, result size: "
-					+ results.size());
+			log.debug("find by example successful, result size: " + results.size());
 			return results;
 		} catch (RuntimeException re) {
 			log.error("find by example failed", re);
@@ -80,11 +79,9 @@ public class AttributeDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Attribute instance with property: " + propertyName
-				+ ", value: " + value);
+		log.debug("finding Attribute instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Attribute as model where model."
-					+ propertyName + "= ?";
+			String queryString = "from Attribute as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -114,8 +111,7 @@ public class AttributeDAO extends HibernateDaoSupport {
 	public Attribute merge(Attribute detachedInstance) {
 		log.debug("merging Attribute instance");
 		try {
-			Attribute result = (Attribute) getHibernateTemplate().merge(
-					detachedInstance);
+			Attribute result = (Attribute) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -147,6 +143,6 @@ public class AttributeDAO extends HibernateDaoSupport {
 	}
 
 	public static AttributeDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (AttributeDAO) ctx.getBean("AttributeDAO");
+		return (AttributeDAO) ctx.getBean("attributeDAO");
 	}
 }

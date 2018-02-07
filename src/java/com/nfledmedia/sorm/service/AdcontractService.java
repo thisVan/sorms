@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.dao.AdcontractDAO;
@@ -37,20 +39,28 @@ import com.nfledmedia.sorm.entity.User;
  * 
  */
 @Transactional
+@Service
 public class AdcontractService {
-
 	// 注入DAO
+	@Autowired
 	private UserDAO userDAO;
+	@Autowired
 	private LedDAO ledDAO;
+	@Autowired
 	private AdcontractDAO adcontractDAO;
+	@Autowired
 	private IndustryDAO industryDAO;
+	@Autowired
 	private AttributeDAO attributeDAO;
+	@Autowired
 	private ClienttypeDAO clienttypeDAO;
+	@Autowired
 	private OrderDAO orderDAO;
+	@Autowired
 	private PublishdetailDAO publishdetailDAO;
 
 	public boolean saveAdcontract(Adcontract adc, List<Order> orderList) {
-
+		
 		Adcontract adcPojo = adcontractDAO.merge(adc);
 		for (Order order : orderList) {
 			order.setAdcontract(adcPojo);
@@ -60,11 +70,8 @@ public class AdcontractService {
 				System.out.println(lst.get(i));
 				publishdetailDAO.save((Publishdetail) lst.get(i));
 			}
-
 		}
-
 		return true;
-
 	}
 
 	/**
@@ -88,11 +95,8 @@ public class AdcontractService {
 				System.out.println(lst.get(i));
 				publishdetailDAO.save((Publishdetail) lst.get(i));
 			}
-
 		}
-
 		return true;
-
 	}
 
 	/**
@@ -115,12 +119,9 @@ public class AdcontractService {
 	 * @return
 	 */
 	public boolean deleteOrder(Order order) {
-
 		deletePublishdetail(order.getId());
 		orderDAO.delete(order);
-
 		return true;
-
 	}
 
 	public List<Publishdetail> packagePublishList(Adcontract adc, Order ord) {
@@ -162,77 +163,11 @@ public class AdcontractService {
 			if (null != adc.getAgency() && !"".equals(adc.getAgency())) {
 				return adc.getAgency();
 			}
-
 			return adc.getClient();
 		}
-
 		return null;
-
 	}
 
-	public UserDAO getUserDAO() {
-		return userDAO;
-	}
-
-	public void setUserDAO(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public LedDAO getLedDAO() {
-		return ledDAO;
-	}
-
-	public void setLedDAO(LedDAO ledDAO) {
-		this.ledDAO = ledDAO;
-	}
-
-	public AdcontractDAO getAdcontractDAO() {
-		return adcontractDAO;
-	}
-
-	public void setAdcontractDAO(AdcontractDAO adcontractDAO) {
-		this.adcontractDAO = adcontractDAO;
-	}
-
-	public IndustryDAO getIndustryDAO() {
-		return industryDAO;
-	}
-
-	public void setIndustryDAO(IndustryDAO industryDAO) {
-		this.industryDAO = industryDAO;
-	}
-
-	public AttributeDAO getAttributeDAO() {
-		return attributeDAO;
-	}
-
-	public void setAttributeDAO(AttributeDAO attributeDAO) {
-		this.attributeDAO = attributeDAO;
-	}
-
-	public ClienttypeDAO getClienttypeDAO() {
-		return clienttypeDAO;
-	}
-
-	public void setClienttypeDAO(ClienttypeDAO clienttypeDAO) {
-		this.clienttypeDAO = clienttypeDAO;
-	}
-
-	public OrderDAO getOrderDAO() {
-		return orderDAO;
-	}
-
-	public void setOrderDAO(OrderDAO orderDAO) {
-		this.orderDAO = orderDAO;
-	}
-
-	public PublishdetailDAO getPublishdetailDAO() {
-		return publishdetailDAO;
-	}
-
-	public void setPublishdetailDAO(PublishdetailDAO publishdetailDAO) {
-		this.publishdetailDAO = publishdetailDAO;
-	}
 
 	public Adcontract getAdcontractById(Integer contractid) {
 		// TODO Auto-generated method stub
