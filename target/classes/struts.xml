@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<constant name="struts.devMode" value="true"></constant>
+	<!-- 全局国际化配置 -->
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+	<constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.custom.i18n.resources" value="contentMessage.globalMessage" />
+	<constant name="struts.action.extension" value="action,ajax,," />
+	<constant name="struts.serve.static.browserCache" value="false" />
+	<include file="struts-login.xml" />
+	<include file="struts-direction.xml" />
+	<include file="struts-dataManage.xml" />
+	<include file="struts-message.xml" />
+	<include file="struts-yewu.xml" />
+	<include file="struts-led.xml" />
+
+	<!-- 将struts交给spring管理 -->
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="default" extends="struts-default" namespace="/">
+
+		<interceptors>
+			<interceptor name="accessPrepossess" class="com.nfledmedia.sorm.interceptor.AccessPrepossessInterceptor"></interceptor>
+			<interceptor-stack name="myDefault">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="accessPrepossess" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="myDefault" />
+		<default-action-ref name="404Action"></default-action-ref>
+		<global-results>
+			<result name="login">login.jsp</result>
+			<result name="404" type="httpheader">
+				<param name="error">404</param>
+				<param name="errorMessage">Not Found</param>
+			</result>
+			<result name="500" type="httpheader">
+				<param name="error">500</param>
+				<param name="errorMessage">Internal server error</param>
+			</result>
+			<result name="notLogin">/login.jsp</result>
+			<result name="redirectLogin">/WEB-INF/content/redirectLogin.jsp</result>
+			<result name="noAccess">noAccess.jsp</result>
+			<result name="auctionException">/WEB-INF/content/auctionException.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping result="auctionException" exception="com.nfledmedia.sorm.exception.AuctionException" />
+			<!-- <exception-mapping result="500" exception="java.lang.Exception"/> -->
+		</global-exception-mappings>
+		<action name="404Action" class="com.nfledmedia.sorm.action.PageNotFoundAction">
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+	</package>
+
+
+</struts>    

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
-    <wb-module deploy-name="sorm">
+    <wb-module deploy-name="sorm-0.0.1-SNAPSHOT">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/java"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test"/>
-        <wb-resource deploy-path="/" source-path="/WebRoot"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-jee/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/WebRoot" tag="defaultRootSource"/>
         <property name="context-root" value="sorm"/>
         <property name="java-output-path" value="/sorm/WebRoot/WEB-INF/classes"/>
     </wb-module>

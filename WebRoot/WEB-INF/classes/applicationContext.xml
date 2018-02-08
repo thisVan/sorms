@@ -13,9 +13,10 @@
 	http://www.springframework.org/schema/tx/spring-tx.xsd">
 
 	<!-- 注册注解的后台处理类 -->
-    <context:annotation-config />
-    <!-- 指明使用注解的类的包 -->
-	<context:component-scan base-package="com.nfledmedia.sorm.*" use-default-filters="false" />
+	<context:annotation-config />
+	<!-- 指明使用注解的类的包 -->
+	<context:component-scan base-package="com.nfledmedia.sorm.*"
+		use-default-filters="false" />
 
 	<!-- 导入jdbc配置文件 -->
 	<bean id="propertyConfigurer"
@@ -37,7 +38,8 @@
 	</bean>
 
 	<!-- 采用Spring的配置替换 hibernate.cfg.xml的，基于注解的配置方式 -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -52,13 +54,13 @@
 				<prop key="hibernate.autoReconnect">true</prop>
 			</props>
 		</property>
-		
+
 		<!-- 映射资源配置 -->
 		<property name="mappingLocations">
 			<list>
 				<value>classpath:com/nfledmedia/sorm/entity/*.hbm.xml</value>
 			</list>
-		</property>		
+		</property>
 	</bean>
 
 	<!-- 事务管理 -->
@@ -84,16 +86,16 @@
 
 	<!-- 配置登录操作 -->
 	<bean id="userAction" class="com.nfledmedia.sorm.action.UserAction"></bean>
-	
+
 	<bean id="userService" class="com.nfledmedia.sorm.service.UserService"></bean>
 
 	<!-- 配置页面跳转操作 -->
 	<bean id="directionAction" class="com.nfledmedia.sorm.action.DirectionAction"></bean>
-	
+
 	<bean id="roleService" class="com.nfledmedia.sorm.service.RoleService"></bean>
 	<bean id="resourceService" class="com.nfledmedia.sorm.service.ResourceService"></bean>
 	<bean id="ledService" class="com.nfledmedia.sorm.service.LedService"></bean>
-  	<bean id="baseService" class="com.nfledmedia.sorm.service.BaseService"></bean>
+	<bean id="baseService" class="com.nfledmedia.sorm.service.BaseService"></bean>
 
 	<!-- 配置单据保存 -->
 	<bean id="renkanAction" class="com.nfledmedia.sorm.action.RenkanAction"></bean>
@@ -103,7 +105,7 @@
 
 	<!-- 配置业务逻辑 -->
 	<bean id="yewuAction" class="com.nfledmedia.sorm.action.YewuAction"></bean>
-	
+
 	<bean id="yewuService" class="com.nfledmedia.sorm.service.YewuService"></bean>
 	<bean id="renkanshuService" class="com.nfledmedia.sorm.service.RenkanshuService"></bean>
 
