@@ -273,4 +273,17 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd + "'";
 		return find(hql);
 	}
+	
+	/**
+	 * 根据日期范围和所选led导出publishdetail
+	 * @param dateStart
+	 * @param dateEnd
+	 * @param ledname
+	 * @return
+	 */
+	public List<Publishdetail> getPublishdetailFromDaterangeAndLedname(String dateStart, String dateEnd, String ledname) {
+		// TODO Auto-generated method stub
+		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd + "' and p.ledname ='" + ledname + "'";
+		return find(hql);
+	}
 }

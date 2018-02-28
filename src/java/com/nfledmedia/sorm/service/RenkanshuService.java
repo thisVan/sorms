@@ -80,6 +80,18 @@ public class RenkanshuService {
 	}
 	
 	/**
+	 * 根据选择时间和led导出广告内容表
+	 * @param startdate
+	 * @param enddate
+	 * @param ledname
+	 * @return
+	 */
+	public List<Publishdetail> publishInTimerangeListAndLedname(String startdate, String enddate, String ledname) {
+		return publishdetailDAO.getPublishdetailFromDaterangeAndLedname(startdate, enddate, ledname);
+		
+	}
+	
+	/**
 	 * 查询给定日期的orderlist
 	 * @param checkDate
 	 * @param ledId

@@ -179,4 +179,13 @@ public class Publishdetail implements java.io.Serializable {
 		this.endtime = endtime;
 	}
 
+	@Override
+	public String toString() {
+		return "Publishdetail [id=" + id + ", orderid=" + orderid + ", client=" + client + ", adcontent=" + adcontent + ", ledname="
+				+ ledname + ", indname=" + indname + ", ctypename=" + ctypename + ", attributename=" + attributename + ", frequency="
+				+ frequency + ", addfreq=" + addfreq + ", duration=" + duration + ", date=" + date + ", starttime=" + starttime
+				+ ", endtime=" + endtime + "]";
+	}
+
+	
 }

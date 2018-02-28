@@ -552,9 +552,10 @@
 		});
 		
 		$("#exportContentStatisticExcel").click(function(){
+			var led = $.trim($("#ledlist").val());
         	//判断时间和屏幕是否选择
         	if("" != startTime && "" != endTime){
-				var url = "adcontentStatisticExport.action?startTime="+startTime+"&endTime="+endTime;
+				var url = "adcontentStatisticExport.action?startTime="+startTime+"&endTime="+endTime+"&ledId="+led;
 				//console.log(url);
 				$("#jqgrid").jqGrid('excelExport',{url:url});
         	}else {

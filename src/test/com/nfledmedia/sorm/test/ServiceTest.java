@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.entity.Led;
+import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
@@ -34,7 +35,7 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 	@Resource
 	LedDAO ledDAO;
 	
-	@Autowired
+	@Resource
 	BaseService baseService;
 
 	@Test
@@ -75,6 +76,14 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 	public void baseServiceTest(){
 		System.out.println(baseService.clientsList());
 		System.out.println(baseService.ledList());
+	}
+	
+	@Test
+	public void renkanshuServiceTest(){
+		List<Publishdetail> list = renkanshuService.publishInTimerangeListAndLedname("2018-02-01", "2018-02-28", "外经贸大厦");
+		for (Publishdetail publishdetail : list) {
+			System.out.println(publishdetail.toString());
+		}
 	}
 
 	public void printMap(Map<String, Object> map) {

@@ -1,5 +1,6 @@
 package com.nfledmedia.sorm.action;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -7,6 +8,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,8 +45,11 @@ import com.nfledmedia.sorm.util.PageToJson;
 import com.nfledmedia.sorm.util.TypeNullProcess;
 import com.opensymphony.xwork2.ActionContext;
 
+import jxl.Cell;
+import jxl.CellView;
 import jxl.Workbook;
 import jxl.format.Alignment;
+import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.Label;
 import jxl.write.WritableCellFormat;
@@ -310,7 +315,7 @@ public class YewuAction extends SuperAction {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public String publishResourceExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		DateFormat mdf = new SimpleDateFormat("MM-dd");
+		DateFormat mdf = new SimpleDateFormat("M月d日");
 		// DecimalFormat df = new DecimalFormat("#.##%");
 		DecimalFormat df = new DecimalFormat("#.#%");
 		List<Object[]> queryResult = renkanshuService.publishResourceList(startTime, endTime, ledId);
@@ -336,18 +341,14 @@ public class YewuAction extends SuperAction {
 				arrList.add(os[9]);
 				pubDateMap.put((String) os[3], arrList);
 			}
-
 		}
 
 		System.out.println(startTime + "--" + endTime + "  " + ledId);
 
-		List resultList = new ArrayList();
-		List title = new ArrayList<String>();
-		String[] arr = { "序号", "屏幕", "客户", "发布内容", "下单属性", "客户属性", "频次", "增加频次", "时长", "时间" };
-		for (int k = 0; k < arr.length; k++) {
-			title.add(arr[k]);
-		}
-
+		List resultList = new ArrayList();		
+		String[] arr = { "序号", "屏幕", "客户", "发布内容", "下单属性", "客户属性", "频次", "增加频次", "时长", "日期" };
+		ArrayList<String> title = new ArrayList<String>(Arrays.asList(arr));
+		
 		// 遍历所有日期
 		for (int i = 0; i < distinctQueryResult.size(); i++) {
 			Date dateInx = sdf.parse(startTime);
@@ -534,7 +535,6 @@ public class YewuAction extends SuperAction {
 				theLst.set(0, sequence);
 				sequence++;
 			}
-
 		}
 
 		// exportExcel方法只接受object[]此处将list转为object[]
@@ -561,7 +561,7 @@ public class YewuAction extends SuperAction {
 		String codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
 		// ExcelUtil.exportExcel(codedFileName, titles, list);
 
-		// \\以下为绘制表格//\\
+		// \\----------------以下为绘制表格----------------//\\
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("aplication/vnd.ms-excel");
 		response.addHeader("Content-Disposition", "inline; filename=" + codedFileName + ".xls");
@@ -569,11 +569,7 @@ public class YewuAction extends SuperAction {
 		// System.out.println("-----fileName-------"+fileName);
 		try {
 			// 创建Excel工作薄
-
 			WritableWorkbook wwb = Workbook.createWorkbook(response.getOutputStream());
-
-			// WritableWorkbook wwb = Workbook.createWorkbook(new
-			// File(fileName+".xls"));
 
 			// 添加第一个工作表并设置第一个Sheet的名字 ,所以只是sheet的名字，文件名仍为日期
 			WritableSheet sheet = wwb.createSheet(fileName, 0);
@@ -585,31 +581,42 @@ public class YewuAction extends SuperAction {
 			sheet.setColumnView(3, 10);
 			sheet.setColumnView(6, 10);
 
-			// 单元格样式
-			WritableFont writableFont = new WritableFont(WritableFont.createFont("微软雅黑"), 10, WritableFont.BOLD);
-			WritableCellFormat wcf_titles = new WritableCellFormat(writableFont);
-			wcf_titles.setBackground(jxl.format.Colour.YELLOW);
-			wcf_titles.setVerticalAlignment(VerticalAlignment.CENTRE);
+			// 表头单元格样式
+			WritableFont writableFont = new WritableFont(WritableFont.createFont("宋体"), 12, WritableFont.BOLD);
+			WritableCellFormat wcf_header = new WritableCellFormat(writableFont);
+			//wcf_header.setBackground(jxl.format.Colour.YELLOW);
+			wcf_header.setVerticalAlignment(VerticalAlignment.CENTRE);
 
 			// 添加表头标题
 			if (sheetTitles != null) {
 				for (int i = 0; i < sheetTitles.length; i++) {
-					label = new Label(i, 0, sheetTitles[i], wcf_titles);
+					label = new Label(i, 0, sheetTitles[i], wcf_header);
 					sheet.addCell(label);
 				}
 			}
+			
+			//标题单元格样式
+			WritableFont wf_tittle = new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD);
+			WritableCellFormat wcf_tittle = new WritableCellFormat(wf_tittle);
+			wcf_tittle.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_tittle.setAlignment(Alignment.CENTRE);
+			wcf_tittle.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
 
-			WritableCellFormat wcfTtitles = new WritableCellFormat();
-			wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
-			wcfTtitles.setAlignment(Alignment.CENTRE);
 			// 添加标题
 			if (titles != null) {
 				for (int i = 0; i < titles.length; i++) {
-					label = new Label(i, 1, titles[i], wcfTtitles);
+					label = new Label(i, 1, titles[i], wcf_tittle);
 					sheet.addCell(label);
 				}
 			}
 
+			//内容单元格样式
+			WritableFont wf_content = new WritableFont(WritableFont.createFont("宋体"), 10);
+			WritableCellFormat wcf_content = new WritableCellFormat(wf_content);
+			wcf_content.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_content.setAlignment(Alignment.CENTRE);
+			wcf_content.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			
 			// 下面是填充数据
 			if (list != null && list.size() > 0) {
 				for (int i = 0, size = list.size(); i < size; i++) {
@@ -619,18 +626,33 @@ public class YewuAction extends SuperAction {
 						if (row[j] != null)
 							value = row[j].toString();
 						if (value != null && !value.equals("")) {
-							label = new Label(j, i + 2, value, wcfTtitles);
+							label = new Label(j, i + 2, value, wcf_content);
 						} else {
-							label = new Label(j, i + 2, "", wcfTtitles);
+							label = new Label(j, i + 2, "", wcf_content);
 						}
 						sheet.addCell(label);
 					}
 				}
 			}
+			
+			CellView autoColumnWidthCellView = new CellView();
+			autoColumnWidthCellView.setAutosize(true);
+			
+			//setAutosize含有中文字符无效，改为指定宽度
+			Cell[] client_cells = sheet.getColumn(2);
+			int clientcells_width = 10;
+			for (Cell cell : client_cells) {
+				clientcells_width = (cell.getContents().length()*2) > clientcells_width ? (cell.getContents().length()*2 + 2) : clientcells_width;
+			}
+			Cell[] adcontent_cells = sheet.getColumn(3);
+			int adcontentcells_width = 10;
+			for (Cell cell : adcontent_cells) {
+				adcontentcells_width = (cell.getContents().length()*2) > adcontentcells_width ? (cell.getContents().length()*2 + 2) : adcontentcells_width;
+			}
+			sheet.setColumnView(2, clientcells_width);//客户列
+			sheet.setColumnView(3, adcontentcells_width);//发布内容列
 
 			// 合并单元格
-			sheet.mergeCells(0, 0, titles.length - 1, 0);
-
 			sheet.mergeCells(0, 1, 0, 4);
 			sheet.mergeCells(1, 1, 1, 4);
 			sheet.mergeCells(2, 1, 2, 4);
@@ -640,19 +662,136 @@ public class YewuAction extends SuperAction {
 			sheet.mergeCells(6, 1, 6, 4);
 			sheet.mergeCells(7, 1, 7, 4);
 			sheet.mergeCells(8, 1, 8, 4);
+			
+			//移动增加频次列，先暂存原列单元格
+			Cell[] addfreq_cells = sheet.getColumn(7);
+			
+			//删除屏幕列
+			sheet.removeColumn(1);
+			sheet.removeColumn(6);
+			System.out.println(sheet.getColumns());
+			int addfreqcolumn_idx = sheet.getColumns();
+			
+			//获取增加频次max
+			int spareMax = 0;
+			for (int i = 8; i < addfreqcolumn_idx; i++) {
+				spareMax = Integer.valueOf(sheet.getWritableCell(i, 4).getContents()) > spareMax ? Integer.valueOf(sheet.getWritableCell(i, 4).getContents()) : spareMax;
+			}
+			
+			WritableCellFormat wcf_orange = new WritableCellFormat(wf_tittle);
+			wcf_orange.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_orange.setAlignment(Alignment.CENTRE);
+			wcf_orange.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			wcf_orange.setBackground(Colour.ORANGE);
+			//增加频次列放后面
+			for (Cell cell : addfreq_cells) {
+				//增加频次
+				Label labeladdfreq = new Label(addfreqcolumn_idx, cell.getRow(), cell.getContents(), wcf_orange);
+				//客户排序
+				Label labeladdfreq1 = new Label(addfreqcolumn_idx + 1, cell.getRow(), "", wcf_orange);
+				sheet.addCell(labeladdfreq);
+				sheet.addCell(labeladdfreq1);
+			}
+			
+			//放入增加频次MAX
+			sheet.addCell(new Label(addfreqcolumn_idx, 1, "增加（Max）", wcf_orange));
+			sheet.addCell(new Label(addfreqcolumn_idx, 4, String.valueOf(spareMax), wcf_orange));
+			
+			//增加客户排序列
+			sheet.addCell(new Label(addfreqcolumn_idx + 1, 1, "客户排序", wcf_orange));
+			
+			//合并新添加两列
+			sheet.mergeCells(addfreqcolumn_idx, 1, addfreqcolumn_idx, 3);
+			sheet.mergeCells(addfreqcolumn_idx + 1, 1, addfreqcolumn_idx + 1, 4);
+			
+			//合并表头行
+			sheet.mergeCells(0, 0, addfreqcolumn_idx + 1, 0);
+			
+			sheet.setColumnView(addfreqcolumn_idx, 12);
+			
+			//对汇总统计信息增加粗体显示和单元格底色
+			//汇总单元格样式
+			WritableCellFormat wcf_statistic = new WritableCellFormat(wf_tittle);
+			wcf_statistic.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_statistic.setAlignment(Alignment.CENTRE);
+			wcf_statistic.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			wcf_statistic.setBackground(Colour.YELLOW);
+			
+			Cell[] fillFormatIdx_cells = sheet.getColumn(7);
+						
+			for (Cell cell : fillFormatIdx_cells) {
+				//如果fillFormatIdx_cells单元格非空，则套用格式
+				int operRowIdx = cell.getRow();
+				int operColumnIdx = cell.getColumn();
+				if(!"".equals(cell.getContents()) && cell.getContents() != null){
+					for (int i = operColumnIdx; i < addfreqcolumn_idx; i++) {
+						if(operRowIdx == 1 || i == operColumnIdx){
+							sheet.addCell(new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(), wcf_tittle));
+						}else {
+							sheet.addCell(new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(), wcf_statistic));
+						}
+					}
+				}
+			}
+			
+			//合并空白列
+			Cell[] merge_blank_col0 = sheet.getColumn(0);
+			Cell[] merge_blank_col7 = sheet.getColumn(7);
+			for (int i = 0, len = merge_blank_col0.length; i < len; i++) {
+				Cell cell = merge_blank_col0[i];
+				if (cell.getRow() > 4 && "".equals(cell.getContents())) {
+					sheet.mergeCells(0, cell.getRow(), 6, cell.getRow() + 1);
+					i++;
+				}
+			}
+			
+			int start_idx = 5;
+			int end_idx = 5;
+			boolean merge_flag = false;
+			for (int i = 4, len = merge_blank_col7.length; i < len - 1; i++) {
+				Cell cell = merge_blank_col7[i];
+				System.out.println(cell.getColumn() + " " + cell.getRow() + " " + cell.getContents());
+				if (cell.getContents().length() < 1 && merge_blank_col7[i - 1].getContents().length() > 1) {
+					start_idx = i;
+				}
+				if (cell.getContents().length() < 1 && merge_blank_col7[i + 1].getContents().length() > 1) {
+					end_idx = i;
+					merge_flag = true;
+				}
+				if (merge_flag) {
+					sheet.mergeCells(7, start_idx, 7, end_idx);
+					merge_flag = false;
+				}
+			}
+			
+			// 签名单元格样式
+			WritableCellFormat wcf_sign = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
+			wcf_sign.setVerticalAlignment(VerticalAlignment.CENTRE);
+			//单独下划线
+			WritableCellFormat wcf_line_bottom = new WritableCellFormat();
+			wcf_line_bottom.setBorder(jxl.format.Border.BOTTOM, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+			
+			//插入签字单元格
+			int sign_idx = sheet.getRows() + 2;
+			sheet.addCell(new Label(0, sign_idx, "财务签字：", wcf_sign));
+			sheet.addCell(new Label(1, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx/2-1, sign_idx, "副总签字：", wcf_sign));
+			sheet.addCell(new Label(addfreqcolumn_idx/2, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx/2 + 1, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx-1, sign_idx, "总经理签字：", wcf_sign));
+			sheet.addCell(new Label(addfreqcolumn_idx, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx + 1, sign_idx, "", wcf_line_bottom));
+			
+			sheet.setColumnView(addfreqcolumn_idx-1, 11);
 
 			wwb.write();
 			// 关闭
 			wwb.close();
-
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println(e);
-
 		}
-
 		return null;
-
 	}
 
 	/**
@@ -663,7 +802,12 @@ public class YewuAction extends SuperAction {
 	 */
 	public String adcontentStatisticExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		List<Publishdetail> queryResult = renkanshuService.publishInTimerangeList(startTime, endTime);
+		List<Publishdetail> queryResult;
+		if ("".equals(ledId) || ledId == null) {
+			queryResult = renkanshuService.publishInTimerangeList(startTime, endTime);
+		}else {
+			queryResult = renkanshuService.publishInTimerangeListAndLedname(startTime, endTime, ledId);
+		}		
 		List distinctQueryResult = new ArrayList();
 		Set contentSet = new HashSet();
 		Map<String, Integer> pubContentCountMap = new HashMap<String, Integer>();
@@ -727,7 +871,7 @@ public class YewuAction extends SuperAction {
 		String[] sheetTitles = new String[title.size()];
 		String[] timearrs = startTime.split("-");
 		String ledTimeRange = timearrs[0] + "年" + timearrs[1] + "月";
-		sheetTitles[0] = ledTimeRange + "LED广告发布客户";
+		sheetTitles[0] = ledTimeRange + ledId +  "LED广告发布客户";
 		String[] titles = new String[title.size()];
 		for (int i = 0; i < title.size(); i++) {
 			titles[i] = (String) title.get(i);
@@ -751,28 +895,17 @@ public class YewuAction extends SuperAction {
 		response.setContentType("aplication/vnd.ms-excel");
 		response.addHeader("Content-Disposition", "inline; filename=" + codedFileName + ".xls");
 
-		// System.out.println("-----fileName-------"+fileName);
 		try {
 			// 创建Excel工作薄
-
-			WritableWorkbook wwb = Workbook.createWorkbook(response.getOutputStream());
-
-			// WritableWorkbook wwb = Workbook.createWorkbook(new
-			// File(fileName+".xls"));
+			WritableWorkbook wwb = Workbook.createWorkbook(response.getOutputStream());;
 
 			// 添加第一个工作表并设置第一个Sheet的名字 ,所以只是sheet的名字，文件名仍为日期
 			WritableSheet sheet = wwb.createSheet(fileName, 0);
 
 			Label label;
 
-			// 设置列宽度
-			// CellView dataCellView = new CellView();
-			// dataCellView.setAutosize(true); //设置自动大小
-			// sheet.setColumnView(0, 10);
-			// sheet.setColumnView(3, 10);
-
 			// 单元格样式
-			WritableFont writableFont = new WritableFont(WritableFont.createFont("微软雅黑"), 11, WritableFont.BOLD);
+			WritableFont writableFont = new WritableFont(WritableFont.createFont("宋体"), 12, WritableFont.BOLD);
 			WritableCellFormat wcf_titles = new WritableCellFormat(writableFont);
 			wcf_titles.setBackground(jxl.format.Colour.YELLOW);
 			wcf_titles.setAlignment(Alignment.CENTRE);
@@ -832,6 +965,20 @@ public class YewuAction extends SuperAction {
 					}
 				}
 			}
+			
+			//setAutosize含有中文字符无效，改为指定宽度
+			Cell[] client_cells = sheet.getColumn(1);
+			int clientcells_width = 10;
+			for (Cell cell : client_cells) {
+				clientcells_width = (cell.getContents().length()*2) > clientcells_width ? (cell.getContents().length()*2 + 2) : clientcells_width;
+			}
+			Cell[] adcontent_cells = sheet.getColumn(2);
+			int adcontentcells_width = 10;
+			for (Cell cell : adcontent_cells) {
+				adcontentcells_width = (cell.getContents().length()*2) > adcontentcells_width ? (cell.getContents().length()*2 + 2) : adcontentcells_width;
+			}
+			sheet.setColumnView(1, clientcells_width);//客户列
+			sheet.setColumnView(2, adcontentcells_width);//发布内容列
 
 			wwb.write();
 			// 关闭
