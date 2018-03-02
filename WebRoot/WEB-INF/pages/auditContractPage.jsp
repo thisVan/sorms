@@ -175,7 +175,7 @@
 													<th>备注</th>
 												</thead>
 												<tbody>
-													<s:iterator id="fukuan" value="fukuanList" status="st">
+													<s:iterator var="fukuan" value="fukuanList" status="st">
 														<tr>
 															<td><s:property value="#fukuan.mingcheng" /></td>
 															<td><fmt:formatNumber type="number" value="${fukuan.jine}" /></td>

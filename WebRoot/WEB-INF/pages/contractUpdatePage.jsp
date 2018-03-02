@@ -304,7 +304,7 @@
 						<div class="col-sm-2">
 							<select class="form-control" name="yewuyuan.ywyBumenid" id="selectbumen" onchange="changeyewuyuan(this.value)">
 								<option value="">--请选择部门--</option>
-								<s:iterator id="bumen" value="bumenList">
+								<s:iterator var="bumen" value="bumenList">
 									<option value='<s:property value="#bumen.bmId"/>'><s:property value="#bumen.bmMingcheng" /></option>
 								</s:iterator>
 							</select>
@@ -470,7 +470,7 @@
 										<th>备注</th>
 									</thead>
 									<tbody>
-										<s:iterator id="fukuan" value="fukuanList" status="st">
+										<s:iterator var="fukuan" value="fukuanList" status="st">
 											<tr>
 												<td><s:property value="#fukuan.mingcheng" /><input id="fenqiming<s:property value="#st.count"/>" name="fenqimingcheng" class="hidden" value="<s:property value="#fukuan.mingcheng"/>" /></td>
 												<td><input id="fenqifukuanjine<s:property value="#st.count"/>" name="fenqijine" class="form-control" type="number" value="<s:property value="#fukuan.jine"/>" /></td>

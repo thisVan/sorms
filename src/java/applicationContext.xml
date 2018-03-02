@@ -4,7 +4,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/beans/spring-beans.xsd
 	http://www.springframework.org/schema/context
 	http://www.springframework.org/schema/context/spring-context.xsd
 	http://www.springframework.org/schema/aop
@@ -38,7 +38,7 @@
 	</bean>
 
 	<!-- 采用Spring的配置替换 hibernate.cfg.xml的，基于注解的配置方式 -->
-	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
@@ -63,12 +63,11 @@
 	</bean>
 
 	<!-- 事务管理 -->
-	<bean id="txManager"
-		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+	<bean id="txManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<tx:annotation-driven transaction-manager="txManager" />
-	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
 	<tx:advice id="txAdvice" transaction-manager="txManager">
@@ -87,6 +86,11 @@
 	<bean id="userAction" class="com.nfledmedia.sorm.action.UserAction"></bean>
 
 	<bean id="userService" class="com.nfledmedia.sorm.service.UserService"></bean>
+	
+	<!-- 配置消息 -->
+	<bean id="mesageAction" class="com.nfledmedia.sorm.action.MessageAction"></bean>
+
+	<bean id="messageService" class="com.nfledmedia.sorm.service.MessageService"></bean>
 
 	<!-- 配置页面跳转操作 -->
 	<bean id="directionAction" class="com.nfledmedia.sorm.action.DirectionAction"></bean>

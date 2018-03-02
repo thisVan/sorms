@@ -91,7 +91,7 @@
 									<th>付款方式</th>
 								</thead>
 								<tbody>
-									<s:iterator id="fukuan" value="fukuanList" status="st">
+									<s:iterator var="fukuan" value="fukuanList" status="st">
 										<tr>
 											<td><s:property value="#fukuan.mingcheng" /></td>
 											<td><fmt:formatNumber type="number" value="${fukuan.jine}" /></td>
@@ -112,7 +112,7 @@
 									<th>到款方式</th>
 								</thead>
 								<tbody>
-									<s:iterator id="shoukuan" value="shoukuanList" status="st">
+									<s:iterator var="shoukuan" value="shoukuanList" status="st">
 										<tr>
 											<td>第<s:property value='#st.count' />次</td>
 											<td><s:property value="#shoukuan.skShoukuanjine" /></td>

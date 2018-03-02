@@ -10,7 +10,7 @@ import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.util.Page;
@@ -261,7 +261,7 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	 */
 	public Query createQuery(String hql, Object... values) {
 		// Assert.hasText(hql);
-		Query query = getSession().createQuery(hql);
+		Query query = currentSession().createQuery(hql);
 		for (int i = 0; i < values.length; i++) {
 			query.setParameter(i, values[i]);
 		}

@@ -95,7 +95,7 @@
 					<label for="department" class="col-sm-2 control-label text-left">部门</label>
 					<div class="col-sm-4">
 						<select class="form-control input-sm" name="yewuyuan.bumen.bmId" id="department_id">
-							<s:iterator id="dep" value="#request.departments">
+							<s:iterator var="dep" value="#request.departments">
 							<option value='<s:property value="[0].top[0]"/>'><s:property value="[0].top[1]"/></option>	
 							</s:iterator>
 						</select>

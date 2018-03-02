@@ -609,7 +609,7 @@
 			$("#updateRenkanshuForm").submit();
 		}
 		    
-		    $("#ledlist").append("<s:iterator value='#ledList' id='led'>");
+		    $("#ledlist").append("<s:iterator value='#ledList' var='led'>");
 		    $("#ledlist").append("<option value='<s:property value='name'/>'><s:property value='name'/></option>");
 		    $("#ledlist").append("</s:iterator>");
 			

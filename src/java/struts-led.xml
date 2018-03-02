@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "struts-2.1.dtd" >
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN" "struts-2.5.dtd" >
 <struts>
 	<package name="led" extends="default" namespace="/">
 		<action name="pingmuguanliList" class="com.nfledmedia.sorm.action.LedAction" method="pingmuguanliList">

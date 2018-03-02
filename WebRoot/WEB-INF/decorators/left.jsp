@@ -14,7 +14,7 @@
     				</a>
     			</li>
     		</s:if><s:else>
-    			<s:set name="flag" value="0"/>
+    			<s:set var="flag" value="0"/>
     			<li>
     				<a href='<s:property value="value[0].url"/>' class="js-sub-menu-toggle">
     					<i class="fa fa-bullseye fa-fw"></i>

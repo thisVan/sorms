@@ -308,7 +308,7 @@ var globalIdentification;
 									<select class="form-control" name="yewuyuan.ywyBumenid"
 										id="selectbumen" onchange="changeyewuyuan(this.value)">
 										<option value="">--请选择部门--</option>
-										<s:iterator id="bumen" value="bumens">
+										<s:iterator var="bumen" value="bumens">
 											<option value='<s:property value="#bumen.bmId"/>'><s:property
 													value="#bumen.bmMingcheng" /></option>
 										</s:iterator>

@@ -9,8 +9,8 @@ import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate4.HibernateTemplate;
+import org.springframework.orm.hibernate4.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
@@ -36,11 +36,11 @@ public class MessageDAO extends HibernateDaoSupport {
 	public static final String CONTENT = "content";
 
 	private static final String GET_MESSAGES_LIST = "select m.id,m.hasRead,m.time,m.content from Message m where m.hasRead!=2 and m.yewuyuan.id = ?";
-	private static final String COUNT_NOTREAD_MESSAGE = "select count(*) from Message m where m.yewuyuan.id = ? and m.hasRead=0";
+	private static final String COUNT_NOTREAD_MESSAGE = "select count(*) from Message m where m.recevier.id = ? and m.hasRead=0";
 
 	protected void initDao() {
 		// do nothing
-		getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_EAGER);
+		//getHibernateTemplate().setFlushMode(HibernateTemplate.FLUSH_EAGER);
 	}
 
 	public Page getMessageList(Integer user, String sidx, String sord, int pageNo, int pageSize) {
@@ -117,7 +117,7 @@ public class MessageDAO extends HibernateDaoSupport {
 	 */
 	public Query createQuery(String hql, Object... values) {
 		// Assert.hasText(hql);
-		Query query = getSession().createQuery(hql);
+		Query query = currentSession().createQuery(hql);
 		for (int i = 0; i < values.length; i++) {
 			query.setParameter(i, values[i]);
 		}

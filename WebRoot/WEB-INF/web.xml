@@ -11,7 +11,7 @@
 	<!-- Struts2框架核心过滤器配置 -->
  	<filter>
 		<filter-name>openSessionInView</filter-name>
-		<filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+		<filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>openSessionInView</filter-name>
@@ -19,7 +19,7 @@
 	</filter-mapping>
 	<filter>
 		<filter-name>struts2</filter-name>
-    	<filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+    	<filter-class>org.apache.struts2.dispatcher.filter.StrutsPrepareAndExecuteFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>struts2</filter-name>

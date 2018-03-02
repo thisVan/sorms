@@ -303,7 +303,7 @@ public class YewuAction extends SuperAction {
 		jsonObject.put("rows", jsonArray); // 加入rows
 		System.out.println("jsonObject:" + jsonObject.toString());
 		sentMsg(jsonObject.toString());
-		return SUCCESS;
+		return null;
 	}
 
 	/**
