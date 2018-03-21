@@ -81,11 +81,11 @@
 		<!-- hibernate5 -->
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core -->
 		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-core</artifactId>
-		    <version>5.2.12.Final</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.2.12.Final</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>antlr</groupId>
 			<artifactId>antlr</artifactId>
@@ -141,8 +141,8 @@
 		<!-- https://mvnrepository.com/artifact/javax.servlet/servlet-api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
@@ -163,28 +163,41 @@
 			<artifactId>cglib</artifactId>
 			<version>2.2.2</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
-		    <groupId>mysql</groupId>
-		    <artifactId>mysql-connector-java</artifactId>
-		    <version>5.1.39</version>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.39</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/asm/asm -->
 		<dependency>
-		    <groupId>asm</groupId>
-		    <artifactId>asm</artifactId>
-		    <version>3.3.1</version>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/opensymphony/sitemesh -->
 		<dependency>
-		    <groupId>opensymphony</groupId>
-		    <artifactId>sitemesh</artifactId>
-		    <version>2.4.2</version>
+			<groupId>opensymphony</groupId>
+			<artifactId>sitemesh</artifactId>
+			<version>2.4.2</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>2.9.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

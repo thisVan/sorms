@@ -20,6 +20,7 @@ public class Adcontract implements java.io.Serializable {
 	private Date date;
 	private String client;
 	private String agency;
+	private String placer;
 	private String remark;
 	private Timestamp createtime;
 	private String state;
@@ -39,7 +40,7 @@ public class Adcontract implements java.io.Serializable {
 
 	/** full constructor */
 	public Adcontract(Channel channel, Clienttype clienttype, String sn,
-			Date date, String client, String agency, String remark,
+			Date date, String client, String agency, String placer, String remark,
 			Timestamp createtime, String state, Timestamp lastModifytime,
 			Set orders) {
 		this.channel = channel;
@@ -48,6 +49,7 @@ public class Adcontract implements java.io.Serializable {
 		this.date = date;
 		this.client = client;
 		this.agency = agency;
+		this.placer = placer;
 		this.remark = remark;
 		this.createtime = createtime;
 		this.state = state;
@@ -113,6 +115,14 @@ public class Adcontract implements java.io.Serializable {
 		this.agency = agency;
 	}
 
+	public String getPlacer() {
+		return placer;
+	}
+
+	public void setPlacer(String placer) {
+		this.placer = placer;
+	}
+
 	public String getRemark() {
 		return this.remark;
 	}
@@ -121,11 +131,11 @@ public class Adcontract implements java.io.Serializable {
 		this.remark = remark;
 	}
 
-	public Timestamp getcreatetime() {
-		return this.createtime;
+	public Timestamp getCreatetime() {
+		return createtime;
 	}
 
-	public void setcreatetime(Timestamp createtime) {
+	public void setCreatetime(Timestamp createtime) {
 		this.createtime = createtime;
 	}
 
@@ -152,16 +162,30 @@ public class Adcontract implements java.io.Serializable {
 	public void setOrders(Set orders) {
 		this.orders = orders;
 	}
-
+	
 	@Override
 	public String toString() {
-		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname()
-				+ ", clienttype=" + clienttype.getCtypedesc() + ", sn=" + sn + ", date="
-				+ date + ", client=" + client + ", agency=" + agency
-				+ ", remark=" + remark + ", createtime=" + createtime
-				+ ", state=" + state + ", lastModifytime=" + lastModifytime
-				+ "]";
+		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname() + ", clienttype=" + clienttype.getCtypedesc() + ", sn=" + sn + ", date=" + date
+				+ ", client=" + client + ", agency=" + agency + ", placer=" + placer + ", remark=" + remark + ", createtime=" + createtime
+				+ ", state=" + state + ", lastModifytime=" + lastModifytime + "]";
 	}
+	
+	/**
+	 * 比较adcontract修改时关键属性是否改变，是，则所有的order以及级联的publishdetail都要修改
+	 * @param adcontract
+	 * @return
+	 */
+	public boolean keyPropertiesModified(Adcontract adcontract) {
+		// TODO Auto-generated method stub
+		if (this.client.equals(adcontract.client) 
+				|| this.agency.equals(adcontract.agency)
+				|| this.clienttype.getId().equals(adcontract.clienttype.getId())
+				|| this.channel.getId().equals(adcontract.channel.getId())
+				|| adcontract.placer.equals(this.placer)) {
+			return true;
+		}
 
+		return false;
+	}
 	
 }

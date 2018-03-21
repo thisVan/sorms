@@ -35,7 +35,7 @@ import com.nfledmedia.sorm.util.Page;
  * 
  * Copyright (c) 2016, bolven@qq.com All Rights Reserved.
  */
-@Entity
+
 @Service
 public class RenkanshuService {
 	// 注入DAO

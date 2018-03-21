@@ -38,6 +38,7 @@
 			<div class="input-group input-group-sm">
 				<input type="text" class="hidden" name="orderid"
 					id="update_order_id">
+				<input type="text" class="hidden" name="userinsession" id="user_session" value="${session.username }"/>
 			</div>
 		</form>
 
@@ -114,7 +115,7 @@
 							
 							<div class="row">
 							<div class="col-sm-0 pull-right">
-								<button type="button" class="btn btn-primary btn-sm" id="exactQuery">查询</button>
+								<button type="button" class="btn btn-info btn-sm" id="exactQuery">查询</button>
 								<button class="btn btn-danger btn-sm" id="clearExactForm">清除</button>
 							</div>
 							<div class="col-sm-5 pull-right">
@@ -191,7 +192,7 @@
 						<button type="button" class="btn btn-default" data-dismiss="modal">
 							<i class="fa fa-times-circle"></i> 取消
 						</button>
-						<button id="ok" type="button" class="btn btn-custom-primary">
+						<button id="ok" type="button" class="btn btn-custom-primary" disabled>
 							<i class="fa fa-check-circle"></i> 确认
 						</button>
 					</div>
@@ -215,6 +216,8 @@
 <script src="js/moment.js"></script>
 <script src="js/daterangepicker.js"></script>
 <script>
+		var operateisdisabled = "";
+		
 		var dateRangeSQL = "";
 		var dateRangeSQLByDateStart = "";
 		var dateRangeSQLByCreateDate = "";
@@ -227,6 +230,8 @@
 		var t = $("#jqgrid");
 
 		$(document).ready(function() {
+		
+			checkOperateDisabled();
 			
 			//时间范围控件
 			$("#daterange-default").daterangepicker({
@@ -258,6 +263,7 @@
 			  dateRangeSQL = "";
 			  dateRangeSQLByDateStart = "";
 			  dateRangeSQLByCreateDate = "";
+			  $("#daterange-default").change();
 			});
 			$('#daterange-default').on('apply.daterangepicker', function(ev, picker) {
 			  startTime = picker.startDate.format('YYYY-MM-DD');
@@ -266,6 +272,7 @@
 			  dateRangeSQL = "o.enddate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
 			  dateRangeSQLByDateStart = "o.startdate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
 			  dateRangeSQLByCreateDate = "o.adcontract.createtime >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.adcontract.createtime <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
+			  $("#daterange-default").change();
 			});
 
 
@@ -291,13 +298,13 @@
         		sortorder: "asc",
         		viewrecords: !0,
         		colModel:[{
-        			name:"led",
-        			index:"led",
+        			name:"led.name",
+        			index:"led.name",
         			align:"center",
         	 		width:"100px"
         		},{
-        			name:"client",
-        			index:"client",
+        			name:"adcontract.client",
+        			index:"adcontract.client",
         			align:"center",
         			width:"130px" 
         		},{
@@ -309,7 +316,7 @@
             		name:"attribute",
             		index:"attribute",
             		align:"center",
-            		width:"100px"
+            		width:"80px"
             	},{
         			name:"frequency",
         			index:"frequency",
@@ -329,12 +336,12 @@
         			name:"daterange",
         			index:"daterange",
         			align:"center",
-        			width:"130px" 
+        			width:"120px" 
         		},{
         			name:"timerange",
         			index:"timerange",
         			align:"center",
-        			width:"130px" 
+        			width:"100px" 
         		},{
         			name:"remark",
         			index:"remark",
@@ -351,8 +358,8 @@
         			var ids = $("#jqgrid").jqGrid("getDataIDs");
         			for(var i=0;i < ids.length;i++){
        			    //console.log(ids[i]);
-        			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)">修改</button>';
-        			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)">删除</button>';
+        			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'>修改</button>';
+        			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'>删除</button>';
         			    t.jqGrid('setRowData',ids[i],{actions:update+"  "+de});
         			}
         		}
@@ -382,7 +389,7 @@
 			    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 			    	}else{
 				    	searchFilter = " where o.state='" + "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" + "' and "+dateRangeSQL+" (o.adcontract.client like '%"+searchFilter+
-				    	"%' or o.adcontract.agency like '%"+searchFilter+"%' or o.content like '%"+searchFilter+"%' or o.led.name like '%"+searchFilter+"%')";
+				    	"%' or o.adcontract.agency like '%"+searchFilter+"%' or o.content like '%"+searchFilter+"%' or o.led.name like '%"+searchFilter+"%' or o.adcontract.placer like '%"+searchFilter+"%')";
 			    		//console.log(searchFilter);
 			    		t[0].p.search = true;
 			    		$.extend(t[0].p.postData,{searchString:searchFilter,searchField:"allfieldsearch",searchOper:"cn"});
@@ -412,6 +419,13 @@
 			});
 			
 			loadingClient();
+			
+			autoFillConditions();
+			
+			setTimeout(function() {
+				autoFillConditions();
+			}, 3000);
+			
 		});
 		
 			function exactQuery(){	   
@@ -517,6 +531,7 @@
 		}
 		
  		$("#ok").click(function(){
+ 			console.log("comein");
         	$.ajax({
         		url:"deletethisOrder.action",
         		data:$("#deleteRenkanshu_form").serializeArray(),
@@ -583,8 +598,26 @@
         	}
         	$("#chooseLeds").modal('hide');
         });
-        
-        function addLed2LedArray(obj){
+
+/* 	$("#daterange-default").change(function() {
+		saveConditions();
+	});
+	$("#timecondition").change(function() {
+		saveConditions();
+	});
+	$("#ledlist").change(function() {
+		saveConditions();
+	});
+	$("#client").change(function() {
+		saveConditions();
+	}); */
+	
+	$(":input").change(function() {
+		saveConditions();
+	});
+	
+
+	function addLed2LedArray(obj){
         	var ledid = $(obj).val();
         	var ledname = $(obj).find("option:selected").text(); 
         	if($.inArray(ledname, ledNameArray) == -1 && ledid.length > 0){
@@ -624,10 +657,40 @@
 			  				//console.log(jsonData[i]);
 			  				$("#client").append("<option value='"+jsonData[i]+"'>"+jsonData[i]+"</option>");		
 			  			}
+						autoFillConditions();
 						$("#client").selectpicker('refresh');
 						//$("#client").selectpicker('render');
 			  		}
 			  });	
 		}
+						
+		function checkOperateDisabled(){
+			var user_session = $("#user_session").val();
+			if("wun" == user_session){
+				operateisdisabled = "disabled";
+			}
+		}
 		
+		function saveConditions(){
+			var searchText_local = $("#searchText").val();
+			var dateRange_Local = $("#daterange-default").val();
+			var timecondition_Local = $("#timecondition").val();
+			var ledlist_Local = $("#ledlist").val();
+			var client_Local = $("#client").val();
+			
+			localStorage.setItem("searchText_local", searchText_local);			
+			localStorage.setItem("dateRange_Local", dateRange_Local);
+			localStorage.setItem("timecondition_Local", timecondition_Local);
+			localStorage.setItem("ledlist_Local", ledlist_Local);
+			localStorage.setItem("client_Local", client_Local);
+		
+		}
+		
+		function autoFillConditions(){
+			$("#searchText").val(localStorage.getItem("searchText_local"));
+			$("#daterange-default").val(localStorage.getItem("dateRange_Local"));
+			$("#timecondition").val(localStorage.getItem("timecondition_Local"));
+			$("#ledlist").val(localStorage.getItem("ledlist_Local"));
+			$("#client").val(localStorage.getItem("client_Local"));
+		}
 	</script> </content>

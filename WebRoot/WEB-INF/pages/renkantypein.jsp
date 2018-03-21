@@ -327,7 +327,12 @@
 								</select>
 
 							</div>
-							
+
+							<div class="form-group form-inline col-md-12 col-lg-6 ">
+								<label style="width: 24%;text-align: left;" class="control-label" for="guanggaokanhu">下单人</label> 
+								<input class="form-control input-sm" id="placer" name="adcontract.placer">
+							</div>
+
 							<div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" class="control-label" for="guanggaokanhu">备注</label> 
 								<input class="form-control input-sm" id="renkanshubeizhu" name="adcontract.remark">

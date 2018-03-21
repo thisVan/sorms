@@ -1,13 +1,17 @@
 package com.nfledmedia.sorm.test;
 
+import java.io.IOException;
+
 import javax.annotation.Resource;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nfledmedia.sorm.action.RenkanAction;
 import com.nfledmedia.sorm.action.YewuAction;
 
 
@@ -17,6 +21,9 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 
 	@Resource
 	YewuAction yewuAction;
+	
+	@Resource
+	RenkanAction renkanAction;
 	
 	@Test
 	public void avgOccuRateListByScreenTest() throws Exception{
@@ -55,6 +62,11 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 		
 		yewuAction.publishArrangementExport();
 		
+	}
+	
+	@Test
+	public void updateOrderTest() throws JSONException, IOException {
+		renkanAction.updateOrder();
 	}
 
 }

@@ -81,9 +81,24 @@ public class AdcontractService {
 	 * @param orderList
 	 * @return
 	 */
-	public boolean updateOrder(Adcontract adc, List<Order> orderList) {
+	public boolean updateOrder(Adcontract adc, List<Order> orderList, boolean adcontractIsModified) {
 
 		Adcontract adcPojo = adcontractDAO.merge(adc);
+		//若adcontract关键属性修改，查询所有order，级联所有publishdetail一并修改
+		if (adcontractIsModified) {
+			List<Order> list = orderDAO.findByProperty("adcontract", adc);
+			System.out.println();
+			for (Order order : list) {
+				// 删除publishdetail
+				deletePublishdetail(order.getId());
+				List lst = packagePublishList(adcPojo, order);
+				for (int i = 0; i < lst.size(); i++) {
+					System.out.println(lst.get(i));
+					publishdetailDAO.save((Publishdetail) lst.get(i));
+				}
+			}
+		}
+		
 		for (Order order : orderList) {
 			order.setAdcontract(adcPojo);
 			Order ord = orderDAO.merge(order);

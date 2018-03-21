@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
@@ -377,9 +378,9 @@ public class RenkanAction extends SuperAction {
 			cha.setId(Integer.parseInt(channel_id));
 			adcontract.setChannel(cha);
 
-			adcontract.setcreatetime(new Timestamp(System.currentTimeMillis()));
+			adcontract.setCreatetime(new Timestamp(System.currentTimeMillis()));
 			adcontract.setState(TypeCollections.ADCONTRACT_ACTIVE_STATE);
-			;
+
 			System.out.println(adcontract.toString());
 			List<Order> ordList = new ArrayList<Order>();
 
@@ -439,6 +440,7 @@ public class RenkanAction extends SuperAction {
 	// System.out.println(jsonObject.toString());
 	// }
 
+	@Transactional
 	public String updateOrder() throws JSONException, IOException {
 		ActionContext ctx = ActionContext.getContext();
 		User user = adcontractService.getUserById((Integer) ctx.getSession().get(CommonConstant.SESSION_ID));
@@ -452,6 +454,8 @@ public class RenkanAction extends SuperAction {
 		order.setLed(baseService.getLedById(led.getId()));
 
 		Adcontract adcontp = adcontractService.getAdcontractById(adcontract.getId());
+		Adcontract adcSource = new Adcontract();
+		adcSource = adcontp;
 		Order ordp = adcontractService.getOrderById(order.getId());
 		// 复制前台修改的属性，同时忽略部分前台未封装的属性
 		BeanUtils.copyProperties(adcontract, adcontp, new String[] { "sn", "date", "createtime", "state", "lastModifytime" });
@@ -459,12 +463,14 @@ public class RenkanAction extends SuperAction {
 		// 设置修改人以及修改时间
 		ordp.setModifier(user.getRealname());
 		ordp.setModtime(new Timestamp(System.currentTimeMillis()));
+		boolean adcontractIsModified = adcontp.keyPropertiesModified(adcSource);
+		
 		System.out.println(adcontract);
 		System.out.println(order);
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(ordp);
 
-		if (adcontractService.updateOrder(adcontp, orderList)) {
+		if (adcontractService.updateOrder(adcontp, orderList, adcontractIsModified)) {
 			tip = "您填写的信息已经提交成功！";
 
 		} else {
@@ -607,6 +613,14 @@ public class RenkanAction extends SuperAction {
 
 	public void setYewuService(YewuService yewuService) {
 		this.yewuService = yewuService;
+	}
+	
+	public void setAdcontractService(AdcontractService adcontractService) {
+		this.adcontractService = adcontractService;
+	}
+
+	public void setBaseService(BaseService baseService) {
+		this.baseService = baseService;
 	}
 
 	public String getKanlizongjia() {

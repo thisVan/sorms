@@ -48,10 +48,12 @@ import com.opensymphony.xwork2.ActionContext;
 import jxl.Cell;
 import jxl.CellView;
 import jxl.Workbook;
+import jxl.biff.DisplayFormat;
 import jxl.format.Alignment;
 import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.Label;
+import jxl.write.NumberFormats;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -71,13 +73,14 @@ public class YewuAction extends SuperAction {
 	@Autowired
 	private RenkanshuService renkanshuService;
 
-	// 参数
+	// jqgird参数
 	private int page;
 	private String sidx;
 	private String sord;
 	private int rows;
-
 	private boolean _search;
+	private String nd;//jqgrid自带时间戳参数
+	
 	private String searchField;
 	private String searchString;
 	private String searchOper;
@@ -258,6 +261,8 @@ public class YewuAction extends SuperAction {
 	}
 
 	public String renkanshuManageList() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
 
 		Map session = ActionContext.getContext().getSession();
 		Integer id = (Integer) session.get(CommonConstant.SESSION_ID);
@@ -274,8 +279,7 @@ public class YewuAction extends SuperAction {
 		JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
 		JSONArray jsonArray = new JSONArray();
 		List data = result.getResult();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
+
 		for (int i = 0, size = data.size(); i < size; i++) {
 
 			Object[] row = (Object[]) data.get(i);
@@ -317,7 +321,7 @@ public class YewuAction extends SuperAction {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat mdf = new SimpleDateFormat("M月d日");
 		// DecimalFormat df = new DecimalFormat("#.##%");
-		DecimalFormat df = new DecimalFormat("#.#%");
+		DecimalFormat df = new DecimalFormat("0.0#");
 		List<Object[]> queryResult = renkanshuService.publishResourceList(startTime, endTime, ledId);
 		List distinctQueryResult = new ArrayList();
 		Set contentSet = new HashSet();
@@ -458,13 +462,13 @@ public class YewuAction extends SuperAction {
 
 			listOccuBussinessAmountShare.set(9, "商业占比");
 			listOccuBussinessAmountShare.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(2).get(ledId))
-					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId))));
+					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(1).get(ledId))));
 			listOccuPresentAmountShare.set(9, "赠播占比");
 			listOccuPresentAmountShare.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(3).get(ledId))
-					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId))));
+					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(1).get(ledId))));
 			listOccuCommonwealAmountShare.set(9, "公益占比");
 			listOccuCommonwealAmountShare.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(4).get(ledId))
-					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId))));
+					/ (double) TypeNullProcess.nullValueProcess(occuDataList.get(1).get(ledId))));
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dateInx);
@@ -783,6 +787,48 @@ public class YewuAction extends SuperAction {
 			sheet.addCell(new Label(addfreqcolumn_idx + 1, sign_idx, "", wcf_line_bottom));
 			
 			sheet.setColumnView(addfreqcolumn_idx-1, 11);
+			
+			//设置数字格式
+			jxl.write.Number labelNF;
+
+			jxl.write.NumberFormat nf = new jxl.write.NumberFormat("0"); // 设置数字格式
+			// 普通行
+			jxl.write.WritableCellFormat wcfN = new jxl.write.WritableCellFormat(wf_content, nf); // 设置表单格式
+			wcfN.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcfN.setAlignment(Alignment.CENTRE);
+			wcfN.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
+			// 加粗的行
+			jxl.write.WritableCellFormat wcfNB = new jxl.write.WritableCellFormat(wf_tittle, nf); // 设置表单格式
+			wcfNB.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcfNB.setAlignment(Alignment.CENTRE);
+			wcfNB.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
+			jxl.biff.DisplayFormat disf = NumberFormats.PERCENT_INTEGER;
+			jxl.write.WritableCellFormat wcfDF = new jxl.write.WritableCellFormat(wf_tittle, disf);
+			wcfDF.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcfDF.setAlignment(Alignment.CENTRE);
+			wcfDF.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
+			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
+				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
+					if ((!"".equals(sheet.getCell(j, i).getContents()))) {
+						if (sheet.getCell(j, i).getContents().contains(".")) {
+							labelNF = new jxl.write.Number(j, i, Double.parseDouble(sheet.getCell(j, i).getContents()), wcfDF); // 格式化数
+							sheet.addCell(labelNF);
+						} else {
+							if (sheet.getCell(7, i).getContents().equals("")) {
+								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()), wcfN); // 格式化数
+							} else {
+								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()), wcfNB); // 格式化数
+							}
+							sheet.addCell(labelNF);
+						}
+
+					}
+				}
+
+			}
 
 			wwb.write();
 			// 关闭
@@ -1002,7 +1048,7 @@ public class YewuAction extends SuperAction {
 	 */
 	public String publishArrangementExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		DateFormat sdfMd = new SimpleDateFormat("MM.dd");
+		DateFormat sdfMd = new SimpleDateFormat("yy.M.d");
 		DateFormat sdfHm = new SimpleDateFormat("HH:mm");
 		// ledList 主要是处理多led的请求，导出excel要求表格为根据led生成不同的sheet
 		List<Led> ledList = new ArrayList<Led>();
@@ -1140,6 +1186,19 @@ public class YewuAction extends SuperAction {
 				ArrayList object = (ArrayList) iterator.next();
 				for (Iterator iterator2 = object.iterator(); iterator2.hasNext();) {
 					Object object2 = iterator2.next();
+					ArrayList arrList = (ArrayList)object2;
+					String str = (String) arrList.get(8);
+					String[] strs = str.split("; ");
+					Set set = new HashSet();
+					for (String string : strs) {
+						set.add(string);
+					}
+					String strTarget = "";
+					for (Object object3 : set) {
+						strTarget += object3 + "; ";
+					}
+					arrList.set(8, strTarget);
+					object2 = arrList;
 					System.out.print(object2 + " ");
 				}
 				System.out.println();
@@ -1267,6 +1326,9 @@ public class YewuAction extends SuperAction {
 
 				// 1.表头标题合并
 				sheet.mergeCells(0, 0, titles.length - 1, 0);
+				
+				//起止日期合并
+				
 			}
 
 			wwb.write();
@@ -1856,6 +1918,14 @@ public class YewuAction extends SuperAction {
 
 	public void setMonth(Integer month) {
 		this.month = month;
+	}
+
+	public String getNd() {
+		return nd;
+	}
+
+	public void setNd(String nd) {
+		this.nd = nd;
 	}
 
 	// public String industryAnnualSumExport() throws Exception {
