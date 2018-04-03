@@ -15,18 +15,16 @@
 
 <link rel="icon" href="images/logo.png" type="image/x-icon" />
 <link rel="shortcut icon" href="images/logo.png" type="image/x-icon" />
+
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap-table.css" rel="stylesheet">
 <link rel="stylesheet" href="css/bootstrap-select.css">
-
-
 <link rel="stylesheet" href="css/bootstrap-theme.css">
 <link href="css/styles.css" rel="stylesheet">
 <link href="css/laydate.css" rel="stylesheet">
-
+<link href="css/daterangepicker2.1.30.css" rel="stylesheet">
 <!--Icons-->
 <script src="js/lumino.glyphs.js"></script>
-
 
 </head>
 
@@ -52,7 +50,7 @@
 									<div class="input-group input-group-sm">
 									  <div class="input-group-addon">选择屏幕</div>
 										<select name="ledId" class="form-control input-sm" id="ledid">
-											<option value="all">--请选择屏幕--</option>
+											<option value="">--请选择屏幕--</option>
 											<s:iterator value="#ledList">
 												<option value='<s:property value="id"/>'><s:property value="name"/></option>
 											</s:iterator>
@@ -87,24 +85,21 @@
 			</div>
 		</div>
 	</div>
-	<script src="js/jqGrid4.4.3/jquery-1.7.2.min.js"></script>
+<%-- 	<script src="js/jqGrid4.4.3/jquery-1.7.2.min.js"></script> --%>
+	<script src="js/jquery-1.11.1.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 </body>
 </html>
 <content tag="scripts">
-<script src="js/jquery.ba-bbq.min.js"></script>
-<%-- <script src="js/grid.history.js"></script> --%>
-<script src="js/grid.locale-cn.js"></script>
-<script>
-		$.jgrid.useJSON = true;
-</script>
-<script src="js/jqGrid4.4.3/jquery.jqGrid.src.js"></script>
+
+<%-- <script src="js/jqGrid4.4.3/jquery.jqGrid.src.js"></script>
 <script src="js/jquery.jqGrid.fluid.js"></script>
 <script src="js/jqGrid4.4.3/plugins/grid.setcolumns.js"></script>
-<script src="js/jqGrid4.4.3/plugins/grid.jqueryui.js"></script>
-<script src="js/king-common.js"></script>
-<script src="js/moment.js"></script>
-<script src="js/daterangepicker.js"></script>
+<script src="js/jqGrid4.4.3/plugins/grid.jqueryui.js"></script> --%>
+<script src="js/king-common.js"></script> 
+<script src="js/moment2.13.0.js"></script>
+<script src="js/daterangepicker2.1.30.js"></script>
+
 <!-- ECharts单文件引入 --> 
 <%-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/echarts/3.8.5/echarts.js"></script> --%>
 <script type="text/javascript" src="js/echarts3.8.4.min.js"></script> <script>
@@ -117,9 +112,8 @@
 
 	$(document).ready(function() {
 		//时间范围控件
-		$("#daterange-default").daterangepicker({
+/* 		$("#daterange-default").daterangepicker({
 			//maxViewMode: 1,
-			format : 'YYYY/MM/DD',
 			showDropdowns : !0,
 			ranges : {
 				"过去一年" : [ moment().subtract("year", 1).startOf("year"), moment().subtract("year", 1).endOf("year") ],
@@ -131,9 +125,9 @@
 				"本周" : [ moment().startOf("week"), moment().endOf("week") ],
 			},
 			opens : 'right',
-			separator : " 至 ",
-
 			locale : {
+				format : 'YYYY-MM-DD',
+				separator : " 至 ",
 				applyLabel : "确认",
 				cancelLabel : "清除",
 				fromLabel : "起始",
@@ -143,7 +137,33 @@
 				monthNames : [ "一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" ],
 				firstDay : 1
 			}
-		});
+		}); */
+			$("#daterange-default").daterangepicker({
+				showDropdowns: true,
+    			autoUpdateInput: true,
+    			autoApply: false,
+				ranges: {
+					"过去30天": [moment().subtract(29, "days"), moment()],
+					"上月":[moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
+					"本月": [moment().startOf("month"), moment().endOf("month")],
+/* 					"下周":[moment().add(1, "week").startOf("week"), moment().add(1, "week").endOf("week")],
+					"下月":[moment().add(1, "month").startOf("month"), moment().add(1, "month").endOf("month")] */
+					"未来7天":[moment().add(1, "days"), moment().add(7, "days")],
+					"未来30天":[moment().add(1, "days"), moment().add(30, "days")]
+	            },
+	            locale: {
+	           		format: 'YYYY-MM-DD',
+                    separator: ' 至 ',
+	                applyLabel: "确认",
+	                cancelLabel: "清除",
+	                fromLabel: "起始",
+	                toLabel: "截止",
+	                customRangeLabel: "自定义",
+	                daysOfWeek: ["日", "一", "二", "三", "四", "五", "六"],
+	                monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+	                firstDay: 1
+	            }
+			});
 		$('#daterange-default').on('cancel.daterangepicker', function(ev, picker) {
 			$('#daterange-default').val('');
 			dateRangeSQL = "";
@@ -159,7 +179,11 @@
 		$("#exactQuery").click(function() {
 			var ledId = $("#ledid").val();
 			if (dateRangeSQL == "" || ledId == "") {
-				alert("请选择屏幕和起始日期！");
+				if (ledId == "") {
+					alert("请选择屏幕！");
+				} else {
+					alert("请选择起止日期！");
+				}
 				return;
 			} else {
 				var dateRangeStr = dateRangeSQL.replace(" ", "至");
@@ -202,7 +226,15 @@
 				textStyle : {}
 			},
 			tooltip : {
-				trigger : 'axis'
+				trigger : 'axis',
+				//formatter: "{c}%" // 这里是鼠标移上去的显示数据
+				formatter : function(params){
+					var relVal = params[0].name + "<br/>";
+					relVal += params[0].seriesName + ' : ' + params[0].value + "%" + "<br/>";
+					relVal += params[1].seriesName + ' : ' + params[1].value + "%" + "<br/>";
+					relVal += params[2].seriesName + ' : ' + params[2].value + "%";
+					return relVal;
+				}
 			},
 			legend : {
 				top : 'bottom',
@@ -304,12 +336,22 @@
 				type : 'bar',
 				//barWidth : 15,
 				stack : '总占屏率',
+				label : {
+					normal : {
+						show : false
+					}
+				},
 				data : data.bussOccus
 			}, {
 				name : '赠播',
 				type : 'bar',
 				//barWidth : 15,
 				stack : '总占屏率',
+				label : {
+					normal : {
+						show : false
+					}
+				},
 				data : data.presOccus
 			}, {
 				name : '公益',
@@ -323,7 +365,7 @@
 						textStyle : {
 							color : 'red'
 						},
-						formatter : function(params) {
+ 						formatter : function(params) {
 							return data.totalOccus[params.dataIndex] + "%";
 							//return parseFloat(params.value) + parseFloat(data.bussOccus[params.dataIndex]) + parseFloat(data.presOccus[params.dataIndex]) ;
 						}

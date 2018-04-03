@@ -35,7 +35,7 @@ public class MessageDAO extends HibernateDaoSupport {
 	public static final String HAS_READ = "hasRead";
 	public static final String CONTENT = "content";
 
-	private static final String GET_MESSAGES_LIST = "select m.id,m.hasRead,m.time,m.content from Message m where m.hasRead!=2 and m.yewuyuan.id = ?";
+	private static final String GET_MESSAGES_LIST = "select m.id,m.hasRead,m.time,m.content from Message m where m.hasRead!=2 and m.recevier.id = ?";
 	private static final String COUNT_NOTREAD_MESSAGE = "select count(*) from Message m where m.recevier.id = ? and m.hasRead=0";
 
 	protected void initDao() {

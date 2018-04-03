@@ -80,4 +80,46 @@ public class ExcelUtil {
 		}
 	}
 
+	/**
+	 * 将Sheet列号变为列名
+	 * @param index 列号, 从0开始
+	 * @return 0->A; 1->B...26->AA
+	 */
+	public static String index2ColName(int index) {
+		if (index < 0) {
+			return null;
+		}
+		int num = 65;// A的Unicode码
+		String colName = "";
+		do {
+			if (colName.length() > 0) {
+				index--;
+			}
+			int remainder = index % 26;
+			colName = ((char) (remainder + num)) + colName;
+			index = (int) ((index - remainder) / 26);
+		} while (index > 0);
+		return colName;
+	}
+
+	/**
+	 * 根据表元的列名转换为列号
+	 * 
+	 * @param colName 列名, 从A开始
+	 * @return A1->0; B1->1...AA1->26
+	 */
+	public static int colName2Index(String colName) {
+		colName = colName.toUpperCase();
+		int index = -1;
+		int num = 65;// A的Unicode码
+		int length = colName.length();
+		for (int i = 0; i < length; i++) {
+			char c = colName.charAt(i);
+			if (Character.isDigit(c))
+				break;// 确定指定的char值是否为数字
+			index = (index + 1) * 26 + (int) c - num;
+		}
+		return index;
+	}
+
 }

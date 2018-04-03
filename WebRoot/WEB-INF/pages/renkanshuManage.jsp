@@ -17,7 +17,7 @@
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap-table.css" rel="stylesheet">
 <link rel="stylesheet" href="css/bootstrap-select.css">
-
+<link href="css/daterangepicker2.1.30.css" rel="stylesheet">
 
 <link rel="stylesheet" href="css/bootstrap-theme.css">
 <link href="css/styles.css" rel="stylesheet">
@@ -71,7 +71,7 @@
 						<fieldset>
 							<legend>查询条件</legend>
 							<div class="row">
-							<div class="col-sm-3">
+							<div class="col-sm-4">
 								<div class="input-group input-group-sm">
 									<div class="input-group-addon">时间段</div>
 									<input type="text" id="daterange-default" class="form-control">
@@ -91,7 +91,7 @@
 								</div>
 							</div>
 
-							<div class="col-sm-3">
+							<div class="col-sm-2">
 								<div class="input-group input-group-sm">
 									<div class="input-group-addon">屏幕</div>
 									<select name="led" id="ledlist"
@@ -213,14 +213,25 @@
 <script src="js/jquery.jqGrid.min.js"></script>
 <script src="js/jquery.jqGrid.fluid.js"></script>
 <script src="js/king-common.js"></script>
-<script src="js/moment.js"></script>
-<script src="js/daterangepicker.js"></script>
+<script src="js/moment2.13.0.js"></script>
+<%-- <script src="js/daterangepicker.js"></script> --%>
+<script src="js/daterangepicker2.1.30.js"></script>
 <script>
 		var operateisdisabled = "";
 		
 		var dateRangeSQL = "";
 		var dateRangeSQLByDateStart = "";
 		var dateRangeSQLByCreateDate = "";
+		var daterangepicker_startdate;
+		var daterangepicker_enddate;
+		if ((localStorage.getItem("dateRange_Local") != null) && (localStorage.getItem("dateRange_Local") != "")) {
+			daterangepicker_startdate = localStorage.getItem("dateRange_Local").split(" 至 ")[0];
+			daterangepicker_enddate = localStorage.getItem("dateRange_Local").split(" 至 ")[1];
+		} else {
+			daterangepicker_startdate = moment().format("YYYY-MM-DD");
+			daterangepicker_enddate = moment().add(7, "days").format("YYYY-MM-DD");
+		}
+
 		var startTime = "";
 		var endTime = "";
 		
@@ -235,19 +246,21 @@
 			
 			//时间范围控件
 			$("#daterange-default").daterangepicker({
-				format: 'YYYY/MM/DD',
-				showDropdowns: !0,
-				language: 'zh-CN',
+				showDropdowns: true,
+    			autoUpdateInput: true,
+    			autoApply: false,
+				startDate: daterangepicker_startdate,
+    			endDate: daterangepicker_enddate,
 				ranges: {
-	                "过去三年": [moment().subtract("year", 3).startOf("year"), moment().subtract("year", 1).endOf("year")],
-					"过去一年": [moment().subtract("year", 1).startOf("year"), moment().subtract("year", 1).endOf("year")],
-					"过去半年":[moment().subtract("month", 6).startOf("month"), moment().subtract("month", 1).endOf("month")],
-					"上月":[moment().subtract("month", 1).startOf("month"), moment().subtract("month", 1).endOf("month")],
-					"过去30天": [moment().subtract("days", 29), moment()],
+					"上月":[moment().subtract(1, "month").startOf("month"), moment().subtract(1, "month").endOf("month")],
 					"本月": [moment().startOf("month"), moment().endOf("month")],
+					"过去30天": [moment().subtract(29, "days"), moment()],
+					"未来7天":[moment().add(1, "days"), moment().add(7, "days")],
+					"未来30天":[moment().add(1, "days"), moment().add(30, "days")]
 	            },
-	            separator: " 至 ",
 	            locale: {
+	           		format: 'YYYY-MM-DD',
+                    separator: ' 至 ',
 	                applyLabel: "确认",
 	                cancelLabel: "清除",
 	                fromLabel: "起始",
@@ -271,7 +284,7 @@
 			  //console.log("start:"+startTime+"\nend:"+endTime);
 			  dateRangeSQL = "o.enddate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
 			  dateRangeSQLByDateStart = "o.startdate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
-			  dateRangeSQLByCreateDate = "o.adcontract.createtime >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.adcontract.createtime <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
+			  dateRangeSQLByCreateDate = "o.adcontract.createtime >= '"+picker.startDate.format('YYYY-MM-DD HH:mm:ss')+"' and o.adcontract.createtime <= '"+picker.endDate.format('YYYY-MM-DD 23:59:59')+"' ";
 			  $("#daterange-default").change();
 			});
 
@@ -358,8 +371,8 @@
         			var ids = $("#jqgrid").jqGrid("getDataIDs");
         			for(var i=0;i < ids.length;i++){
        			    //console.log(ids[i]);
-        			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'>修改</button>';
-        			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'>删除</button>';
+        			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
+        			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-times" aria-hidden="true"></i></button>';
         			    t.jqGrid('setRowData',ids[i],{actions:update+"  "+de});
         			}
         		}
@@ -422,10 +435,6 @@
 			
 			autoFillConditions();
 			
-			setTimeout(function() {
-				autoFillConditions();
-			}, 3000);
-			
 		});
 		
 			function exactQuery(){	   
@@ -435,19 +444,19 @@
 		    		t[0].p.search = false;
 		    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 		    	}else{
-		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and (";
+		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and ";
 		    		if(ledname !== "" ){
 		    			searchFilter += " o.led.name ='"+ledname+"' and ";
 		    		}
 		    		if(client !== "" ){
-		    			searchFilter += " o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' and ";
+		    			searchFilter += "( o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' ) and ";
 		    		}
 		    		if(dateRangeSQL !== ""){
 		    			searchFilter += " "+ dateRangeSQL;
 		    		}else{
 		    			searchFilter = searchFilter.substring(0,searchFilter.lastIndexOf('and '));
 		    		}
-		    		searchFilter += ")";
+		    		//searchFilter += "";
 		    		//console.log(searchFilter);
 		    		t[0].p.search = true;
 		    		$.extend(t[0].p.postData,{searchString:searchFilter,searchField:"allfieldsearch",searchOper:"cn"});
@@ -463,20 +472,20 @@
 		    		t[0].p.search = false;
 		    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 		    	}else{
-		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and (";
+		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and";
 		    		if(ledname !== "" ){
 		    			searchFilter += " o.led.name ='"+ledname+"' and ";
 		    		}
 		    		if(client !== "" ){
-		    			searchFilter += " o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' and ";
+		    			searchFilter += "( o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' ) and ";
 		    		}
 		    		if(dateRangeSQL !== ""){
 		    			searchFilter += " "+ dateRangeSQLByDateStart;
 		    		}else{
 		    			searchFilter = searchFilter.substring(0,searchFilter.lastIndexOf('and '));
 		    		}
-		    		searchFilter += ")";
-		    		//console.log(searchFilter);
+		    		//searchFilter += "";
+		    		console.log(searchFilter);
 		    		t[0].p.search = true;
 		    		$.extend(t[0].p.postData,{searchString:searchFilter,searchField:"allfieldsearch",searchOper:"cn"});
 		    	}
@@ -491,20 +500,20 @@
 		    		t[0].p.search = false;
 		    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 		    	}else{
-		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and (";
+		    		var searchFilter="  where o.state='"+ "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" +"' and ";
 		    		if(ledname !== "" ){
 		    			searchFilter += " o.led.name ='"+ledname+"' and ";
 		    		}
 		    		if(client !== "" ){
-		    			searchFilter += " o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' and ";
+		    			searchFilter += "( o.adcontract.client like '%"+client+"%' or o.adcontract.agency like '%"+client+"%' ) and ";
 		    		}
 		    		if(dateRangeSQL !== ""){
 		    			searchFilter += " "+ dateRangeSQLByCreateDate;
 		    		}else{
 		    			searchFilter = searchFilter.substring(0,searchFilter.lastIndexOf('and '));
 		    		}
-		    		searchFilter += ")";
-		    		//console.log(searchFilter);
+		    		//searchFilter += "";
+		    		console.log(searchFilter);
 		    		t[0].p.search = true;
 		    		$.extend(t[0].p.postData,{searchString:searchFilter,searchField:"allfieldsearch",searchOper:"cn"});
 		    	}
@@ -551,22 +560,29 @@
         	})
         	$("#deleteRenkanshu-modal-id").modal('hide');
         });
-        
 
-        $("#exportExcel").click(function(){
-        	var led = $.trim($("#ledlist").val());
-        	//判断时间和屏幕是否选择
-        	if("" != startTime && "" != endTime && "" != led){
-				var url = "publishResourceExport.action?startTime="+startTime+"&endTime="+endTime+"&ledId="+led;
+
+	$("#exportExcel").click(function() {
+		var led = $.trim($("#ledlist").val());
+		//判断时间和屏幕是否选择
+		if ("" != startTime && "" != endTime) {
+			if ("" != led) {
+				var url = "publishResourceExport.action?startTime=" + startTime + "&endTime=" + endTime + "&ledId=" + led;
 				//console.log(url);
-				$("#jqgrid").jqGrid('excelExport',{url:url});
-        	}else {
-        		alert("请选定起止日期和屏幕！");
-        	}
+				$("#jqgrid").jqGrid('excelExport', {
+					url : url
+				});
+			} else {
+				alert("请选定屏幕！");
+			}
 
-		});
-		
-		$("#exportContentStatisticExcel").click(function(){
+		} else {
+			alert("请选定起止日期！");
+		}
+
+	});
+
+	$("#exportContentStatisticExcel").click(function(){
 			var led = $.trim($("#ledlist").val());
         	//判断时间和屏幕是否选择
         	if("" != startTime && "" != endTime){
@@ -613,7 +629,11 @@
 	}); */
 	
 	$(":input").change(function() {
-		saveConditions();
+		//解决页面刷新时自动覆盖值
+		if($("#client option").size() > 1){
+			saveConditions();
+		}
+		
 	});
 	
 
@@ -659,6 +679,7 @@
 			  			}
 						autoFillConditions();
 						$("#client").selectpicker('refresh');
+						//$("#exactQuery").click();
 						//$("#client").selectpicker('render');
 			  		}
 			  });	
@@ -678,11 +699,20 @@
 			var ledlist_Local = $("#ledlist").val();
 			var client_Local = $("#client").val();
 			
-			localStorage.setItem("searchText_local", searchText_local);			
-			localStorage.setItem("dateRange_Local", dateRange_Local);
-			localStorage.setItem("timecondition_Local", timecondition_Local);
-			localStorage.setItem("ledlist_Local", ledlist_Local);
-			localStorage.setItem("client_Local", client_Local);
+/* 			if(searchText_local != ""){localStorage.setItem("searchText_local", searchText_local)}
+			if(dateRange_Local != ""){localStorage.setItem("dateRange_Local", dateRange_Local)}
+			if(timecondition_Local != ""){localStorage.setItem("timecondition_Local", timecondition_Local)}
+			if(ledlist_Local != ""){localStorage.setItem("ledlist_Local", ledlist_Local)}
+			if(client_Local != ""){localStorage.setItem("client_Local", client_Local)} */
+			localStorage.setItem("searchText_local", searchText_local)
+			localStorage.setItem("dateRange_Local", dateRange_Local)
+			localStorage.setItem("timecondition_Local", timecondition_Local)
+			localStorage.setItem("ledlist_Local", ledlist_Local)
+			localStorage.setItem("client_Local", client_Local)
+			
+			if(dateRangeSQL != ""){localStorage.setItem("dateRangeSQL", dateRangeSQL)}
+			if(dateRangeSQLByDateStart != ""){localStorage.setItem("dateRangeSQLByDateStart", dateRangeSQLByDateStart)}
+			if(dateRangeSQLByCreateDate != ""){localStorage.setItem("dateRangeSQLByCreateDate", dateRangeSQLByCreateDate)}
 		
 		}
 		
@@ -692,5 +722,12 @@
 			$("#timecondition").val(localStorage.getItem("timecondition_Local"));
 			$("#ledlist").val(localStorage.getItem("ledlist_Local"));
 			$("#client").val(localStorage.getItem("client_Local"));
+			
+			dateRangeSQL = localStorage.getItem("dateRangeSQL");
+			dateRangeSQLByDateStart = localStorage.getItem("dateRangeSQLByDateStart");
+			dateRangeSQLByCreateDate = localStorage.getItem("dateRangeSQLByCreateDate");
+			
+			$("#exactQuery").click();
 		}
+		
 	</script> </content>

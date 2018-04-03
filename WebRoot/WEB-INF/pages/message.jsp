@@ -20,7 +20,6 @@
 
 <!--Icons-->
 <script src="js/lumino.glyphs.js"></script>
-<script src="js/jquery-1.11.1.min.js"></script>
 <script src="js/bootstrap-table.js"></script>
 </head>
 <body style="font-family: '微软雅黑';">
@@ -47,17 +46,17 @@
 </body>
 </html>
 <content tag="scripts">
-    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery-1.8.3.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.ba-bbq.min.js"></script>
-    <script src="js/grid.history.js"></script> 
-	<script src="js/grid.locale-cn.js"></script>
-	<script>
-		$.jgrid.useJSON = true;
-	</script>
+    <script src="js/grid.locale-cn.js"></script>
+	<script src="js/grid.history.js"></script>
 	<script src="js/jquery.jqGrid.min.js"></script>
 	<script src="js/jquery.jqGrid.fluid.js"></script>
 	<script src="js/king-common.js"></script>
+	<script src="js/jquery.ba-bbq.min.js"></script>
+	<script>
+		$.jgrid.useJSON = true;
+	</script>
 	<script>
 
 		function setHasRead(){
@@ -99,7 +98,7 @@
 		    	datatype:"json",
 		    	colNames:['','时间','内容',''],
 		    	height:300,
-		    	rowNum:<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>,
+		    	rowNum:'<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>',
 		    	rowList: [10, 20, 30],
         		pager: "jqgrid-pager",
         		multiselect: !0,

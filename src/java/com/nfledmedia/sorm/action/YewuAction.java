@@ -40,20 +40,24 @@ import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
+import com.nfledmedia.sorm.util.ExcelUtil;
 import com.nfledmedia.sorm.util.Page;
 import com.nfledmedia.sorm.util.PageToJson;
 import com.nfledmedia.sorm.util.TypeNullProcess;
 import com.opensymphony.xwork2.ActionContext;
 
 import jxl.Cell;
+import jxl.CellType;
 import jxl.CellView;
 import jxl.Workbook;
 import jxl.biff.DisplayFormat;
 import jxl.format.Alignment;
 import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
+import jxl.write.Formula;
 import jxl.write.Label;
 import jxl.write.NumberFormats;
+import jxl.write.WritableCell;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -802,13 +806,16 @@ public class YewuAction extends SuperAction {
 			jxl.write.WritableCellFormat wcfNB = new jxl.write.WritableCellFormat(wf_tittle, nf); // 设置表单格式
 			wcfNB.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcfNB.setAlignment(Alignment.CENTRE);
+			wcfNB.setBackground(jxl.format.Colour.YELLOW);
 			wcfNB.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 
 			jxl.biff.DisplayFormat disf = NumberFormats.PERCENT_INTEGER;
 			jxl.write.WritableCellFormat wcfDF = new jxl.write.WritableCellFormat(wf_tittle, disf);
 			wcfDF.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcfDF.setAlignment(Alignment.CENTRE);
+			wcfDF.setBackground(jxl.format.Colour.YELLOW);
 			wcfDF.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+			
 
 			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
 				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
@@ -826,6 +833,144 @@ public class YewuAction extends SuperAction {
 						}
 
 					}
+				}
+
+			}
+			
+			String bussinessTotal = TypeCollections.ATTRIBUTE_BUSSINESS + "小计";
+			String commonwealTotal = TypeCollections.ATTRIBUTE_COMMONWEAL + "小计";
+			String presentTotal = TypeCollections.ATTRIBUTE_PRESENT+ "小计";
+			
+			String bussinessRate = TypeCollections.ATTRIBUTE_BUSSINESS + "占比";
+			String commonwealRate = TypeCollections.ATTRIBUTE_COMMONWEAL + "占比";
+			String presentRate = TypeCollections.ATTRIBUTE_PRESENT+ "占比";
+			
+			Integer bussCellRow = null ;
+			Integer commCellRow = null ;
+			Integer presCellRow = null ;
+			Integer totalOccuCellRow = null;
+			Integer remainCellRow = null;
+			
+			// 插入公式
+			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
+				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
+					if (bussinessTotal.equals(sheet.getCell(7, i).getContents())) {
+						String formulaStr = "SUM(" + ExcelUtil.index2ColName(j) + i + ":" + ExcelUtil.index2ColName(j)
+								+ (i - subListOfBuss.size() + 1) + ")";
+						// 插入公式
+						Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+						sheet.addCell(f);
+						bussCellRow = (bussCellRow == null ? i : bussCellRow);
+					}
+					if (commonwealTotal.equals(sheet.getCell(7, i).getContents())) {
+						String formulaStr = "SUM(" + ExcelUtil.index2ColName(j) + i + ":" + ExcelUtil.index2ColName(j)
+								+ (i - subListOfComm.size() + 1) + ")";
+						// 插入公式
+						Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+						sheet.addCell(f);
+						commCellRow = (commCellRow == null ? i : commCellRow);
+					}
+					if (presentTotal.equals(sheet.getCell(7, i).getContents())) {
+						String formulaStr = "SUM(" + ExcelUtil.index2ColName(j) + i + ":" + ExcelUtil.index2ColName(j)
+								+ (i - subListOfPres.size() + 1) + ")";
+						// 插入公式
+						Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+						sheet.addCell(f);
+						presCellRow = (presCellRow == null ? i : presCellRow);
+					}
+				}
+			}
+
+			// 插入公式
+			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
+				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
+					if ("合计".equals(sheet.getCell(7, i).getContents())) {
+						if (bussCellRow == null && commCellRow == null && presCellRow == null) {
+						} else {
+							String formulaStr = "SUM(";
+							formulaStr += (bussCellRow != null ? (ExcelUtil.index2ColName(j) + (bussCellRow + 1)) : "");
+							formulaStr += (commCellRow != null ? ("," + ExcelUtil.index2ColName(j) + (commCellRow + 1)) : "");
+							formulaStr += (presCellRow != null ? ("," + ExcelUtil.index2ColName(j) + (presCellRow + 1)) : "");
+							formulaStr += ")";
+							// 插入公式
+							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+							sheet.addCell(f);
+							totalOccuCellRow = i;
+						}
+					}
+					if ("余量".equals(sheet.getCell(7, i).getContents())) {
+						String formulaStr = "SUM(";
+						formulaStr += (theLed.getAvlduration() / 15) + "-" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+						formulaStr += ")";
+						// 插入公式
+						Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+						sheet.addCell(f);
+						remainCellRow = (remainCellRow == null ? i : remainCellRow);
+					}
+				}
+			}
+
+			// 插入公式
+			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
+				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
+
+					if ("总占屏率".equals(sheet.getCell(7, i).getContents())) {
+						if (totalOccuCellRow != null) {
+							String formulaStr = "SUM(";
+							formulaStr += (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+							formulaStr += "/";
+							formulaStr += "(" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+							formulaStr += "+";
+							formulaStr += (ExcelUtil.index2ColName(j) + (remainCellRow + 1)) + ")";
+							formulaStr += ")";
+							// 插入公式
+							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+							sheet.addCell(f);
+						}
+					}
+					if (bussinessRate.equals(sheet.getCell(7, i).getContents())) {
+						if (bussCellRow != null) {
+							String formulaStr = "SUM(";
+							formulaStr += (ExcelUtil.index2ColName(j) + (bussCellRow + 1));
+							formulaStr += "/";
+							formulaStr += "(" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+							formulaStr += "+";
+							formulaStr += (ExcelUtil.index2ColName(j) + (remainCellRow + 1)) + ")";
+							formulaStr += ")";
+							// 插入公式
+							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+							sheet.addCell(f);
+						}
+					}
+					if (commonwealRate.equals(sheet.getCell(7, i).getContents())) {
+						if (commCellRow != null) {
+							String formulaStr = "SUM(";
+							formulaStr += (ExcelUtil.index2ColName(j) + (commCellRow + 1));
+							formulaStr += "/";
+							formulaStr += "(" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+							formulaStr += "+";
+							formulaStr += (ExcelUtil.index2ColName(j) + (remainCellRow + 1)) + ")";
+							formulaStr += ")";
+							// 插入公式
+							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+							sheet.addCell(f);
+						}
+					}
+					if (presentRate.equals(sheet.getCell(7, i).getContents())) {
+						if (presCellRow != null) {
+							String formulaStr = "SUM(";
+							formulaStr += (ExcelUtil.index2ColName(j) + (presCellRow + 1));
+							formulaStr += "/";
+							formulaStr += "(" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+							formulaStr += "+";
+							formulaStr += (ExcelUtil.index2ColName(j) + (remainCellRow + 1)) + ")";
+							formulaStr += ")";
+							// 插入公式
+							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
+							sheet.addCell(f);
+						}
+					}
+
 				}
 
 			}
