@@ -5,19 +5,20 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 /**
- * Order entity. @author MyEclipse Persistence Tools
+ * OrderHistory entity. @author MyEclipse Persistence Tools
  */
 
-public class Order implements java.io.Serializable {
+public class OrderHistory implements java.io.Serializable {
 
 	// Fields
 
 	private Integer id;
-	private Adcontract adcontract;
 	private Led led;
+	private Operatetype operatetype;
+	private Adcontract adcontract;
+	private Playstrategy playstrategy;
 	private Industry industry;
 	private Attribute attribute;
-	private Playstrategy playstrategy;
 	private String ordersn;
 	private String content;
 	private Short duration;
@@ -30,25 +31,31 @@ public class Order implements java.io.Serializable {
 	private String modifier;
 	private Timestamp modtime;
 	private String state;
+	private Timestamp operatetime;
+	private String operater;
 
 	// Constructors
 
 	/** default constructor */
-	public Order() {
+	public OrderHistory() {
 	}
 
 	/** minimal constructor */
-	public Order(Integer id) {
-		this.id = id;
+	public OrderHistory(Operatetype operatetype, Timestamp operatetime, String operater) {
+		this.operatetype = operatetype;
+		this.operatetime = operatetime;
+		this.operater = operater;
 	}
 
 	/** full constructor */
-	public Order(Integer id, Adcontract adcontract, Led led, Industry industry, Attribute attribute, String ordersn, String content,
-			Short duration, Short frequency, Short addfreq, Date startdate, Date enddate, Time starttime, Time endtime,
-			Playstrategy playstrategy, String modifier, Timestamp modtime, String state) {
-		this.id = id;
-		this.adcontract = adcontract;
+	public OrderHistory(Led led, Operatetype operatetype, Adcontract adcontract, Playstrategy playstrategy, Industry industry,
+			Attribute attribute, String ordersn, String content, Short duration, Short frequency, Short addfreq, Date startdate,
+			Date enddate, Time starttime, Time endtime, String modifier, Timestamp modtime, String state, Timestamp operatetime,
+			String operater) {
 		this.led = led;
+		this.operatetype = operatetype;
+		this.adcontract = adcontract;
+		this.playstrategy = playstrategy;
 		this.industry = industry;
 		this.attribute = attribute;
 		this.ordersn = ordersn;
@@ -60,10 +67,11 @@ public class Order implements java.io.Serializable {
 		this.enddate = enddate;
 		this.starttime = starttime;
 		this.endtime = endtime;
-		this.playstrategy = playstrategy;
 		this.modifier = modifier;
 		this.modtime = modtime;
 		this.state = state;
+		this.operatetime = operatetime;
+		this.operater = operater;
 	}
 
 	// Property accessors
@@ -76,6 +84,22 @@ public class Order implements java.io.Serializable {
 		this.id = id;
 	}
 
+	public Led getLed() {
+		return this.led;
+	}
+
+	public void setLed(Led led) {
+		this.led = led;
+	}
+
+	public Operatetype getOperatetype() {
+		return this.operatetype;
+	}
+
+	public void setOperatetype(Operatetype operatetype) {
+		this.operatetype = operatetype;
+	}
+
 	public Adcontract getAdcontract() {
 		return this.adcontract;
 	}
@@ -84,12 +108,12 @@ public class Order implements java.io.Serializable {
 		this.adcontract = adcontract;
 	}
 
-	public Led getLed() {
-		return this.led;
+	public Playstrategy getPlaystrategy() {
+		return this.playstrategy;
 	}
 
-	public void setLed(Led led) {
-		this.led = led;
+	public void setPlaystrategy(Playstrategy playstrategy) {
+		this.playstrategy = playstrategy;
 	}
 
 	public Industry getIndustry() {
@@ -106,14 +130,6 @@ public class Order implements java.io.Serializable {
 
 	public void setAttribute(Attribute attribute) {
 		this.attribute = attribute;
-	}
-
-	public Playstrategy getPlaystrategy() {
-		return playstrategy;
-	}
-
-	public void setPlaystrategy(Playstrategy playstrategy) {
-		this.playstrategy = playstrategy;
 	}
 
 	public String getOrdersn() {
@@ -212,13 +228,20 @@ public class Order implements java.io.Serializable {
 		this.state = state;
 	}
 
-	@Override
-	public String toString() {
-		return "Order [id=" + id + ", led=" + led.getName() + ", industry=" + industry.getIndustryname() + ", attribute="
-				+ attribute.getAttributename() + ", playstrategy=" + playstrategy.getStrategyname() + ", ordersn=" + ordersn + ", content="
-				+ content + ", duration=" + duration + ", frequency=" + frequency + ", addfreq=" + addfreq + ", startdate=" + startdate
-				+ ", enddate=" + enddate + ", starttime=" + starttime + ", endtime=" + endtime + ", modifier=" + modifier + ", modtime="
-				+ modtime + ", state=" + state + "]";
+	public Timestamp getOperatetime() {
+		return this.operatetime;
+	}
+
+	public void setOperatetime(Timestamp operatetime) {
+		this.operatetime = operatetime;
+	}
+
+	public String getOperater() {
+		return this.operater;
+	}
+
+	public void setOperater(String operater) {
+		this.operater = operater;
 	}
 
 }

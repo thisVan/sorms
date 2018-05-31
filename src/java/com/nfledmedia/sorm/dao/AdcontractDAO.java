@@ -3,6 +3,7 @@ package com.nfledmedia.sorm.dao;
 import java.util.List;
 
 import org.hibernate.LockMode;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -159,5 +160,22 @@ public class AdcontractDAO extends HibernateDaoSupport {
 
 	public static AdcontractDAO getFromApplicationContext(ApplicationContext ctx) {
 		return (AdcontractDAO) ctx.getBean("adcontractDAO");
+	}
+	
+	public List<Adcontract> findLikeKeyword(String propertyName, Object value) {
+		log.debug("finding Adcontract instance with property: " + propertyName + ", value: " + value);
+//		try {
+//			String queryString = "from Adcontract as model where model." + propertyName + " like :keyword";
+//			return getHibernateTemplate().find(queryString, "'%"+value+"%'");
+//		} catch (RuntimeException re) {
+//			log.error("find by property name failed", re);
+//			throw re;
+//		}
+		
+		String queryString = "from Adcontract as model where model." + propertyName + " like :keyword";		
+		List<Adcontract> list = currentSession().createQuery(queryString).setParameter("keyword", "%"+value+"%").list();
+		
+		return list;
+		    
 	}
 }

@@ -14,10 +14,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nfledmedia.sorm.dao.AdcontractDAO;
 import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
+import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Publishdetail;
+import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
@@ -37,6 +40,19 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 	
 	@Resource
 	BaseService baseService;
+	
+	@Resource
+	AdcontractService adcontractService;;
+	
+	@Test
+	public void getClientsLikeKeywordTest(){
+		String keyword = "广东";
+		List<Adcontract> list = adcontractService.getClientsLikeKeyword(keyword);
+		//System.out.println(list);
+		for (Adcontract ad : list) {
+			System.out.println(ad.getClient());
+		}
+	}
 
 	@Test
 	public void calAvgScreenOccuRate4AllScreenTest() {

@@ -284,7 +284,8 @@
 			  //console.log("start:"+startTime+"\nend:"+endTime);
 			  dateRangeSQL = "o.enddate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
 			  dateRangeSQLByDateStart = "o.startdate >= '"+picker.startDate.format('YYYY-MM-DD')+"' and o.startdate <= '"+picker.endDate.format('YYYY-MM-DD')+"' ";
-			  dateRangeSQLByCreateDate = "o.adcontract.createtime >= '"+picker.startDate.format('YYYY-MM-DD HH:mm:ss')+"' and o.adcontract.createtime <= '"+picker.endDate.format('YYYY-MM-DD 23:59:59')+"' ";
+			  dateRangeSQLByCreateDate = "(o.adcontract.createtime >= '"+picker.startDate.format('YYYY-MM-DD HH:mm:ss')+"' and o.adcontract.createtime <= '"+picker.endDate.format('YYYY-MM-DD 23:59:59')+"') ";
+			  dateRangeSQLByCreateDate += "or (o.modtime >= '"+picker.startDate.format('YYYY-MM-DD HH:mm:ss')+"' and o.modtime <= '"+picker.endDate.format('YYYY-MM-DD 23:59:59')+"') ";
 			  $("#daterange-default").change();
 			});
 
@@ -300,7 +301,7 @@
 		    	url:"renkanshuManageList.action",
 		    	mtype:"GET",
 		    	datatype:"json",
-		    	colNames:['上画点位','客户','发布内容','下单属性','频次','增加','时长','起止日期','时段','备注',''],
+		    	colNames:['上画点位','客户','客户属性','发布内容','下单属性','频次','时长','起止日期','时段','下单人','备注',''],
 		    	height:400,
 		    	rowNum:'<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>',
 		    	rowList: [10, 20, 30],
@@ -321,23 +322,23 @@
         			align:"center",
         			width:"130px" 
         		},{
+        			name:"adcontract.clienttype.ctypedesc",
+        			index:"adcontract.clienttype.ctypedesc",
+        			align:"center",
+        			width:"100px" 
+        		},{
             		name:"content",
             		index:"content",
             		align:"center",
             		width:"100px"
             	},{
-            		name:"attribute",
-            		index:"attribute",
+            		name:"attribute.attributename",
+            		index:"attribute.attributename",
             		align:"center",
             		width:"80px"
             	},{
         			name:"frequency",
         			index:"frequency",
-        			align:"center",
-        			width:"80px" 
-        		},{
-        			name:"addfreq",
-        			index:"addfreq",
         			align:"center",
         			width:"80px" 
         		},{
@@ -358,6 +359,11 @@
         		},{
         			name:"remark",
         			index:"remark",
+        			align:"center",
+        			width:"80px" 
+        		},{
+        			name:"adcontract.placer",
+        			index:"adcontract.placer",
         			align:"center",
         			width:"80px" 
         		},{
@@ -401,7 +407,7 @@
 			    		t[0].p.search = false; 
 			    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 			    	}else{
-				    	searchFilter = " where o.state='" + "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" + "' and "+dateRangeSQL+" (o.adcontract.client like '%"+searchFilter+
+				    	searchFilter = " where o.state='" + "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" + "' and "+dateRangeSQL+"and (o.adcontract.client like '%"+searchFilter+
 				    	"%' or o.adcontract.agency like '%"+searchFilter+"%' or o.content like '%"+searchFilter+"%' or o.led.name like '%"+searchFilter+"%' or o.adcontract.placer like '%"+searchFilter+"%')";
 			    		//console.log(searchFilter);
 			    		t[0].p.search = true;

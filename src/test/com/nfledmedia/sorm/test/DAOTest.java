@@ -1,7 +1,6 @@
 package com.nfledmedia.sorm.test;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,17 +9,16 @@ import javax.annotation.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Repository;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.dao.PlaystrategyDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
+import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,6 +36,9 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 	
 	@Resource
 	PlaystrategyDAO playstrategyDAO;
+	
+	@Resource
+	IndustryDAO industryDAO;
 	
 	@Test
 	public void getAll(){
@@ -82,6 +83,16 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 		for (Object object : playstrategys) {
 			System.out.println(object.toString());
 		}
+		
+	}
+	
+	@Test
+	public void testIndustryDAO(){
+		Industry ind = new Industry();
+		ind.setIndustryid(Short.valueOf("27"));
+		ind.setIndustryname("哈哈");
+		
+		industryDAO.save(ind);
 		
 	}
 

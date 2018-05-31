@@ -2,12 +2,14 @@ package com.nfledmedia.sorm.dao;
 
 import java.util.List;
 
+import org.hibernate.FlushMode;
 import org.hibernate.LockMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.entity.Industry;
 
@@ -35,6 +37,7 @@ public class IndustryDAO extends HibernateDaoSupport {
 	public void save(Industry transientInstance) {
 		log.debug("saving Industry instance");
 		try {
+			//currentSession().setHibernateFlushMode(FlushMode.AUTO);
 			getHibernateTemplate().save(transientInstance);
 			log.debug("save successful");
 		} catch (RuntimeException re) {

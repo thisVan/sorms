@@ -30,6 +30,11 @@
                 <comment>下单属性，指商业，赠播，公益等</comment>
             </column>
         </many-to-one>
+        <many-to-one name="playstrategy" class="com.nfledmedia.sorm.entity.Playstrategy" fetch="select" lazy="false">
+            <column name="playstrategy_id">
+                <comment>下单属性，指商业，赠播，公益等</comment>
+            </column>
+        </many-to-one>
         <property name="ordersn" type="java.lang.String">
             <column name="ordersn" />
         </property>

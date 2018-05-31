@@ -58,6 +58,28 @@ public class AdcontractService {
 	private OrderDAO orderDAO;
 	@Autowired
 	private PublishdetailDAO publishdetailDAO;
+	
+	/**
+	 * 完成前端客户autocomplete功能
+	 * @param keyword
+	 * @return
+	 */
+	public List getClientsLikeKeyword(String keyword){
+			
+		return adcontractDAO.findLikeKeyword(AdcontractDAO.CLIENT, keyword);
+		
+	}
+	
+	/**
+	 * 完成前端代理autocomplete功能
+	 * @param keyword
+	 * @return
+	 */
+	public List getAgencysLikeKeyword(String keyword){
+			
+		return adcontractDAO.findLikeKeyword(AdcontractDAO.AGENCY, keyword);
+		
+	}
 
 	public boolean saveAdcontract(Adcontract adc, List<Order> orderList) {
 		

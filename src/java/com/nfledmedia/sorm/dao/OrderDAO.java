@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.hibernate.LockMode;
-import org.hibernate.Query;
+//import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 import com.nfledmedia.sorm.cons.TypeCollections;
+import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.util.Page;
 
@@ -37,7 +38,7 @@ public class OrderDAO extends HibernateDaoSupport {
 	public static final String MODIFIER = "modifier";
 	public static final String STATE = "state";
 	private static final String GET_ORDER_LIST = "select o.id, o.led.name, o.adcontract.client, o.adcontract.agency, o.content, o.frequency, o.addfreq, o.duration,"
-			+ "o.startdate, o.enddate, o.starttime, o.endtime, o.adcontract.remark, o.attribute.attributename from Order o ";
+			+ "o.startdate, o.enddate, o.starttime, o.endtime, o.adcontract.remark, o.attribute.attributename, o.adcontract.clienttype.ctypedesc, o.adcontract.placer from Order o ";
 
 	protected void initDao() {
 		// do nothing
@@ -202,7 +203,7 @@ public class OrderDAO extends HibernateDaoSupport {
 			return new Page();
 		// 实际查询返回分页对象
 		int startIndex = Page.getStartOfPage(pageNo, pageSize);
-		Query query = createQuery(hql, values);
+		org.hibernate.query.Query query = createQuery(hql, values);
 		List list = query.setFirstResult(startIndex).setMaxResults(pageSize).list();
 
 		return new Page(startIndex, totalCount, pageSize, list);
@@ -246,9 +247,9 @@ public class OrderDAO extends HibernateDaoSupport {
 	 * @param values
 	 *            可变参数.
 	 */
-	public Query createQuery(String hql, Object... values) {
+	public org.hibernate.query.Query createQuery(String hql, Object... values) {
 		// Assert.hasText(hql);
-		Query query = currentSession().createQuery(hql);
+		org.hibernate.query.Query query = currentSession().createQuery(hql);
 		for (int i = 0; i < values.length; i++) {
 			query.setParameter(i, values[i]);
 		}
@@ -279,5 +280,20 @@ public class OrderDAO extends HibernateDaoSupport {
 	 */
 	public List<?> find(String hql, Object... params) {
 		return this.getHibernateTemplate().find(hql, params);
+	}
+	
+	/**
+	 * 模糊查找广告内容
+	 * @param propertyName
+	 * @param value
+	 * @return
+	 */
+	public List<Order> findLikeKeyword(String propertyName, Object value) {
+		log.debug("finding Order instance with property: " + propertyName + ", value: " + value);		
+		String queryString = "from Order as model where model." + propertyName + " like :keyword";		
+		List<Order> list = currentSession().createQuery(queryString).setParameter("keyword", "%"+value+"%").list();
+		
+		return list;
+		    
 	}
 }

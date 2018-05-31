@@ -1,5 +1,7 @@
 package com.nfledmedia.sorm.action;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,9 +32,11 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.google.gson.JsonArray;
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Adcontract;
+import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Publishdetail;
@@ -41,6 +45,7 @@ import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.YewuService;
 import com.nfledmedia.sorm.util.ExcelUtil;
+import com.nfledmedia.sorm.util.JsonarrayDistinct;
 import com.nfledmedia.sorm.util.Page;
 import com.nfledmedia.sorm.util.PageToJson;
 import com.nfledmedia.sorm.util.TypeNullProcess;
@@ -76,6 +81,17 @@ public class YewuAction extends SuperAction {
 	private AdcontractService adcontractService;
 	@Autowired
 	private RenkanshuService renkanshuService;
+
+	//自动补全参数
+	private String keyword;
+		
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
 
 	// jqgird参数
 	private int page;
@@ -245,6 +261,17 @@ public class YewuAction extends SuperAction {
 	public void setKanlixiaoji(String kanlixiaoji) {
 		this.kanlixiaoji = kanlixiaoji;
 	}
+	
+	//添加行业
+	private String industryname;
+
+	public String getIndustryname() {
+		return industryname;
+	}
+
+	public void setIndustryname(String industryname) {
+		this.industryname = industryname;
+	}
 
 	public String getYewuyuan() {
 		return yewuyuan;
@@ -263,7 +290,79 @@ public class YewuAction extends SuperAction {
 		out.flush();
 		out.close();
 	}
-
+	
+	//添加新的行业，返回更新的列表，同时前台更新
+	public void addIndustryCustomer() throws Exception {
+		String info = renkanshuService.saveIndustry(industryname);
+		JSONObject jsonObject = new JSONObject();
+		JSONArray industryIdArr = new JSONArray();
+		JSONArray industryNameArr = new JSONArray();
+		Short this_id = null;
+		List<Industry> list = baseService.industryList();
+		for (Industry ind : list) {
+			industryIdArr.put(ind.getIndustryid());
+			industryNameArr.put(ind.getIndustryname());
+			if(industryname.equals(ind.getIndustryname())){
+				this_id = ind.getIndustryid();
+			};
+		}
+		jsonObject.put("info", info);
+		jsonObject.put("ind_ids", industryIdArr);
+		jsonObject.put("ind_names", industryNameArr);
+		jsonObject.put("thisIndId", this_id);
+		
+		sentMsg(jsonObject.toString());
+		
+	}
+	
+	public String autocompleteclient() throws IOException {
+		JSONArray jsonArray = new JSONArray();
+		List<Adcontract> list = adcontractService.getClientsLikeKeyword(keyword);
+		for (Adcontract adcontract : list) {
+			if (!"".equals(adcontract.getClient()) && adcontract != null) {
+				jsonArray.put(adcontract.getClient());
+			}
+		}
+		JSONArray arr = new JSONArray();
+		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
+		System.out.println("jsonArray:" + arr.toString());
+		sentMsg(arr.toString());
+		return null;
+		
+	}
+			
+	public String autocompleteagency() throws IOException {
+		JSONArray jsonArray = new JSONArray();
+		List<Adcontract> list = adcontractService.getAgencysLikeKeyword(keyword);
+		for (Adcontract adcontract : list) {
+			if (!"".equals(adcontract.getAgency()) && adcontract != null) {
+				jsonArray.put(adcontract.getAgency());
+			}
+		}
+		JSONArray arr = new JSONArray();
+		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
+		System.out.println("jsonArray:" + arr.toString());
+		sentMsg(arr.toString());
+		return null;
+		
+	}
+	
+	public String autocompletecontent() throws IOException {
+		JSONArray jsonArray = new JSONArray();
+		List<Order> list = renkanshuService.getContentsLikeKeyword(keyword);
+		for (Order o : list) {
+			if (!"".equals(o.getContent()) && o != null) {
+				jsonArray.put(o.getContent());
+			}
+		}
+		JSONArray arr = new JSONArray();
+		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
+		System.out.println("jsonArray:" + arr.toString());
+		sentMsg(arr.toString());
+		return null;
+		
+	}
+	
 	public String renkanshuManageList() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
@@ -298,13 +397,15 @@ public class YewuAction extends SuperAction {
 			} else {
 				jsonArray2.put(row[2]);
 			}
+			jsonArray2.put(row[14]);// 客户属性
 			jsonArray2.put(row[4]);// 发布内容
 			jsonArray2.put(row[13]);// 下单属性
 			jsonArray2.put(row[5]);// 广告频次
-			jsonArray2.put(row[6]);// 增加频次
 			jsonArray2.put(row[7]);// 广告时长
 			jsonArray2.put(sdf.format(row[8]) + " - " + sdf.format(row[9]));// 起止日期
 			jsonArray2.put(tdf.format(row[10]) + "-" + tdf.format(row[11]));// 时段
+			jsonArray2.put(row[15]);// 下单人
+			jsonArray2.put(row[12]);// 备注
 			jsonObject1.put("cell", jsonArray2); // 加入cell
 			jsonArray.put(jsonObject1);
 		}
@@ -993,6 +1094,7 @@ public class YewuAction extends SuperAction {
 	 */
 	public String adcontentStatisticExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat ssdf = new SimpleDateFormat("yyyy年M月d日");
 		List<Publishdetail> queryResult;
 		if ("".equals(ledId) || ledId == null) {
 			queryResult = renkanshuService.publishInTimerangeList(startTime, endTime);
@@ -1060,8 +1162,11 @@ public class YewuAction extends SuperAction {
 
 		// exportExcel方法只接受object[]此处将list转为object[]
 		String[] sheetTitles = new String[title.size()];
-		String[] timearrs = startTime.split("-");
-		String ledTimeRange = timearrs[0] + "年" + timearrs[1] + "月";
+//		String[] timearrs = startTime.split("-");
+//		String ledTimeRange = timearrs[0] + "年" + timearrs[1] + "月";
+		Date startDate = sdf.parse(startTime);
+		Date endDate = sdf.parse(endTime);
+		String ledTimeRange = ssdf.format(startDate) + "至" + ssdf.format(endDate);
 		sheetTitles[0] = ledTimeRange + ledId +  "LED广告发布客户";
 		String[] titles = new String[title.size()];
 		for (int i = 0; i < title.size(); i++) {
@@ -1101,6 +1206,7 @@ public class YewuAction extends SuperAction {
 			wcf_titles.setBackground(jxl.format.Colour.YELLOW);
 			wcf_titles.setAlignment(Alignment.CENTRE);
 			wcf_titles.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_titles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 
 			// 添加表头标题
 			if (sheetTitles != null) {
@@ -1113,6 +1219,8 @@ public class YewuAction extends SuperAction {
 			WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
 			wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcfTtitles.setAlignment(Alignment.CENTRE);
+			wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
 			// 添加标题
 			if (titles != null) {
 				for (int i = 0; i < titles.length - 1; i++) {
@@ -1125,6 +1233,8 @@ public class YewuAction extends SuperAction {
 			WritableCellFormat dataRowCellFormat = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
 			dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 			dataRowCellFormat.setAlignment(Alignment.CENTRE);
+			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
 
 			// 下面是填充数据
 			if (list != null && list.size() > 0) {
@@ -1394,6 +1504,7 @@ public class YewuAction extends SuperAction {
 				wcf_titles.setBackground(jxl.format.Colour.YELLOW);
 				wcf_titles.setAlignment(Alignment.CENTRE);
 				wcf_titles.setVerticalAlignment(VerticalAlignment.CENTRE);
+				wcf_titles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 
 				// 添加表头标题
 				if (sheetTitles != null) {
@@ -1403,10 +1514,10 @@ public class YewuAction extends SuperAction {
 					}
 				}
 
-				WritableCellFormat wcfTtitles = new WritableCellFormat(
-						new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
+				WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
 				wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
 				wcfTtitles.setAlignment(Alignment.CENTRE);
+				wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 				// 添加标题
 				if (titles != null) {
 					for (int i = 0; i < titles.length; i++) {
@@ -1420,6 +1531,7 @@ public class YewuAction extends SuperAction {
 				dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 				dataRowCellFormat.setAlignment(Alignment.CENTRE);
 				dataRowCellFormat.setWrap(true);
+				dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 
 				int mergeCellPoint = 2;
 				ArrayList dateArrList = new ArrayList();

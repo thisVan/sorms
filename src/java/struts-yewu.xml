@@ -17,6 +17,22 @@
 
 		<action name="ywyyejilist" class="com.nfledmedia.sorm.action.YewuAction" method="ywyyejilist">
 		</action>
+		
+		<!-- 自动补全刊户 -->
+		<action name="autocompleteclient" class="com.nfledmedia.sorm.action.YewuAction" method="autocompleteclient">
+		</action>
+		
+		<!-- 自动补全代理 -->
+		<action name="autocompleteagency" class="com.nfledmedia.sorm.action.YewuAction" method="autocompleteagency">
+		</action>
+		
+		<!-- 自动补全广告内容 -->
+		<action name="autocompletecontent" class="com.nfledmedia.sorm.action.YewuAction" method="autocompletecontent">
+		</action>
+		
+		<!-- 手动添加industry -->
+		<action name="addIndustryCustomer" class="com.nfledmedia.sorm.action.YewuAction" method="addIndustryCustomer">
+		</action>
 
 		<action name="dingdanguanliList" class="com.nfledmedia.sorm.action.YewuAction" method="dingdanguanliList">
 		</action>

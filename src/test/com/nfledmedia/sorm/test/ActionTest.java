@@ -69,4 +69,9 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 		renkanAction.updateOrder();
 	}
 
+	@Test
+	public void autocompleteclientTest() throws Exception{
+		yewuAction.setKeyword("广东");
+		yewuAction.autocompleteclient();
+	}
 }

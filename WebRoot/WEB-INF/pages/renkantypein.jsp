@@ -251,7 +251,7 @@
                     cache:false,    
                     dataType:"json",    
                     success:function(data){   
-                        alert("提交成功！页面将自动刷新。");
+                        alert(data.info);
                         location.href = "renkantypein";
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -297,18 +297,18 @@
 							
 							<div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" class="control-label" for="guanggaokanhu">广告刊户</label> 
-								<input class="form-control input-sm" id="guanggaokanhu" name="adcontract.client">
+								<input class="form-control input-sm" id="guanggaokanhu" name="adcontract.client" data-provide="typeahead">
 							</div>
 
 							<div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" class="control-label" for="guanggaodailigongsi">代理公司</label> 
-								<input id="guanggaodailigongsi" name="adcontract.agency" class="form-control input-sm">
+								<input id="guanggaodailigongsi" name="adcontract.agency" class="form-control input-sm" data-provide="typeahead">
 							</div>
 
 
 							<div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" class="control-label" for="agencymode">客户属性</label> 
-								<select name="clienttype_id" class="form-control input-sm" id="agencymode">
+								<select name="clienttype_id" class="form-control input-sm" id="agencymode" style="width:153px;">
 									<option value="">-请选择客户属性--</option>
 									<s:iterator value="#clienttypeList">
 										<option value='<s:property value="id"/>'><s:property value="ctypedesc"/></option>
@@ -319,7 +319,7 @@
 														
 							<div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" class="control-label" for="channelfrom">单据来源<span class="text-danger">*</span></label> 
-								<select name="channel_id" class="form-control input-sm" id="channelfrom">
+								<select name="channel_id" class="form-control input-sm" id="channelfrom" style="width:153px;">
 									<option value="">-请选择单据来源--</option>
 									<s:iterator value="#channelList">
 										<option value='<s:property value="id"/>'><s:property value="channelname"/></option>
@@ -358,6 +358,8 @@
 
 								//设置下单属性
 								var optionselecthangyeleixing = "<s:iterator value="#industryList"><option value='<s:property value="industryid"/>'><s:property value="industryname"/></option></s:iterator>";
+								//设置播放策略，轮播，或是包屏
+								var optionselectplaystrategy = "<s:iterator value="#strategyList"><option value='<s:property value="id"/>'><s:property value="strategyname"/></option></s:iterator>";
 								var optionselectshichang = new Array();
 								var arrledshichang = new Array("15", "5", "10", "20", "30", "45", "60", "90");
 								jQuery(function() {
@@ -369,7 +371,7 @@
 								});
 
 								var j = 1;
-
+						
 								jQuery(function($) {
 									//添加行
 									$("#addled").click(
@@ -380,23 +382,25 @@
 												});
 												j = testlengtharr.length + 1;
 											
-												$("#table>tbody").append('<tr><td ><input name="fabuneirongledtable" class="form-control input-sm" id="fabuneirong' 
-														+ j + '"></input></td><td><select name="shanghuadianweiledtable"  class="form-control input-sm" id="shanghuadianwei' 
-														+ j + '" onchange="setSSTime(this)">'+ optionselectled+ '</select></td><td><select name="hangyeleixingledtable"  class="form-control input-sm" id="hangyeleixing'
-														+ j +'" >'+ optionselecthangyeleixing + '</select></td><td><select name="guanggaoleixingledtable"  class="form-control input-sm" id="guanggaoleixing'
-														+ j +'" >'+ optionselectguanggaoleixing + '</select></td><td><input name="pinciledtable" class="form-control input-sm" id="pinci' 
-														+ j + '" value="60"></input></td><td><input name="shichangledtable" class="form-control input-sm" id="shichang' 
-														+ j + '" value="15"></input></td><td><input name="startdateledtable" class="form-control input-sm" type="date" max="9999-12-31" id="startdate'
-														+ j +'" /></td><td><input name="enddateledtable"  class="form-control input-sm" type="date" max="9999-12-31" id="enddate' 
+												$("#table>tbody").append('<tr><td width="200"><input name="fabuneirongledtable" class="form-control input-sm" id="fabuneirong' 
+														+ j + '" data-provide="typeahead"></input></td><td width="105"><select name="shanghuadianweiledtable"  class="form-control input-sm" id="shanghuadianwei' 
+														+ j + '" onchange="setSSTime(this)">'+ optionselectled+ '</select></td><td width="70"><select name="hangyeleixingledtable"  class="form-control input-sm" id="hangyeleixing'
+														+ j + '" onchange="addIndustryCustomed(this)">'+ optionselecthangyeleixing + '</select></td><td width="70"><select name="guanggaoleixingledtable"  class="form-control input-sm" id="guanggaoleixing'
+														+ j + '" >'+ optionselectguanggaoleixing + '</select></td><td width="50"><input name="pinciledtable" class="form-control input-sm" id="pinci' 
+														+ j + '" value="60"></input></td><td width="50"><input name="shichangledtable" class="form-control input-sm" id="shichang' 
+														+ j + '" value="15"></input></td><td width="100"><input name="startdateledtable" class="form-control input-sm" type="date" max="9999-12-31" id="startdate'
+														+ j + '" /></td><td width="100"><input name="enddateledtable"  class="form-control input-sm" type="date" max="9999-12-31" id="enddate' 
 														+ j + '"/></td><td><input name="starttimeledtable" class="form-control input-sm" type="time" value="08:00:00" id="starttime'
-														+ j +'" /></td><td><input name="endtimeledtable"  class="form-control input-sm" type="time" value="22:00:00" id="endtime' 
-														+ j + '" /></td><td><a class="form-control input-sm" onclick="deltr(this)"><span class="glyphicon glyphicon-remove"></span></a></td></tr>');
+														+ j + '" /></td><td><input name="endtimeledtable"  class="form-control input-sm" type="time" value="22:00:00" id="endtime' 
+														+ j + '" /></td><td><select name="playstrategytable"  class="form-control input-sm" id="playstrategy'
+														+ j + '" >'+ optionselectplaystrategy + '</select></td><td><a class="form-control input-sm" onclick="deltr(this)"><span class="glyphicon glyphicon-remove"></span></a></td></tr>');
 
 														if (j > 1) {
 															var jindex = j - 1;
 															$("#fabuneirong"+ j + "").val($("#fabuneirong" + jindex + "").val());
 															$("#hangyeleixing"+ j + "").val($("#hangyeleixing" + jindex + "").val());
 															$("#guanggaoleixing"+ j + "").val($("#guanggaoleixing" + jindex + "").val());
+															$("#playstrategy"+ j + "").val($("#playstrategy" + jindex + "").val());
 															$("#startdate" + j + "").val($("#startdate" + jindex + "").val());
 															$("#enddate" + j + "").val($("#enddate" + jindex + "").val());
 															$("#starttime" + j + "").val($("#starttime" + jindex + "").val());
@@ -875,10 +879,44 @@
 									return thePublishPrice;
 								}
 
+								//添加行业
+								function addIndustryCustomed(obj) {
+									var selectedText = $(obj).find("option:selected").text();
+									if(selectedText == "其他"){
+										$("#addIndustry-modal").modal('show');
+									}
+								//确认
+								$("#addIndustry-ok").click(function() {
+									var industryname = $("#industryname").val();
+									$.ajax({
+										url : "addIndustryCustomer.action",
+										type : "post",
+										async : false,
+										data : {
+												industryname : industryname
+										},
+										success : function(data) {
+													var data = JSON.parse(data);
+													alert(data.info);
+													$(obj).html();
+													var options = "";
+													for(var i=0;i<data.ind_ids.length;i++){
+														options += "<option value='"+data.ind_ids[i]+"'>"+data.ind_names[i]+"</option>";
+													}																									
+													$(obj).html(options);
+													$(obj).val(data.thisIndId);
+													$("#addIndustry-modal").modal('hide');
+										}
+									});
+								
+								});
+								}
+
+								
+								
 								//输入上画信息模态框
 								function tellAdvertisingInfo(obj) {
-									$("#tellAdvertisingInfo-modal").modal(
-											'show');
+									$("#tellAdvertisingInfo-modal").modal('show');
 
 									//确认
 									$("#tellAdvertisingInfo-ok")
@@ -914,10 +952,7 @@
 																			+ packksshijian
 																			+ "--"
 																			+ packjsshijian);
-															$(
-																	"#tellAdvertisingInfo-modal")
-																	.modal(
-																			'hide');
+															$("#tellAdvertisingInfo-modal").modal('hide');
 															packageScreen(obj);
 															var shifu = $(
 																	"#hejishifujine")
@@ -952,12 +987,13 @@
 													<th data-field="shanghuadianwei" data-sortable="true">上画点位</th>
 													<th data-field="hangyeleixing" data-sortable="true">行业类型</th>
 													<th data-field="xiadanshuxing" data-sortable="true">下单属性</th>
-													<th data-field="pinci" data-sortable="true">广告频次</th>
-													<th data-field="shichang" data-sortable="true">广告时长(秒)</th>
+													<th data-field="pinci" data-sortable="true">频次</th>
+													<th data-field="shichang" data-sortable="true">时长(秒)</th>
 													<th data-field="startdate" data-sortable="true">开始日期</th>
 													<th data-field="enddate" data-sortable="true">结束日期</th>
 													<th data-field="starttime" data-sortable="true">开始时间</th>
 													<th data-field="endtime" data-sortable="true">结束时间</th>
+													<th data-field="playhstrategy" data-sortable="true">播放策略</th>
 													<th data-field="operation" data-sortable="true">操作</th>
 												</tr>
 											</thead>
@@ -983,7 +1019,7 @@
 								<button type="button" id="store" class="btn" style="display: none;">保存</button>
 								<button type="button" id="restore" class="btn" style="display: none;">恢复</button>
 								<button type="button" id="submit_button" class="btn btn-primary" onclick="doSubmit()">提交</button>
-								<button type="reset" class="btn btn-default">清空</button>
+								<button type="reset" class="btn btn-default">取消</button>
 
 							</div>
 						</form>
@@ -992,6 +1028,41 @@
 			<!-- /.col-->
 		</div>
 		<!-- /.row -->
+		
+		<div class="modal fade" id="addIndustry-modal">
+			<div class="modal-dialog ">
+				<div class="modal-content">
+					<div class="modal-header h3">添加行业</div>
+					<div class="modal-body " style="text-align:center">
+						<form id="addIndustryForm" class="form-horizontal" role="form">
+							<div class="form-group ">
+								<label for="account" class="col-sm-3 control-label">行业名称</label>
+								<div class="col-sm-4 has-success">
+									<input type="text" class="form-control" id="industryname" name="industryname" maxlength="20">
+								</div>
+							</div>
+						<!--<div class="form-group ">
+								<label for="account" class="col-sm-3 control-label">描述</label>
+								<div class="col-sm-4 has-success">
+									<input type="text" class="form-control" id="desc"  maxlength="20">
+								</div>
+							</div> -->
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button class="btn btn-danger" data-dismiss="modal">
+							<i class="fa fa-times-circle"></i>取消
+						</button>
+						<button id="addIndustry-ok" class="btn btn-success">
+							<i class="fa fa-check-circle"></i>确认
+						</button>						
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
 
 		<div class="modal fade" id="tellAdvertisingInfo-modal">
 			<div class="modal-dialog ">
@@ -1065,6 +1136,8 @@
 	<script src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
 
 	<script type="text/javascript" src="js/bootstrap-table.js"></script>
+	
+	<script type="text/javascript" src="js/bootstrap3-typeahead.min.js"></script>
 	<!--
     	作者：this.van@hotmail.com
     	时间：2016-06-19
@@ -1125,8 +1198,65 @@
 					document.getElementById(fukuanfangshiid).options.add(new Option(arrfukuanfangshi[j], arrfukuanfangshi[j]));
 				}
 			}
-
+	
 		}
+	
+		$(function() {
+			$("#guanggaokanhu").typeahead({
+				source : function(query, process) {
+/*  					var parameter = {
+						keyword : query
+					};
+					return $.post('autocompleteclient.action', parameter, function(data) {
+						process(data);
+					}); */
+ 					return $.ajax({
+			            url: 'autocompleteclient.action',
+			            type: 'post',
+			            data: {keyword: query},
+			            dataType: 'json',
+			            success: function (result) {        
+			                // 这里省略resultList的处理过程，处理后resultList是一个字符串列表，
+			                // 经过process函数处理后成为能被typeahead支持的字符串数组，作为搜索的源
+			                return process(result);                                           
+			            }
+			        }); 
+				}
+			}); 
+			
+			$("#guanggaodailigongsi").typeahead({
+				source : function(query, process) {
+ 					return $.ajax({
+			            url: 'autocompleteagency.action',
+			            type: 'post',
+			            data: {keyword: query},
+			            dataType: 'json',
+			            success: function (result) {        
+			                // 这里省略resultList的处理过程，处理后resultList是一个字符串列表，
+			                // 经过process函数处理后成为能被typeahead支持的字符串数组，作为搜索的源
+			                return process(result);                                           
+			            }
+			        }); 
+				}
+			});
+			
+			$("input[name='fabuneirongledtable']").typeahead({
+				source : function(query, process) {
+ 					return $.ajax({
+			            url: 'autocompletecontent.action',
+			            type: 'post',
+			            data: {keyword: query},
+			            dataType: 'json',
+			            success: function (result) {        
+			                // 这里省略resultList的处理过程，处理后resultList是一个字符串列表，
+			                // 经过process函数处理后成为能被typeahead支持的字符串数组，作为搜索的源
+			                return process(result);                                           
+			            }
+			        }); 
+				}
+			});
+	
+		});
 	</script>
 
 	<script type="text/javascript">
@@ -1356,6 +1486,8 @@
 		localStorage.setItem("globalIdentification", indentify);
 		localStorage.setItem("assistantIdentify", timestampstr);
 	}
+	
+	$(function(){$("#addled").click()});
 
  
 </script>

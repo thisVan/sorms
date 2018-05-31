@@ -27,6 +27,7 @@ import com.nfledmedia.sorm.entity.Clienttype;
 import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Order;
+import com.nfledmedia.sorm.entity.Playstrategy;
 import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
@@ -165,6 +166,7 @@ public class RenkanAction extends SuperAction {
 	private String[] endtimeledtable;
 	private String[] pinciledtable;
 	private String[] shichangledtable;
+	private String[] playstrategytable;
 
 	private String renkanbianhao;
 	private String renkanshuauditid;
@@ -347,7 +349,7 @@ public class RenkanAction extends SuperAction {
 	public String saverenkan() throws JSONException, IOException {
 		String tip;
 		if ("success".equals(trySave())) {
-			tip = "您填写的信息已经提交成功，请等待审核！";
+			tip = "您填写的信息已经提交成功！";
 
 		} else {
 			tip = "提交失败，请联系管理员处理！";
@@ -396,11 +398,15 @@ public class RenkanAction extends SuperAction {
 				Attribute att = new Attribute();
 				att.setId(Short.parseShort(guanggaoleixingledtable[i]));
 				ord.setAttribute(att);
+				Playstrategy pstrategy = new Playstrategy();
+				pstrategy.setId(Short.parseShort(playstrategytable[i]));
+				ord.setPlaystrategy(pstrategy);
 				ord.setOrdersn(adcontract.getSn());
 				ord.setFrequency(Short.parseShort(pinciledtable[i]));
 				ord.setDuration(Short.parseShort(shichangledtable[i]));
 				ord.setStartdate(sdf.parse(startdateledtable[i]));
 				ord.setEnddate(sdf.parse(enddateledtable[i]));
+				
 				// 前台time时间格式转换
 				if (starttimeledtable[i].length() == 5) {
 					ord.setStarttime(Time.valueOf(starttimeledtable[i] + ":00"));
@@ -573,6 +579,14 @@ public class RenkanAction extends SuperAction {
 
 	public void setShichangledtable(String[] shichangledtable) {
 		this.shichangledtable = shichangledtable;
+	}
+
+	public String[] getPlaystrategytable() {
+		return playstrategytable;
+	}
+
+	public void setPlaystrategytable(String[] playstrategytable) {
+		this.playstrategytable = playstrategytable;
 	}
 
 	public String[] getFabuneirongledtable() {

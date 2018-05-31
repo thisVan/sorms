@@ -1,18 +1,10 @@
 package com.nfledmedia.sorm.service;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Entity;
-
-import org.apache.struts2.ServletActionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.MessageDAO;
@@ -20,11 +12,8 @@ import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.dao.UserDAO;
 import com.nfledmedia.sorm.entity.Industry;
-import com.nfledmedia.sorm.entity.Message;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Publishdetail;
-import com.nfledmedia.sorm.entity.User;
-import com.nfledmedia.sorm.util.ClassesConvertTool;
 import com.nfledmedia.sorm.util.Page;
 
 /**
@@ -37,6 +26,7 @@ import com.nfledmedia.sorm.util.Page;
  */
 
 @Service
+@Transactional
 public class RenkanshuService {
 	// 注入DAO
 	@Autowired
@@ -49,7 +39,40 @@ public class RenkanshuService {
 	private OrderDAO orderDAO;
 	@Autowired
 	private PublishdetailDAO publishdetailDAO;
+	
+	/**
+	 * 完成前端广告内容autocomplete功能
+	 * @param keyword
+	 * @return
+	 */
+	public List getContentsLikeKeyword(String keyword){
+			
+		return orderDAO.findLikeKeyword(OrderDAO.CONTENT, keyword);
+		
+	}
+	
+	public String saveIndustry(String industryname){
+		String tip = "";
+		List indList = industryDAO.findAll();
+		
+		Industry industry = new Industry();		
+		industry.setIndustryname(industryname);
+		industry.setIndustryid((short) (indList.size() + 1));
+		
+		try {
+			industryDAO.save(industry);
+			tip = "执行成功！";
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			tip = "添加失败！";
+			//重新抛出异常，触发事务
+			throw new RuntimeException();
+		}
+		
+		return tip;
 
+	}
+	
 	public Page getRenkanshuManageList(String sidx, String sord, int pageNo, int pageSize) {
 		System.out.println("???????????yewuService:getYewuList:sidx:" + sidx);
 		System.out.println(pageSize);
