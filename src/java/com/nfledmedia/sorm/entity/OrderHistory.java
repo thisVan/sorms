@@ -12,14 +12,15 @@ public class OrderHistory implements java.io.Serializable {
 
 	// Fields
 
-	private Integer id;
+	private Integer sid;
 	private Led led;
 	private Operatetype operatetype;
-	private Adcontract adcontract;
 	private Playstrategy playstrategy;
 	private Industry industry;
 	private Attribute attribute;
+	private Integer id;
 	private String ordersn;
+	private Integer adcontractId;
 	private String content;
 	private Short duration;
 	private Short frequency;
@@ -41,24 +42,26 @@ public class OrderHistory implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public OrderHistory(Operatetype operatetype, Timestamp operatetime, String operater) {
+	public OrderHistory(Operatetype operatetype, Integer id, Timestamp operatetime, String operater) {
 		this.operatetype = operatetype;
+		this.id = id;
 		this.operatetime = operatetime;
 		this.operater = operater;
 	}
 
 	/** full constructor */
-	public OrderHistory(Led led, Operatetype operatetype, Adcontract adcontract, Playstrategy playstrategy, Industry industry,
-			Attribute attribute, String ordersn, String content, Short duration, Short frequency, Short addfreq, Date startdate,
-			Date enddate, Time starttime, Time endtime, String modifier, Timestamp modtime, String state, Timestamp operatetime,
-			String operater) {
+	public OrderHistory(Led led, Operatetype operatetype, Playstrategy playstrategy, Industry industry,
+			Attribute attribute, Integer id, String ordersn, Integer adcontractId, String content, Short duration,
+			Short frequency, Short addfreq, Date startdate, Date enddate, Time starttime, Time endtime, String modifier,
+			Timestamp modtime, String state, Timestamp operatetime, String operater) {
 		this.led = led;
 		this.operatetype = operatetype;
-		this.adcontract = adcontract;
 		this.playstrategy = playstrategy;
 		this.industry = industry;
 		this.attribute = attribute;
+		this.id = id;
 		this.ordersn = ordersn;
+		this.adcontractId = adcontractId;
 		this.content = content;
 		this.duration = duration;
 		this.frequency = frequency;
@@ -76,12 +79,12 @@ public class OrderHistory implements java.io.Serializable {
 
 	// Property accessors
 
-	public Integer getId() {
-		return this.id;
+	public Integer getSid() {
+		return this.sid;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setSid(Integer sid) {
+		this.sid = sid;
 	}
 
 	public Led getLed() {
@@ -98,14 +101,6 @@ public class OrderHistory implements java.io.Serializable {
 
 	public void setOperatetype(Operatetype operatetype) {
 		this.operatetype = operatetype;
-	}
-
-	public Adcontract getAdcontract() {
-		return this.adcontract;
-	}
-
-	public void setAdcontract(Adcontract adcontract) {
-		this.adcontract = adcontract;
 	}
 
 	public Playstrategy getPlaystrategy() {
@@ -132,12 +127,28 @@ public class OrderHistory implements java.io.Serializable {
 		this.attribute = attribute;
 	}
 
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getOrdersn() {
 		return this.ordersn;
 	}
 
 	public void setOrdersn(String ordersn) {
 		this.ordersn = ordersn;
+	}
+
+	public Integer getAdcontractId() {
+		return this.adcontractId;
+	}
+
+	public void setAdcontractId(Integer adcontractId) {
+		this.adcontractId = adcontractId;
 	}
 
 	public String getContent() {
@@ -242,6 +253,15 @@ public class OrderHistory implements java.io.Serializable {
 
 	public void setOperater(String operater) {
 		this.operater = operater;
+	}
+	
+	@Override
+	public String toString() {
+		return "OrderHistory [sid=" + sid + ", led=" + led.getName() + ", operatetype=" + operatetype.getOperatetype() + ", adcontractId=" + adcontractId
+				+ ", playstrategy=" + playstrategy.getStrategyname() + ", industry=" + industry.getIndustryname() + ", attribute=" + attribute.getAttributename()+ ", id=" + id + ", ordersn="
+				+ ordersn + ", content=" + content + ", duration=" + duration + ", frequency=" + frequency + ", addfreq=" + addfreq
+				+ ", startdate=" + startdate + ", enddate=" + enddate + ", starttime=" + starttime + ", endtime=" + endtime + ", modifier="
+				+ modifier + ", modtime=" + modtime + ", state=" + state + ", operatetime=" + operatetime + ", operater=" + operater + "]";
 	}
 
 }

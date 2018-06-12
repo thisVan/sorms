@@ -40,6 +40,8 @@
 		</action>
 		<action name="dingdanDetailListExport" class="com.nfledmedia.sorm.action.YewuAction" method="dingdanDetailListExport">
 		</action>
+		<action name="orderDetailExport" class="com.nfledmedia.sorm.action.YewuAction" method="orderDetailExport">
+		</action>
 
 		<action name="getTop10_annual_Led_Occupy" class="com.nfledmedia.sorm.action.YewuAction" method="getTop10_annual_Led_Occupy">
 		</action>
@@ -48,6 +50,24 @@
 		<action name="orderUpdatePage" class="com.nfledmedia.sorm.action.YewuAction" method="orderUpdatePage">
 			<result>/WEB-INF/pages/orderUpdatePage.jsp</result>
 		</action>
+		<action name="updateOrderPage" class="com.nfledmedia.sorm.action.YewuAction" method="updateOrderPage">
+			<result>/WEB-INF/pages/updateOrderPage.jsp</result>
+		</action>
+		<action name="operateOrderPage" class="com.nfledmedia.sorm.action.YewuAction" method="operateOrderPage">
+			<result>/WEB-INF/pages/operateOrderPage.jsp</result>
+		</action>
+		<action name="operateOrderList" class="com.nfledmedia.sorm.action.YewuAction" method="operateOrderList">
+		</action>
+		<!-- 改刊业务操作 -->
+		<action name="alterAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="alterAdvertisingAction">
+		</action>
+		<!-- 停刊操作 -->
+		<action name="stopAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="stopAdvertisingAction">
+		</action>
+		<!-- 撤刊操作 -->
+		<action name="revokeAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="revokeAdvertisingAction">
+		</action>
+				
 		<action name="updateRenkanshu" class="com.nfledmedia.sorm.action.RenkanAction" method="updateRenkanshu">
 		</action>
 		<action name="orderAuditList" class="com.nfledmedia.sorm.action.YewuAction" method="orderAuditList">
@@ -68,11 +88,7 @@
 		</action>
 		<action name="upOrderPage" class="com.nfledmedia.sorm.action.OrderAuditAction" method="upOrderPage">
 			<result>/WEB-INF/pages/upOrderPage.jsp</result>
-		</action>
-
-		<action name="updateOrderPage" class="com.nfledmedia.sorm.action.YewuAction" method="updateOrderPage">
-			<result>/WEB-INF/pages/updateOrderPage.jsp</result>
-		</action>
+		</action>	
 
 		<action name="upOrder" class="com.nfledmedia.sorm.action.YewuAction" method="upOrder">
 		</action>

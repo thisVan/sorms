@@ -6,8 +6,8 @@
 -->
 <hibernate-mapping>
     <class name="com.nfledmedia.sorm.entity.OrderHistory" table="order_history" catalog="sormsdb">
-        <id name="id" type="java.lang.Integer">
-            <column name="id" />
+        <id name="sid" type="java.lang.Integer">
+            <column name="sid" />
             <generator class="identity" />
         </id>
         <many-to-one name="led" class="com.nfledmedia.sorm.entity.Led" fetch="select">
@@ -18,11 +18,6 @@
         <many-to-one name="operatetype" class="com.nfledmedia.sorm.entity.Operatetype" fetch="select">
             <column name="operatetype" not-null="true">
                 <comment>操作形式，指该刊，停刊</comment>
-            </column>
-        </many-to-one>
-        <many-to-one name="adcontract" class="com.nfledmedia.sorm.entity.Adcontract" fetch="select">
-            <column name="adcontract_id">
-                <comment>认刊书id，绑定认刊书</comment>
             </column>
         </many-to-one>
         <many-to-one name="playstrategy" class="com.nfledmedia.sorm.entity.Playstrategy" fetch="select">
@@ -38,8 +33,16 @@
                 <comment>下单属性，指商业，赠播，公益等</comment>
             </column>
         </many-to-one>
+        <property name="id" type="java.lang.Integer">
+            <column name="id" not-null="true" />
+        </property>
         <property name="ordersn" type="java.lang.String">
             <column name="ordersn" />
+        </property>
+        <property name="adcontractId" type="java.lang.Integer">
+            <column name="adcontract_id">
+                <comment>认刊书id，绑定认刊书</comment>
+            </column>
         </property>
         <property name="content" type="java.lang.String">
             <column name="content">

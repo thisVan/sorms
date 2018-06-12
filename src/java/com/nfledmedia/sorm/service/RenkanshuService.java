@@ -1,19 +1,27 @@
 package com.nfledmedia.sorm.service;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nfledmedia.sorm.dao.AdcontractDAO;
+import com.nfledmedia.sorm.dao.AdcontractHistoryDAO;
 import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.MessageDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
+import com.nfledmedia.sorm.dao.OrderHistoryDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.dao.UserDAO;
 import com.nfledmedia.sorm.entity.Industry;
+import com.nfledmedia.sorm.entity.Operatetype;
 import com.nfledmedia.sorm.entity.Order;
+import com.nfledmedia.sorm.entity.OrderHistory;
 import com.nfledmedia.sorm.entity.Publishdetail;
+import com.nfledmedia.sorm.util.ClassesConvertTool;
 import com.nfledmedia.sorm.util.Page;
 
 /**
@@ -39,6 +47,9 @@ public class RenkanshuService {
 	private OrderDAO orderDAO;
 	@Autowired
 	private PublishdetailDAO publishdetailDAO;
+	@Autowired
+	private AdcontractDAO adcontractDAO;
+
 	
 	/**
 	 * 完成前端广告内容autocomplete功能
@@ -134,6 +145,17 @@ public class RenkanshuService {
 	public Order getOrderById(Integer orderId) {
 		return orderDAO.findById(orderId);
 	}
+	
+	/**
+	 * 获取某段时间的Order
+	 * @param dateStart
+	 * @param dateEnd
+	 * @return List
+	 */
+	public List getOrderInDuration(Date dateStart, Date dateEnd) {
+		return orderDAO.findOrdersInDuration(dateStart, dateEnd);
+	}
+	
 //	// tid即要修改的认刊书的认刊编号
 //	public void update(Integer userID, Renkanshu renkanshu, String updateReason, String tid, String[] fenqiid,
 //			String[] fenqimingcheng, String[] fenqijine, String[] fenqifukuanshijian, String[] fukuanfangshi,

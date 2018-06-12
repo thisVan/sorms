@@ -11,9 +11,11 @@ public class AdcontractHistory implements java.io.Serializable {
 
 	// Fields
 
-	private Integer id;
+	private Integer sid;
 	private Clienttype clienttype;
+	private Operatetype operatetype;
 	private Channel channel;
+	private Integer id;
 	private String sn;
 	private Date date;
 	private String client;
@@ -25,7 +27,6 @@ public class AdcontractHistory implements java.io.Serializable {
 	private String placer;
 	private Timestamp modifiedtime;
 	private String operater;
-	private Short operateType;
 
 	// Constructors
 
@@ -34,18 +35,20 @@ public class AdcontractHistory implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public AdcontractHistory(Timestamp modifiedtime, String operater, Short operateType) {
+	public AdcontractHistory(Operatetype operatetype, Timestamp modifiedtime, String operater) {
+		this.operatetype = operatetype;
 		this.modifiedtime = modifiedtime;
 		this.operater = operater;
-		this.operateType = operateType;
 	}
 
 	/** full constructor */
-	public AdcontractHistory(Clienttype clienttype, Channel channel, String sn, Date date, String client, String agency, String remark,
-			Timestamp createtime, String state, Timestamp lastModifytime, String placer, Timestamp modifiedtime, String operater,
-			Short operateType) {
+	public AdcontractHistory(Clienttype clienttype, Operatetype operatetype, Channel channel, Integer id, String sn, Date date,
+			String client, String agency, String remark, Timestamp createtime, String state, Timestamp lastModifytime, String placer,
+			Timestamp modifiedtime, String operater) {
 		this.clienttype = clienttype;
+		this.operatetype = operatetype;
 		this.channel = channel;
+		this.id = id;
 		this.sn = sn;
 		this.date = date;
 		this.client = client;
@@ -57,17 +60,16 @@ public class AdcontractHistory implements java.io.Serializable {
 		this.placer = placer;
 		this.modifiedtime = modifiedtime;
 		this.operater = operater;
-		this.operateType = operateType;
 	}
 
 	// Property accessors
 
-	public Integer getId() {
-		return this.id;
+	public Integer getSid() {
+		return this.sid;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setSid(Integer sid) {
+		this.sid = sid;
 	}
 
 	public Clienttype getClienttype() {
@@ -78,12 +80,28 @@ public class AdcontractHistory implements java.io.Serializable {
 		this.clienttype = clienttype;
 	}
 
+	public Operatetype getOperatetype() {
+		return this.operatetype;
+	}
+
+	public void setOperatetype(Operatetype operatetype) {
+		this.operatetype = operatetype;
+	}
+
 	public Channel getChannel() {
 		return this.channel;
 	}
 
 	public void setChannel(Channel channel) {
 		this.channel = channel;
+	}
+
+	public Integer getId() {
+		return this.id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getSn() {
@@ -174,12 +192,13 @@ public class AdcontractHistory implements java.io.Serializable {
 		this.operater = operater;
 	}
 
-	public Short getOperateType() {
-		return this.operateType;
+	@Override
+	public String toString() {
+		return "AdcontractHistory [sid=" + sid + ", clienttype=" + clienttype.getCtypedesc() + ", operatetype=" + operatetype.getOperatetype() + ", channel=" + channel.getChannelname()
+				+ ", id=" + id + ", sn=" + sn + ", date=" + date + ", client=" + client + ", agency=" + agency + ", remark=" + remark
+				+ ", createtime=" + createtime + ", state=" + state + ", lastModifytime=" + lastModifytime + ", placer=" + placer
+				+ ", modifiedtime=" + modifiedtime + ", operater=" + operater + "]";
 	}
-
-	public void setOperateType(Short operateType) {
-		this.operateType = operateType;
-	}
-
+	
+	
 }

@@ -117,6 +117,7 @@
 								<th data-field="enddate" data-sortable="true">结束日期</th>
 								<th data-field="starttime" data-sortable="true">开始时间</th>
 								<th data-field="endtime" data-sortable="true">结束时间</th>
+								<th data-field="playstrategy" data-sortable="true">播放策略</th>
 								<th data-field="operate" data-sortable="false">操作</th>
 							</tr>
 						</thead>
@@ -158,6 +159,10 @@
 								<td><input name="order.endtime"
 									class="form-control input-sm" type="time"
 									value="${order.endtime }" id="endtime1"></td>
+								<td><s:select name="playstrategy.id" id="playstrategy1"
+										cssClass="form-control input-sm" list="playstrategyList"
+										listKey="id" listValue="strategyname"
+										value="#order.playstrategy.id"></s:select></td>
 								<td><button class="btn btn-danger btn-sm"
 										onclick="deletePublishdetail(this)">删除</button></td>
 							</tr>

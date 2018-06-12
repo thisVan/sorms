@@ -102,11 +102,18 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 		}
 	}
 
+	@Test
+	public void getOrdersByAdcontract(){
+		List list = adcontractService.getOrdersByAdcontractId(1000);
+		System.out.println(list);
+	}
+	
 	public void printMap(Map<String, Object> map) {
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			System.out.println("key-->" + entry.getKey());
 			System.out.println("value-->" + entry.getValue());
 		}
 	}
+	
 
 }

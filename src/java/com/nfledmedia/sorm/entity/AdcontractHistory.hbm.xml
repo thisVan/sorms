@@ -6,18 +6,26 @@
 -->
 <hibernate-mapping>
     <class name="com.nfledmedia.sorm.entity.AdcontractHistory" table="adcontract_history" catalog="sormsdb">
-        <id name="id" type="java.lang.Integer">
-            <column name="id" />
+        <id name="sid" type="java.lang.Integer">
+            <column name="sid" />
             <generator class="identity" />
         </id>
         <many-to-one name="clienttype" class="com.nfledmedia.sorm.entity.Clienttype" fetch="select">
             <column name="clienttype_id" />
+        </many-to-one>
+        <many-to-one name="operatetype" class="com.nfledmedia.sorm.entity.Operatetype" fetch="select">
+            <column name="operate_type" not-null="true">
+                <comment>操作方式，指该刊，停刊等</comment>
+            </column>
         </many-to-one>
         <many-to-one name="channel" class="com.nfledmedia.sorm.entity.Channel" fetch="select">
             <column name="channel_id">
                 <comment>单据来源，如新视界/新帆</comment>
             </column>
         </many-to-one>
+        <property name="id" type="java.lang.Integer">
+            <column name="id" />
+        </property>
         <property name="sn" type="java.lang.String">
             <column name="sn">
                 <comment>单据编号</comment>
@@ -67,11 +75,6 @@
         <property name="operater" type="java.lang.String">
             <column name="operater" length="50" not-null="true">
                 <comment>操作人</comment>
-            </column>
-        </property>
-        <property name="operateType" type="java.lang.Short">
-            <column name="operate_type" not-null="true">
-                <comment>操作方式，指该刊，停刊等</comment>
             </column>
         </property>
     </class>

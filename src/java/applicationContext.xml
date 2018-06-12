@@ -159,4 +159,16 @@
 	<bean id="messageDAO" class="com.nfledmedia.sorm.dao.MessageDAO">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+	<bean id="adcontractHistoryDAO" class="com.nfledmedia.sorm.dao.AdcontractHistoryDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="orderHistoryDAO" class="com.nfledmedia.sorm.dao.OrderHistoryDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="operatetypeDAO" class="com.nfledmedia.sorm.dao.OperatetypeDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="opereventDAO" class="com.nfledmedia.sorm.dao.OpereventDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
 </beans>

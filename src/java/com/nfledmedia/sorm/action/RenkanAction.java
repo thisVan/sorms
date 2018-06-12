@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 
 import org.apache.struts2.ServletActionContext;
 import org.json.JSONException;
@@ -17,9 +18,11 @@ import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
+import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.Attribute;
 import com.nfledmedia.sorm.entity.Channel;
@@ -32,6 +35,7 @@ import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
+import com.nfledmedia.sorm.service.UserService;
 import com.nfledmedia.sorm.service.YewuService;
 import com.opensymphony.xwork2.ActionContext;
 
@@ -55,6 +59,8 @@ public class RenkanAction extends SuperAction {
 	private RenkanshuService renkanshuService;
 	@Autowired
 	private BaseService baseService;
+	@Autowired
+	private UserService userService; 
 
 	private int page;
 	private String sidx;
@@ -79,6 +85,7 @@ public class RenkanAction extends SuperAction {
 	private Channel channel;
 	private Attribute attribute;
 	private Clienttype clienttype;
+	private Playstrategy playstrategy;
 
 	public Adcontract getAdcontract() {
 		return adcontract;
@@ -340,7 +347,7 @@ public class RenkanAction extends SuperAction {
 
 	/**
 	 * @param audit_id
-	 *            the audit_id to set
+	 * the audit_id to set
 	 */
 	public void setAudit_id(String audit_id) {
 		this.audit_id = audit_id;
@@ -369,7 +376,9 @@ public class RenkanAction extends SuperAction {
 	 * @author PC-FAN
 	 * @return boolean
 	 */
+	@Transactional
 	public String trySave() {
+		String returnStr = "success";
 		try {
 			// 公共工具类
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -425,11 +434,68 @@ public class RenkanAction extends SuperAction {
 			}
 
 			adcontractService.saveAdcontract(adcontract, ordList);
-		} catch (Exception e) {
+		} catch (ParseException e) {
 			e.printStackTrace();
-			return "failure";
+			returnStr = "failure";
+			throw new RuntimeException();
 		}
-		return "success";
+		return returnStr;
+	}
+	
+	/**
+	 * 改刊的业务流程
+	 * @throws IOException 
+	 */
+	public void alterAdvertisingAction() throws IOException {
+		Map session = ActionContext.getContext().getSession();
+		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
+		User u = userService.getUserById(uid);
+		String operater = u.getRealname();
+		String info = adcontractService.alterAdvertisingService(tid, order, operater);
+		
+		String recallTip = "操作成功！".equals(info)?info:"操作失败，请联系管理员处理！";
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("info", recallTip);
+		
+		sentMsg(jsonObject.toString());
+	}
+
+	/**
+	 * 停刊的业务流程
+	 * @throws IOException 
+	 */
+	public void stopAdvertisingAction() throws IOException {
+		Map session = ActionContext.getContext().getSession();
+		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
+		User u = userService.getUserById(uid);
+		String operater = u.getRealname();
+		String info = adcontractService.stopAdvertisingService(tid, operater);
+		String recallTip = "操作成功！".equals(info)?info:"操作失败，请联系管理员处理！";
+		
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("info", recallTip);
+		
+		sentMsg(jsonObject.toString());
+	}
+
+	/**
+	 * 撤刊的业务流程
+	 * @throws IOException 
+	 */
+	public void revokeAdvertisingAction() throws IOException {
+		Map session = ActionContext.getContext().getSession();
+		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
+		User u = userService.getUserById(uid);
+		String operater = u.getRealname();
+		String info = adcontractService.revokeAdvertisingService(tid, operater);
+
+		String recallTip = "操作成功！".equals(info) ? info : "操作失败，请联系管理员处理！";
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("info", recallTip);
+
+		sentMsg(jsonObject.toString());
 	}
 
 	// public void deleteRenkanshu() throws Exception {
@@ -458,6 +524,7 @@ public class RenkanAction extends SuperAction {
 		order.setIndustry(baseService.getIndustryByIndustryid(industry.getIndustryid()));
 		order.setAttribute(baseService.getAttributeById(attribute.getId()));
 		order.setLed(baseService.getLedById(led.getId()));
+		order.setPlaystrategy(baseService.getPlaystrategyById(playstrategy.getId()));
 
 		Adcontract adcontp = adcontractService.getAdcontractById(adcontract.getId());
 		Adcontract adcSource = new Adcontract();
@@ -472,7 +539,7 @@ public class RenkanAction extends SuperAction {
 		boolean adcontractIsModified = adcontp.keyPropertiesModified(adcSource);
 		
 		System.out.println(adcontract);
-		System.out.println(order);
+//		System.out.println(order);
 		List<Order> orderList = new ArrayList<Order>();
 		orderList.add(ordp);
 
@@ -491,10 +558,12 @@ public class RenkanAction extends SuperAction {
 	}
 
 	public String deletethisOrder() throws JSONException, IOException {
+		ActionContext ctx = ActionContext.getContext();
+		User user = adcontractService.getUserById((Integer) ctx.getSession().get(CommonConstant.SESSION_ID));
 		String tip = "";
 		Order ordp = adcontractService.getOrderById(order.getId());
-
-		if (adcontractService.deleteOrder(ordp)) {
+		
+		if (adcontractService.deleteOrder(ordp,user)) {
 			tip = "删除成功！";
 
 		} else {
@@ -531,6 +600,14 @@ public class RenkanAction extends SuperAction {
 
 	public void setLed(Led led) {
 		this.led = led;
+	}
+	
+	public Playstrategy getPlaystrategy() {
+		return playstrategy;
+	}
+
+	public void setPlaystrategy(Playstrategy playstrategy) {
+		this.playstrategy = playstrategy;
 	}
 
 	public String[] getShanghuadianweiledtable() {

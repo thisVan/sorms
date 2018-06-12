@@ -38,6 +38,7 @@ import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
+import com.nfledmedia.sorm.entity.Operevent;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.service.AdcontractService;
@@ -111,6 +112,16 @@ public class YewuAction extends SuperAction {
 
 	private Integer adcontractid;
 	private Integer orderid;
+	private String adcontract_id;
+	
+
+	public String getAdcontract_id() {
+		return adcontract_id;
+	}
+
+	public void setAdcontract_id(String adcontract_id) {
+		this.adcontract_id = adcontract_id;
+	}
 
 	public Integer getAdcontractid() {
 		return adcontractid;
@@ -472,7 +483,6 @@ public class YewuAction extends SuperAction {
 					try {
 						procfreq = (((Short) subList.get(6)).intValue() + addfreq) * ((Short) subList.get(8)).intValue() / 15;
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 						System.out.println(e);
 					}
@@ -1601,6 +1611,171 @@ public class YewuAction extends SuperAction {
 		return null;
 
 	}
+	
+	/**
+	 * 新视界+新帆下单明细表导出为Excel
+	 * @return String
+	 * @throws Exception
+	 */
+	public String orderDetailExport() throws Exception {
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
+		DateFormat sdfHm = new SimpleDateFormat("HH:mm");
+
+		// 数据集
+		List dataList = renkanshuService.getOrderInDuration(sdf.parse(startTime), sdf.parse(endTime));
+
+		// 处理为需要的格式
+		List dataResultList = new ArrayList();
+		for (Object object : dataList) {
+			Order order = (Order) object;
+			List order2ArrayList = new ArrayList();
+			order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
+			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源
+			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			if (opereventList.size() > 0) {
+				order2ArrayList.add(((Operevent) opereventList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
+			} else {
+				order2ArrayList.add("认刊");// 单据类型，指认刊，改刊，停刊
+			}
+			order2ArrayList.add(order.getLed().getCity());// 区域
+			order2ArrayList.add(order.getLed().getName());// 屏点
+			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
+			order2ArrayList.add(order.getAdcontract().getAgency());// 代理公司
+			order2ArrayList.add(order.getContent());// 广告内容
+			order2ArrayList.add(sdfMd.format(order.getStartdate()));// 上（改、停、撤）刊日期
+			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
+			order2ArrayList.add(order.getDuration());// 时长
+			order2ArrayList.add(order.getFrequency());// 频次
+			order2ArrayList.add("");// 排播接单人
+			order2ArrayList.add(order.getAdcontract().getPlacer());// 下单人
+			order2ArrayList.add(order.getAdcontract().getRemark());// 备注
+
+			dataResultList.add(order2ArrayList);
+		}
+
+		System.out.println(startTime + "--" + endTime + "  " + ledId);
+
+		// ------------------------以下为绘制表格------------------------
+
+		List resultList = new ArrayList();
+		List title = new ArrayList<String>();
+		String[] arr = { "单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次", "排播接单人", "下单人",
+				"备注" };
+		for (int k = 0; k < arr.length; k++) {
+			title.add(arr[k]);
+		}
+
+		// exportExcel方法只接受object[]此处将list转为object[]
+		String[] sheetTitles = new String[title.size()];
+		String[] timearrs = startTime.split("-");
+		String ledTimeRange = sdfMd.format(sdf.parse(startTime)) + " 至 " + sdfMd.format(sdf.parse(endTime));
+		sheetTitles[0] = "新视界+新帆下单明细表（2017.7.1始）";
+		String[] titles = new String[title.size()];
+		for (int i = 0; i < title.size(); i++) {
+			titles[i] = (String) title.get(i);
+		}
+
+		String fileName = new String(sheetTitles[0]);
+		String codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("aplication/vnd.ms-excel");
+		response.addHeader("Content-Disposition", "inline; filename=" + codedFileName + ".xls");
+
+		try {
+			// 创建Excel工作薄
+			WritableWorkbook wwb = Workbook.createWorkbook(response.getOutputStream());
+
+			// 添加第一个工作表并设置第一个Sheet的名字
+			WritableSheet sheet = wwb.createSheet(ledTimeRange+"下单明细表", 0);
+
+			Label label;
+
+			// 单元格样式
+			WritableFont writableFont = new WritableFont(WritableFont.createFont("微软雅黑"), 11, WritableFont.BOLD);
+			WritableCellFormat wcf_titles = new WritableCellFormat(writableFont);
+			wcf_titles.setBackground(jxl.format.Colour.YELLOW);
+			wcf_titles.setAlignment(Alignment.CENTRE);
+			wcf_titles.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcf_titles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
+			// 添加表头标题
+			if (sheetTitles != null) {
+				for (int i = 0; i < sheetTitles.length - 1; i++) {
+					label = new Label(i, 0, sheetTitles[i], wcf_titles);
+					sheet.addCell(label);
+				}
+			}
+
+			WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
+			wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
+			wcfTtitles.setAlignment(Alignment.CENTRE);
+			wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+			// 添加标题
+			if (titles != null) {
+				for (int i = 0; i < titles.length; i++) {
+					// sheet.setColumnView(i,sheet.getCell(i,1).getContents().length()*2+6);
+					label = new Label(i, 1, titles[i], wcfTtitles);
+					sheet.addCell(label);
+				}
+			}
+
+			WritableCellFormat dataRowCellFormat = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
+			dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
+			dataRowCellFormat.setAlignment(Alignment.CENTRE);
+			dataRowCellFormat.setWrap(true);
+			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
+			int mergeCellPoint = 2;
+
+			// 下面是填充数据
+			if (dataResultList != null && dataResultList.size() > 0) {
+				for (int i = 0, size = dataResultList.size(); i < size; i++) {
+					for (int j = 0; j < titles.length - 1; j++) {
+						List dataRow = (ArrayList) dataResultList.get(i);
+						String value = null;
+						if (dataRow.get(j) != null)
+							value = dataRow.get(j).toString();
+						if (value != null && !value.equals("")) {
+							label = new Label(j, i + mergeCellPoint, value, dataRowCellFormat);
+						} else {
+							label = new Label(j, i + mergeCellPoint, "", dataRowCellFormat);
+						}
+						sheet.addCell(label);
+					}
+				}
+
+				// 设置列宽度
+				if (dataResultList != null && dataResultList.size() > 0) {
+
+					for (int i = 0, size = dataResultList.size(); i < size; i++) {
+						for (int j = 0; j < titles.length - 1; j++) {
+							sheet.setColumnView(j, sheet.getCell(j, i + 1).getContents().length() * 2 + 8);
+						}
+					}
+				}
+			}
+
+			sheet.setRowView(0, 500);
+			sheet.setRowView(1, 500);
+			
+			// 1.表头标题合并
+			sheet.mergeCells(0, 0, titles.length - 1, 0);
+
+			wwb.write();
+			// 关闭
+			wwb.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println(e);
+
+		}
+
+		return null;
+
+	}
 
 	public String calcScreenRate() {
 
@@ -1704,9 +1879,7 @@ public class YewuAction extends SuperAction {
 	}
 
 	/**
-	 * 
-	 * TODO 每个屏的平均占屏率，分屏列出 <br>
-	 * 
+	 * 每个屏的平均占屏率，分屏列出 <br>
 	 * @author PC-FAN
 	 * @throws Exception
 	 * @return String
@@ -1741,7 +1914,6 @@ public class YewuAction extends SuperAction {
 				try {
 					ledOccuRate = Double.parseDouble(mapBofang.get(ledName).toString()) / (Integer) mapTotal.get(ledName) * 100;
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} else {
@@ -1781,11 +1953,85 @@ public class YewuAction extends SuperAction {
 		ctx.put("industryList", baseService.industryList());
 		ctx.put("attributeList", baseService.attributeList());
 		ctx.put("clienttypeList", baseService.clienttypeList());
+		ctx.put("playstrategyList", baseService.strategyList());
 		ctx.put("channelList", baseService.channelList());
 		ctx.put("adcontract", adcontract);
 		ctx.put("order", order);
 		return SUCCESS;
 	}
+	
+	/**
+	 * 认改刊操作页面
+	 * @return String
+	 * @throws Exception
+	 */
+	public String operateOrderPage() throws Exception {
+		ActionContext ctx = ActionContext.getContext();
+		Order order = adcontractService.getOrderById(orderid);
+		Adcontract adcontract = order.getAdcontract();
+		ctx.put("ledList", baseService.ledList());
+		ctx.put("industryList", baseService.industryList());
+		ctx.put("attributeList", baseService.attributeList());
+		ctx.put("clienttypeList", baseService.clienttypeList());
+		ctx.put("playstrategyList", baseService.strategyList());
+		ctx.put("channelList", baseService.channelList());
+		ctx.put("adcontract", adcontract);
+		ctx.put("order", order);
+		return SUCCESS;
+	}
+	
+	/**
+	 * 改刊页面加载order列表
+	 * @return String
+	 * @throws IOException 
+	 */
+	public String operateOrderList() throws IOException{
+		SimpleDateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
+		SimpleDateFormat sdfHm = new SimpleDateFormat("HH:mm");
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArr = new JSONArray();
+		List orderList = adcontractService.getOrdersByAdcontractId(Integer.valueOf(adcontractid));
+		for (Object object : orderList) {
+			Order order = (Order) object;
+			JSONObject rowObject = new JSONObject();
+			
+			rowObject.put("id", order.getId());
+			rowObject.put("content", order.getContent());
+			rowObject.put("led", order.getLed().getName());
+			rowObject.put("industry", order.getIndustry().getIndustryname());
+			rowObject.put("attribute", order.getAttribute().getAttributename());
+			rowObject.put("frequency", order.getFrequency());
+			rowObject.put("duration", order.getDuration());
+			rowObject.put("startdate", sdfMd.format(order.getStartdate()));
+			rowObject.put("enddate", sdfMd.format(order.getEnddate()));
+			rowObject.put("starttime", sdfHm.format(order.getStarttime()));
+			rowObject.put("endtime", sdfHm.format(order.getEndtime()));
+			if (order.getPlaystrategy() == null) {
+				rowObject.put("playstrategy", "");
+			}else {
+				rowObject.put("playstrategy", order.getPlaystrategy().getStrategyname());
+			}
+			
+			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			if (opereventList.size() > 0) {
+				// 单据类型，指认刊，改刊，停刊
+				rowObject.put("operatetype", ((Operevent) opereventList.get(0)).getOperatetype().getOperatetype());
+			} else {
+				// 单据类型，指认刊，改刊，停刊
+				rowObject.put("operatetype", "认刊");
+			}
+			
+			jsonArr.put(rowObject);
+			
+		}
+		//查阅api，直接传入行数据的arr
+		jsonObject.put("rows", jsonArr);
+		
+		sentMsg(jsonArr.toString());
+		return null;
+		
+	}
+	
 
 	/**
 	 * 占屏率图表，以日期列出
@@ -2792,7 +3038,6 @@ public class YewuAction extends SuperAction {
 	// try {
 	// ratiosCount[k] += Double.parseDouble(df.format(ratios[j][k]));
 	// } catch (Exception e) {
-	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// // System.out.println(e);
 	// }

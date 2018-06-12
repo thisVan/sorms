@@ -9,27 +9,39 @@
  */
 package com.nfledmedia.sorm.service;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nfledmedia.sorm.cons.ProjectAttributeConstant;
+import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.dao.AdcontractDAO;
+import com.nfledmedia.sorm.dao.AdcontractHistoryDAO;
 import com.nfledmedia.sorm.dao.AttributeDAO;
 import com.nfledmedia.sorm.dao.ClienttypeDAO;
 import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.LedDAO;
+import com.nfledmedia.sorm.dao.OpereventDAO;
 import com.nfledmedia.sorm.dao.OrderDAO;
+import com.nfledmedia.sorm.dao.OrderHistoryDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.dao.UserDAO;
 import com.nfledmedia.sorm.entity.Adcontract;
+import com.nfledmedia.sorm.entity.AdcontractHistory;
+import com.nfledmedia.sorm.entity.Operatetype;
+import com.nfledmedia.sorm.entity.Operevent;
 import com.nfledmedia.sorm.entity.Order;
+import com.nfledmedia.sorm.entity.OrderHistory;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.entity.User;
+import com.nfledmedia.sorm.util.ClassesConvertTool;
 
 /**
  * @ClassName: contractService
@@ -58,6 +70,12 @@ public class AdcontractService {
 	private OrderDAO orderDAO;
 	@Autowired
 	private PublishdetailDAO publishdetailDAO;
+	@Autowired
+	private AdcontractHistoryDAO adcontractHistoryDAO;
+	@Autowired
+	private OrderHistoryDAO orderHistoryDAO;
+	@Autowired
+	private OpereventDAO opereventDAO;
 	
 	/**
 	 * 完成前端客户autocomplete功能
@@ -95,7 +113,196 @@ public class AdcontractService {
 		}
 		return true;
 	}
+	
+	/**
+	 * 改刊的业务流程</br>
+	 * 1.保存orderhistory，删除order;</br>
+	 * 2.删除publishdetail写入新的order;</br>
+	 * 3.写入新的publishdetail</br>
+	 * 4.判断是否需要修改adcontract;</br>
+	 * 5.保存adcontracthiostory，删除adcontract（如果需要）</br>
+	 * 6.写入operevent事件
+	 */
+	public String alterAdvertisingService(String tid, Order newOrder, String operater){
+		String recallInfo = "";
+		Order order = orderDAO.findById(Integer.valueOf(tid));
+		Adcontract adcontract = order.getAdcontract();
+		BeanUtils.copyProperties(order, newOrder, new String[] { "ordersn", "addfreq",  "state" });
+		
+		//1.保存orderhistory，删除order，写入新的order
+		OrderHistory orderHistory = new OrderHistory();
+		orderHistory = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, orderHistory);
+		orderHistory.setModifier(operater);
+		orderHistory.setOperatetime(new Timestamp(System.currentTimeMillis()));
+		orderHistory.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_ALTER));			
+		orderHistoryDAO.save(orderHistory);
+				
+		//2.删除publishdetail
+		List<Publishdetail> publishdetailList = publishdetailDAO.findByOrderid(order.getId());
+		for (Publishdetail publishdetail : publishdetailList) {
+			publishdetailDAO.delete(publishdetail);
+		}
+		//删除order
+		orderDAO.delete(order);
+		//保存新的order
+		
+		newOrder.setAdcontract(adcontract);
+		newOrder.setModifier(operater);
+		newOrder.setModtime(new Timestamp(System.currentTimeMillis()));
+		orderDAO.save(newOrder);
+		
+		//写入operevent
+		Operevent operevent = new Operevent();
+		operevent.setOrder(newOrder);
+		operevent.setOriginorder(order.getId());
+		operevent.setOperater(operater);
+		operevent.setTime(new Timestamp(System.currentTimeMillis()));
+		operevent.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_ALTER));
+		
+		opereventDAO.save(operevent);
+		
+		//3.写入新的publishidetail			
+		List<Publishdetail> list = packagePublishList(adcontract, newOrder);
+		for (Publishdetail publishdetail : list) {
+			publishdetailDAO.save(publishdetail);
+		}
+		//4.判断是否需要修改adcontract	
+		if (adcontract.getOrders().size() > 1) {					
+		}else {//需要保存adcontracthistory		
+			//5.保存adcontacthistory
+			AdcontractHistory adh = new AdcontractHistory();
+			BeanUtils.copyProperties(adcontract, adh);
+			adh.setOperater(operater);
+			adh.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_ALTER));
+			adh.setModifiedtime(new Timestamp(System.currentTimeMillis()));
+			adcontractHistoryDAO.save(adh);
+			
+			//删除adcontract
+			adcontractDAO.delete(adcontract);					
+		}
+		recallInfo = "操作成功！";
+		return recallInfo;
+	}
+	
+	/**
+	 * 停刊的业务流程</br>
+	 * 1.保存orderhistory;</br>
+	 * 2.删除publishdetail;</br>
+	 * 3.删除order;</br>
+	 * 4.判断是否需要修改adcontract;</br>
+	 * 5.保存adcontracthiostory，删除adcontract（如果需要）
+	 * 6.写入operevent事件
+	 */
+	public String stopAdvertisingService(String tid, String operater){
+		String recallInfo = "";
+		Order order = orderDAO.findById(Integer.valueOf(tid));
+		Adcontract adcontract = order.getAdcontract();
+		
+		//1.保存orderhistory，删除order
+		OrderHistory orderHistory = new OrderHistory();
+		orderHistory = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, orderHistory);
+		orderHistory.setModifier(operater);
+		orderHistory.setOperatetime(new Timestamp(System.currentTimeMillis()));
+		orderHistory.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_STOP));			
+		orderHistoryDAO.save(orderHistory);
+				
+		//2.删除publishdetail
+		List<Publishdetail> publishdetailList = publishdetailDAO.findByOrderid(order.getId());
+		for (Publishdetail publishdetail : publishdetailList) {
+			publishdetailDAO.delete(publishdetail);
+		}
+		
+		//3.删除order
+		orderDAO.delete(order);
+		
+		//6.写入operevent事件
+		Operevent operevent = new Operevent();
+		operevent.setOrder(null);
+		operevent.setOriginorder(order.getId());
+		operevent.setOperater(operater);
+		operevent.setTime(new Timestamp(System.currentTimeMillis()));
+		operevent.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_STOP));
+		
+		opereventDAO.save(operevent);
+		
+		//4.判断是否需要修改adcontract	
+		if (adcontract.getOrders().size() > 1) {					
+		}else {//需要保存adcontracthistory		
+			//5.保存adcontacthistory
+			AdcontractHistory adh = new AdcontractHistory();
+			BeanUtils.copyProperties(adcontract, adh);
+			adh.setOperater(operater);
+			adh.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_STOP));
+			adh.setModifiedtime(new Timestamp(System.currentTimeMillis()));
+			adcontractHistoryDAO.save(adh);
+			
+			//删除adcontract
+			adcontractDAO.delete(adcontract);					
+		}
+		
+		recallInfo = "操作成功！";
+		return recallInfo;
+	}
 
+	/**
+	 * 撤刊的业务流程(同停刊)</br>
+	 * 1.保存orderhistory，删除order;</br>
+	 * 2.删除publishdetail写入新的order;</br>
+	 * 3.写入新的publishdetail</br>
+	 * 4.判断是否需要修改adcontract;</br>
+	 * 5.保存adcontracthiostory，删除adcontract（如果需要）
+	 * 6.写入operevent事件
+	 */
+	public String revokeAdvertisingService(String tid, String operater){
+		String recallInfo = "";
+		Order order = orderDAO.findById(Integer.valueOf(tid));
+		Adcontract adcontract = order.getAdcontract();
+		
+		//1.保存orderhistory，删除order
+		OrderHistory orderHistory = new OrderHistory();
+		orderHistory = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, orderHistory);
+		orderHistory.setModifier(operater);
+		orderHistory.setOperatetime(new Timestamp(System.currentTimeMillis()));
+		orderHistory.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_REVOKE));			
+		orderHistoryDAO.save(orderHistory);
+				
+		//2.删除publishdetail
+		List<Publishdetail> publishdetailList = publishdetailDAO.findByOrderid(order.getId());
+		for (Publishdetail publishdetail : publishdetailList) {
+			publishdetailDAO.delete(publishdetail);
+		}
+		
+		//3.删除order
+		orderDAO.delete(order);
+		
+		//6.写入operevent事件
+		Operevent operevent = new Operevent();
+		operevent.setOrder(null);
+		operevent.setOriginorder(order.getId());
+		operevent.setOperater(operater);
+		operevent.setTime(new Timestamp(System.currentTimeMillis()));
+		operevent.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_REVOKE));
+		
+		opereventDAO.save(operevent);
+		
+		//4.判断是否需要修改adcontract	
+		if (adcontract.getOrders().size() > 1) {					
+		}else {//需要保存adcontracthistory		
+			//5.保存adcontacthistory
+			AdcontractHistory adh = new AdcontractHistory();
+			BeanUtils.copyProperties(adcontract, adh);
+			adh.setOperater(operater);
+			adh.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_REVOKE));
+			adh.setModifiedtime(new Timestamp(System.currentTimeMillis()));
+			adcontractHistoryDAO.save(adh);
+			
+			//删除adcontract
+			adcontractDAO.delete(adcontract);					
+		}
+		recallInfo = "操作成功！";
+		return recallInfo;
+	}
+	
 	/**
 	 * 修改订单
 	 * 
@@ -151,12 +358,43 @@ public class AdcontractService {
 	/**
 	 * 删除订单
 	 * 
-	 * @param adc
+	 * @param
 	 * @param orderList
 	 * @return
 	 */
-	public boolean deleteOrder(Order order) {
+	public boolean deleteOrder(Order order, User user) {
+		//order = orderDAO.findById(order.getId());		
+		//Adcontract adcontract = adcontractDAO.findById(order.getAdcontract().getId());
+		Adcontract adcontract = order.getAdcontract();
+		OrderHistory oh = new OrderHistory();
+		BeanUtils.copyProperties(order, oh);
+		
+		oh.setOperater(user.getRealname());
+		oh.setOperatetime(new Timestamp(System.currentTimeMillis()));
+		oh.setOperatetype(new Operatetype(ProjectAttributeConstant.ADVERTISE_ORDER_DELETE));			
+		orderHistoryDAO.save(oh);
+				
+		//2.删除publishdetail
 		deletePublishdetail(order.getId());
+				
+		//3.判断是否需要修改adcontract	
+		if (adcontract.getOrders().size() > 1) {					
+		}else {//需要保存adcontracthistory		
+			//保存adcontacthistory
+			AdcontractHistory adh = new AdcontractHistory();
+			System.out.println(adcontract.getOrders().size());
+			BeanUtils.copyProperties(adcontract, adh);
+			adh.setOperater(user.getRealname());
+			adh.setOperatetype(new Operatetype(ProjectAttributeConstant.ADVERTISE_ORDER_DELETE));
+			adh.setModifiedtime(new Timestamp(System.currentTimeMillis()));
+			adcontractHistoryDAO.save(adh);
+			
+			//删除adcontract
+			adcontractDAO.delete(adcontract);					
+		}
+		
+		//4.删除order
+		orderDAO.delete(order);
 		orderDAO.delete(order);
 		return true;
 	}
@@ -217,6 +455,13 @@ public class AdcontractService {
 
 	public User getUserById(Integer userid) {
 		return userDAO.findById(userid);
+	}
+
+	public List getOrdersByAdcontractId(int adcontractid) {
+		// TODO Auto-generated method stub
+		List lst = orderDAO.findByProperty("adcontract.id", adcontractid);
+		return lst;
+		
 	}
 
 }

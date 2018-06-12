@@ -74,4 +74,12 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 		yewuAction.setKeyword("广东");
 		yewuAction.autocompleteclient();
 	}
+	
+	@Test
+	public void orderDetailExportTest() throws Exception{
+		yewuAction.setStartTime("2018-01-01");
+		yewuAction.setEndTime("2018-04-30");
+		
+		yewuAction.orderDetailExport();
+	}
 }

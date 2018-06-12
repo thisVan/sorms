@@ -20,6 +20,7 @@ import com.nfledmedia.sorm.dao.ChannelDAO;
 import com.nfledmedia.sorm.dao.ClienttypeDAO;
 import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.LedDAO;
+import com.nfledmedia.sorm.dao.OpereventDAO;
 import com.nfledmedia.sorm.dao.PlaystrategyDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.entity.Attribute;
@@ -27,6 +28,8 @@ import com.nfledmedia.sorm.entity.Channel;
 import com.nfledmedia.sorm.entity.Clienttype;
 import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
+import com.nfledmedia.sorm.entity.Operevent;
+import com.nfledmedia.sorm.entity.Playstrategy;
 import com.nfledmedia.sorm.entity.Publishdetail;
 
 /**
@@ -50,6 +53,8 @@ public class BaseService {
 	private PublishdetailDAO publishdetailDAO;
 	@Autowired
 	private PlaystrategyDAO playstrategyDAO;
+	@Autowired
+	private OpereventDAO opereventDAO;
 
 
 	public List ledList() {
@@ -142,5 +147,19 @@ public class BaseService {
 	public List<?> strategyList() {
 		// TODO Auto-generated method stub
 		return playstrategyDAO.findAll();
+	}
+	
+	public Playstrategy getPlaystrategyById(Short id){
+		return playstrategyDAO.findById(id);
+	}
+	
+	public Playstrategy getPlaystrategyByName(String playstrategyname){
+		return (Playstrategy) playstrategyDAO.findByStrategyname(playstrategyname).get(0);
+	}
+	
+	public List<Operevent> getOpereventByOrderId(int orderid){
+		
+		return opereventDAO.findByOrder(orderid);
+		
 	}
 }

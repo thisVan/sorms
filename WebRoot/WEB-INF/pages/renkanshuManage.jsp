@@ -192,7 +192,7 @@
 						<button type="button" class="btn btn-default" data-dismiss="modal">
 							<i class="fa fa-times-circle"></i> 取消
 						</button>
-						<button id="ok" type="button" class="btn btn-custom-primary" disabled>
+						<button id="ok" type="button" class="btn btn-custom-primary" >
 							<i class="fa fa-check-circle"></i> 确认
 						</button>
 					</div>
@@ -379,7 +379,8 @@
        			    //console.log(ids[i]);
         			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
         			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-times" aria-hidden="true"></i></button>';
-        			    t.jqGrid('setRowData',ids[i],{actions:update+"  "+de});
+        			    alteradvertise = '<button class="btn btn-success btn-xs" data-target="'+ids[i]+'" onclick="alterAdvertise(this)" '+ operateisdisabled +'><i class="fa fa-th-large" aria-hidden="true"></i></button>';
+        			    t.jqGrid('setRowData',ids[i],{actions:update+"  "+de+"  "+alteradvertise});
         			}
         		}
 		    }), e(), $("#jqgrid").length > 0 && t.jqGrid("navGrid","#jqgrid-pager",{
@@ -545,8 +546,17 @@
 			$("#deleteRenkanshu-modal-id").modal('show');
 		}
 		
+		
+		function alterAdvertise(target){
+			var orderid = $(target).data("target");
+			if(orderid==null || orderid==""){
+				return;
+			}
+			var url = "operateOrderPage.action?orderid=" + orderid;
+			location.href = url;
+		}
+		
  		$("#ok").click(function(){
- 			console.log("comein");
         	$.ajax({
         		url:"deletethisOrder.action",
         		data:$("#deleteRenkanshu_form").serializeArray(),
