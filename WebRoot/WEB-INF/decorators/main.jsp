@@ -67,17 +67,17 @@
 					<!-- end left sidebar -->
 
 					<!-- content-wrapper -->
-					<div class="col-md-9 content-wrapper">
+					<div class="col-md-10 content-wrapper">
 						<!--     <div class="row">
 									<jsp:include page="breadCrumb.jsp" flush="true"></jsp:include>
 								</div>  -->
 						<!-- main -->
 						<div class="content">
-							<div class="main-header">
+							<%-- <div class="main-header">
 								<h2 style="border:0;">
 									<decorator:title />
 								</h2>
-							</div>
+							</div> --%>
 							<div class="main-content">
 								<decorator:body />
 							</div>

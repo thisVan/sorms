@@ -35,6 +35,7 @@ import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.dao.UserDAO;
 import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.AdcontractHistory;
+import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Operatetype;
 import com.nfledmedia.sorm.entity.Operevent;
 import com.nfledmedia.sorm.entity.Order;
@@ -127,12 +128,13 @@ public class AdcontractService {
 		String recallInfo = "";
 		Order order = orderDAO.findById(Integer.valueOf(tid));
 		Adcontract adcontract = order.getAdcontract();
-		BeanUtils.copyProperties(order, newOrder, new String[] { "ordersn", "addfreq",  "state" });
+		BeanUtils.copyProperties(order, newOrder, new String[] { "id","content", "led", "duration", "frequency", "startdate", "enddate", "starttime", "endtime", "playstrategy" });
 		
 		//1.保存orderhistory，删除order，写入新的order
 		OrderHistory orderHistory = new OrderHistory();
 		orderHistory = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, orderHistory);
 		orderHistory.setModifier(operater);
+		orderHistory.setOperater(operater);
 		orderHistory.setOperatetime(new Timestamp(System.currentTimeMillis()));
 		orderHistory.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_ALTER));			
 		orderHistoryDAO.save(orderHistory);
@@ -151,6 +153,9 @@ public class AdcontractService {
 		newOrder.setModtime(new Timestamp(System.currentTimeMillis()));
 		orderDAO.save(newOrder);
 		
+		Led led = ledDAO.findById(newOrder.getLed().getId());
+		newOrder.setLed(led);
+		
 		//写入operevent
 		Operevent operevent = new Operevent();
 		operevent.setOrder(newOrder);
@@ -158,6 +163,7 @@ public class AdcontractService {
 		operevent.setOperater(operater);
 		operevent.setTime(new Timestamp(System.currentTimeMillis()));
 		operevent.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_ALTER));
+		
 		
 		opereventDAO.save(operevent);
 		

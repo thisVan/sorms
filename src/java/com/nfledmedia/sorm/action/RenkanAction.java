@@ -713,6 +713,10 @@ public class RenkanAction extends SuperAction {
 	public void setBaseService(BaseService baseService) {
 		this.baseService = baseService;
 	}
+	
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
 
 	public String getKanlizongjia() {
 		return kanlizongjia;

@@ -60,6 +60,7 @@
 		</action>
 		<!-- 改刊业务操作 -->
 		<action name="alterAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="alterAdvertisingAction">
+			<result name="input"></result>
 		</action>
 		<!-- 停刊操作 -->
 		<action name="stopAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="stopAdvertisingAction">

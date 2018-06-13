@@ -17,7 +17,7 @@ public class UtilTest {
 		OrderHistory orderHistory = new OrderHistory();
 		orderHistory.setDuration((short) 30);
 		
-		BeanUtils.copyProperties(order, orderHistory);
+		BeanUtils.copyProperties(order, orderHistory, new String[] { "content", "led", "duration", "frequency", "startdate", "enddate", "starttime", "endtime", "playstrategy" });
 		
 		System.out.println(order);
 		System.out.println(orderHistory);

@@ -118,10 +118,11 @@
 								<button type="button" class="btn btn-info btn-sm" id="exactQuery">查询</button>
 								<button class="btn btn-danger btn-sm" id="clearExactForm">清除</button>
 							</div>
-							<div class="col-sm-5 pull-right">
+							<div class="col-sm-6 pull-right">
 								<button type="button" class="btn btn-success btn-sm" id="exportExcel">资源管理表</button>
 								<button type="button" class="btn btn-success btn-sm" id="exportContentStatisticExcel">广告发布内容汇总表</button>
 								<button type="button" class="btn btn-success btn-sm" id="exportContentArrangementExcel">广告发布安排表</button>
+								<button type="button" class="btn btn-success btn-sm" id="exportOrderDetailExcel">下单明细表</button>
 							</div>
 							</div>
 							<div class="row">
@@ -301,7 +302,7 @@
 		    	url:"renkanshuManageList.action",
 		    	mtype:"GET",
 		    	datatype:"json",
-		    	colNames:['上画点位','客户','客户属性','发布内容','下单属性','频次','时长','起止日期','时段','下单人','备注',''],
+		    	colNames:['上画点位','客户','代理公司','客户属性','下单属性','发布内容','频次','时长','起止日期','时段','下单人','备注',''],
 		    	height:400,
 		    	rowNum:'<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>',
 		    	rowList: [10, 20, 30],
@@ -322,20 +323,25 @@
         			align:"center",
         			width:"130px" 
         		},{
+        			name:"adcontract.agency",
+        			index:"adcontract.agency",
+        			align:"center",
+        			width:"130px" 
+        		},{
         			name:"adcontract.clienttype.ctypedesc",
         			index:"adcontract.clienttype.ctypedesc",
         			align:"center",
         			width:"100px" 
         		},{
-            		name:"content",
-            		index:"content",
-            		align:"center",
-            		width:"100px"
-            	},{
             		name:"attribute.attributename",
             		index:"attribute.attributename",
             		align:"center",
             		width:"80px"
+            	},{
+            		name:"content",
+            		index:"content",
+            		align:"center",
+            		width:"100px"
             	},{
         			name:"frequency",
         			index:"frequency",
@@ -377,9 +383,9 @@
         			var ids = $("#jqgrid").jqGrid("getDataIDs");
         			for(var i=0;i < ids.length;i++){
        			    //console.log(ids[i]);
-        			    update = '<button class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
-        			    de = '<button class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-times" aria-hidden="true"></i></button>';
-        			    alteradvertise = '<button class="btn btn-success btn-xs" data-target="'+ids[i]+'" onclick="alterAdvertise(this)" '+ operateisdisabled +'><i class="fa fa-th-large" aria-hidden="true"></i></button>';
+        			    update = '<button title="修改" class="btn btn-primary btn-xs" data-target="'+ids[i]+'" onclick="updateRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>';
+        			    de = '<button title="删除" class="btn btn-danger btn-xs" data-target="'+ids[i]+'" onclick="deleteRenkanshu(this)" '+ operateisdisabled +'><i class="fa fa-times" aria-hidden="true"></i></button>';
+        			    alteradvertise = '<button title="改刊" class="btn btn-success btn-xs" data-target="'+ids[i]+'" onclick="alterAdvertise(this)" '+ operateisdisabled +'><i class="fa fa-th-large" aria-hidden="true"></i></button>';
         			    t.jqGrid('setRowData',ids[i],{actions:update+"  "+de+"  "+alteradvertise});
         			}
         		}
@@ -596,6 +602,19 @@
 			alert("请选定起止日期！");
 		}
 
+	});
+
+	$("#exportOrderDetailExcel").click(function() {
+		var led = $.trim($("#ledlist").val());
+		//判断时间和屏幕是否选择
+		if ("" != startTime && "" != endTime) {
+			var url = "orderDetailExport.action?startTime=" + startTime + "&endTime=" + endTime;
+			$("#jqgrid").jqGrid('excelExport', {
+				url : url
+			});
+		} else {
+			alert("请选定起止日期！");
+		}
 	});
 
 	$("#exportContentStatisticExcel").click(function(){

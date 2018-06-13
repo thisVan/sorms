@@ -402,15 +402,17 @@ public class YewuAction extends SuperAction {
 			jsonObject1.put("id", row[0]);// 订单编号
 			JSONArray jsonArray2 = new JSONArray(); // 求取cell
 			jsonArray2.put(row[1]);// 上画点位
+			jsonArray2.put(row[2]);//客户
+			jsonArray2.put(row[3]);//代理公司
 			// 放入客户
-			if (null != row[3] && !"".equals(row[3])) {
-				jsonArray2.put(row[3]);
-			} else {
-				jsonArray2.put(row[2]);
-			}
+//			if (null != row[3] && !"".equals(row[3])) {
+//				jsonArray2.put(row[3]);
+//			} else {
+//				jsonArray2.put(row[2]);
+//			}
 			jsonArray2.put(row[14]);// 客户属性
-			jsonArray2.put(row[4]);// 发布内容
 			jsonArray2.put(row[13]);// 下单属性
+			jsonArray2.put(row[4]);// 发布内容
 			jsonArray2.put(row[5]);// 广告频次
 			jsonArray2.put(row[7]);// 广告时长
 			jsonArray2.put(sdf.format(row[8]) + " - " + sdf.format(row[9]));// 起止日期

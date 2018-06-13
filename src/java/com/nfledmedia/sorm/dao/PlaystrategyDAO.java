@@ -58,7 +58,7 @@ public class PlaystrategyDAO extends HibernateDaoSupport {
 	public Playstrategy findById(java.lang.Short id) {
 		log.debug("getting Playstrategy instance with id: " + id);
 		try {
-			Playstrategy instance = (Playstrategy) getHibernateTemplate().get("com.nfledmedia.sorm.dao.Playstrategy", id);
+			Playstrategy instance = (Playstrategy) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Playstrategy", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);

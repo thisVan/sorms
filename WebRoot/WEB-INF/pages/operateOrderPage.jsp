@@ -139,10 +139,10 @@
 					</div>
 					<div class="modal-body " >
 						<form id="alterAdvertise_form" action="" class="form-horizontal" role="form">
-							<input class="hidden" id="order.id" name="tid">
+							<input class="hidden" id="order.id" name="tid"/>
 							<div class="form-group">
 							    <label for="name">发布内容</label>
-							    <input type="text" class="form-control" name="order.content" id="order.content" >
+							    <input type="text" class="form-control" name="order.content" id="order.content" />
 							</div>
 							<div class="form-group">
 							    <label for="name">上画点位</label>
@@ -152,27 +152,27 @@
 							</div>
 							<div class="form-group">
 							    <label for="name">时长</label>
-							    <input type="text" class="form-control" name="order.duration" id="order.duration" >
+							    <input type="text" class="form-control" name="order.duration" id="order.duration" />
 							</div>
 							<div class="form-group">
 							    <label for="name">频次</label>
-							    <input type="text" class="form-control" name="order.frequency" id="order.frequency" >
+							    <input type="text" class="form-control" name="order.frequency" id="order.frequency" />
 							</div>
 							<div class="form-group">
 							    <label for="name">起始日期</label>
-							    <input type="date" class="form-control" name="order.startdate" id="order.startdate" >
+							    <input type="date" class="form-control" name="order.startdate" id="order.startdate" />
 							</div>
 							<div class="form-group">
 							    <label for="name">结束日期</label>
-							    <input type="date" class="form-control" name="order.enddate" id="order.enddate" >
+							    <input type="date" class="form-control" name="order.enddate" id="order.enddate" />
 							</div>
 							<div class="form-group">
 							    <label for="name">开始时间</label>
-							    <input type="time" class="form-control" name="order.starttime" id="order.starttime" >
+							    <input type="time" class="form-control" name="order.starttime" id="order.starttime" />
 							</div>
 							<div class="form-group">
 							    <label for="name">结束时间</label>
-							    <input type="time" class="form-control" name="order.endtime" id="order.endtime" >
+							    <input type="time" class="form-control" name="order.endtime" id="order.endtime" />
 							</div>
 							<div class="form-group">
 							    <label for="name">播放策略</label>
@@ -180,7 +180,9 @@
 									list="playstrategyList" listKey="id" listValue="strategyname">
 								</s:select>
 							</div>
-							<div id="showOriginOrderdetail"></div>
+							<div id="showOriginOrderdetail">
+								
+							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -350,9 +352,8 @@
 			showToggle : false, //是否显示详细视图和列表视图的切换按钮
 			cardView : false, //是否显示详细视图
 			detailView : false, //是否显示父子表
-			columns : [ {
-				checkbox : true
-			}, {
+			columns : [
+			{
 				field : 'id',
 				title : '编号',
 				visible: false
@@ -398,6 +399,9 @@
 				formatter : actionFormatter
 			}, ]
 		});
+		
+		
+		
 
 	});
 
@@ -418,16 +422,34 @@
 		$("input[name='order.content']").val(target.content);
 		$("input[name='order.duration']").val(target.duration);
 		$("input[name='order.frequency']").val(target.frequency);
-		$("input[name='order.startdate']").val(target.startdate);
-		$("input[name='order.enddate']").val(target.enddate);
-		<%SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
+		//拼接日期字符串
+		var sds = target.startdate;
+		var eds = target.enddate;
+		var sdsarr = sds.split(".");
+		var edsarr = eds.split(".");
+		for(var i=0;i<sdsarr.length;i++){
+			if(sdsarr[i] < 10){
+				sdsarr[i] = 0+sdsarr[i];
+			}
+		}
+		for(var i=0;i<edsarr.length;i++){
+			if(edsarr[i] < 10){
+				edsarr[i] = 0+edsarr[i];
+			}
+		}
+		var sdsstr = "";
+		var edsstr = "";
+		for(var i=0;i<sdsarr.length;i++){
+			sdsstr += sdsarr[i]+"-";
+			edsstr += edsarr[i]+"-";
+		}	
+		$("input[name='order.startdate']").val(sdsstr.substr(0, sdsstr.length-1));
+		$("input[name='order.enddate']").val(edsstr.substr(0, edsstr.length-1));
+		$("input[name='order.starttime']").val(target.starttime + ":00");
+		$("input[name='order.endtime']").val(target.endtime + ":00");
+		$("input[name='tid']").val(target.id);
+		console.log($("input[name='tid']").val());
 			
-		%>
-		$("input[name='order.starttime']").val(target.starttime);
-		$("input[name='order.endtime']").val(target.endtime);
-		
-		
 		$("select[name='order.led.id']").find("option").filter(function(index) {
     		return target.led === $(this).text();
 		}).attr("selected", true);
@@ -435,27 +457,40 @@
 		$("select[name='order.playstrategy.id']").find("option").filter(function(index) {
     		return target.playstrategy === $(this).text();
 		}).attr("selected", true);
-		var orderdetaildata = "上画点位："+target.led+"<br>";
+		var orderdetaildata = "<h4>原单内容</h4>";
 			orderdetaildata += "发布内容："+target.content+"<br>";
-			orderdetaildata += "频次："+target.frequency+"<br>";
+			orderdetaildata += "上画点位："+target.led+"<br>";
 			orderdetaildata += "时长："+target.duration+"<br>";
+			orderdetaildata += "频次："+target.frequency+"<br>";		
 			orderdetaildata += "起止日期："+target.startdate+" - "+target.enddate+"<br>";
 			orderdetaildata += "起止时间："+target.starttime+" - "+target.endtime+"<br>";
 			orderdetaildata += "播放策略："+target.playstrategy+"<br>";
 			
 		$("#showOriginOrderdetail").html(orderdetaildata);
 		$("#modal-alterAdvertise").modal('show');
+	}
+	
+	$("#ok").click(function() {
+		var str1 = $("input[name='order.starttime']").val();
+		var str2 = $("input[name='order.endtime']").val();
+		if(str1.length < 8){
+			$("input[name='order.starttime']").val(str1 + ":00")
+		}
+		if(str2.length < 8){
+			$("input[name='order.endtime']").val(str2 + ":00")
+		}
 		var alterAdvertiseConfirm = confirm("确定要改刊吗？");
 		if(alterAdvertiseConfirm == true){
 			$.ajax({
-        		url:"stopAdvertisingAction.action",
-        		data:{tid: target.id},
+        		url:"alterAdvertisingAction.action",
+        		data:$("#alterAdvertise_form").serializeArray(),
         		type:"post",
         		dataType:"json",
+        		async: false,
         		success:function(data){
         			if(data.state===0){
         				alert(data.info);
-        				location.replace("renkanshuManage");
+        				location.reload();
         			}else{
         				alert(data.info);
         			}
@@ -468,7 +503,7 @@
 			return;
 		}
         	$("#modal-alterAdvertise").modal('hide');
-	}
+	});
 
 	function stopAdvertise(target) {
 		var stopAdvertiseConfirm = confirm("确定要停刊吗？");
