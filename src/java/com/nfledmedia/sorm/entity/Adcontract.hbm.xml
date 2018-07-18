@@ -18,6 +18,9 @@
         <many-to-one name="clienttype" class="com.nfledmedia.sorm.entity.Clienttype" fetch="select">
             <column name="clienttype_id" />
         </many-to-one>
+        <many-to-one name="publishstyle" class="com.nfledmedia.sorm.entity.Publishstyle" fetch="select">
+            <column name="publishstyle_id" />
+        </many-to-one>
         <property name="sn" type="java.lang.String">
             <column name="sn">
                 <comment>单据编号</comment>

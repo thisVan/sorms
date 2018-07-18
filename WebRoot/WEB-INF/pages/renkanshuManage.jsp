@@ -414,7 +414,11 @@
 			    		t[0].p.search = false; 
 			    		$.extend(t[0].p.postData,{searchString:"",searchField:"",searchOper:""});
 			    	}else{
-				    	searchFilter = " where o.state='" + "<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>" + "' and "+dateRangeSQL+"and (o.adcontract.client like '%"+searchFilter+
+			    		var dateRangeValue = "";
+			    		if(dateRangeSQL != null && dateRangeSQL.length == 0){
+			    			dateRangeValue = "' and "+dateRangeSQL;
+			    		}
+				    	searchFilter = " where o.state=" + "'<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>'" + dateRangeValue + " and (o.adcontract.client like '%"+searchFilter+
 				    	"%' or o.adcontract.agency like '%"+searchFilter+"%' or o.content like '%"+searchFilter+"%' or o.led.name like '%"+searchFilter+"%' or o.adcontract.placer like '%"+searchFilter+"%')";
 			    		//console.log(searchFilter);
 			    		t[0].p.search = true;
@@ -558,7 +562,28 @@
 			if(orderid==null || orderid==""){
 				return;
 			}
-			var url = "operateOrderPage.action?orderid=" + orderid;
+			var adcontractid;
+			$.ajax({
+        		url:"getAdcontractidByOrderid.action",
+        		data:{orderid: orderid},
+        		type:"post",
+        		dataType:"json",
+        		async: false,
+        		success:function(data){
+        			if(data.state===0){
+        				adcontractid = data.info;
+        			}else{
+        				alert('操作失败，服务器异常！');
+        			}
+        		},
+        		error:function(XMLHttpRequest, textStatus, errorThrown){
+						alert('操作失败\nXMLHttpRequest.readyState['+XMLHttpRequest.readyState+']\nXMLHttpRequest.status['+XMLHttpRequest.status+']\ntextStatus['+textStatus+']');
+				}
+        	});
+        	if(adcontractid==null || adcontractid==""){
+				return;
+			}
+			var url = "operateOrderPage.action?adcontractid=" + adcontractid;
 			location.href = url;
 		}
 		

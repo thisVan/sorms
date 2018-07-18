@@ -299,22 +299,38 @@ public class OrderDAO extends HibernateDaoSupport {
 	}
 
 	/**
-	 * 查询期间的Order
+	 * 查询期间的Order，按录入日期
 	 * @param dateStart
 	 * @param dateEnd
 	 * @return List<Order>
 	 */
 	public List<?> findOrdersInDuration(Date dateStart, Date dateEnd) {
-		// TODO Auto-generated method stub
 		log.debug("finding Order instance in start: " + dateStart + ", end: " + dateEnd);
 		try {
-			String queryString = "from Order as model where model.startdate >= ? and model.enddate <= ?";
+			String queryString = "from Order as model where (model.adcontract.createtime >= ? and model.adcontract.createtime <= ?)";
+			queryString += " or (model.operatetime >= ? and model.operatetime <= ?)";
 			String conditions = " and model.state = '" + ProjectAttributeConstant.ORDER_STATE_ACTIVE + "'";
 			queryString += conditions;
-			return getHibernateTemplate().find(queryString, dateStart, dateEnd);
+			return getHibernateTemplate().find(queryString, dateStart, dateEnd, dateStart, dateEnd);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
 			throw re;
 		}
 	}
+	
+//	//按上刊日期导出
+//	public List<?> findOrdersInDuration(Date dateStart, Date dateEnd) {
+//		// TODO Auto-generated method stub
+//		log.debug("finding Order instance in start: " + dateStart + ", end: " + dateEnd);
+//		try {
+//			String queryString = "from Order as model where model.startdate >= ? and model.enddate <= ?";
+//			String conditions = " and model.state = '" + ProjectAttributeConstant.ORDER_STATE_ACTIVE + "'";
+//			queryString += conditions;
+//			return getHibernateTemplate().find(queryString, dateStart, dateEnd);
+//		} catch (RuntimeException re) {
+//			log.error("find by property name failed", re);
+//			throw re;
+//		}
+//	}
+	
 }

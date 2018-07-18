@@ -42,6 +42,10 @@
 		</action>
 		<action name="orderDetailExport" class="com.nfledmedia.sorm.action.YewuAction" method="orderDetailExport">
 		</action>
+		<action name="getAdcontractidByOrderid" class="com.nfledmedia.sorm.action.YewuAction" method="getAdcontractidByOrderid">
+		</action>
+		<action name="calcOrderMd5" class="com.nfledmedia.sorm.action.YewuAction" method="calcOrderMd5">
+		</action>
 
 		<action name="getTop10_annual_Led_Occupy" class="com.nfledmedia.sorm.action.YewuAction" method="getTop10_annual_Led_Occupy">
 		</action>

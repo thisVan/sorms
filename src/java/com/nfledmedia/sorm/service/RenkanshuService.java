@@ -22,6 +22,7 @@ import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.OrderHistory;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.util.ClassesConvertTool;
+import com.nfledmedia.sorm.util.MD5Util;
 import com.nfledmedia.sorm.util.Page;
 
 /**
@@ -341,6 +342,28 @@ public class RenkanshuService {
 	public List<Order> getOrderByLed(Integer id) {
 		// TODO Auto-generated method stub
 		return orderDAO.findByProperty("led.id", id);
+	}
+
+	public void calcOrderMd5Service() {
+		// TODO Auto-generated method stub
+		List<Order> orderList = orderDAO.findAll();
+		for (Order order : orderList) {
+			String attrValue = "";
+
+			attrValue += order.getAttribute().getId();
+			attrValue += order.getLed().getId();
+			attrValue += order.getContent();
+			attrValue += order.getDuration();
+			attrValue += order.getFrequency();			
+			attrValue += order.getStartdate().toString();
+			attrValue += order.getEnddate().toString();
+			attrValue += order.getStarttime().toString();
+			attrValue += order.getEndtime().toString();
+			
+			order.setMd5encrypt(MD5Util.encrypt32(attrValue));
+			
+			orderDAO.merge(order);
+		}
 	}
 
 }

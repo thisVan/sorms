@@ -23,6 +23,7 @@ import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OpereventDAO;
 import com.nfledmedia.sorm.dao.PlaystrategyDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
+import com.nfledmedia.sorm.dao.PublishstyleDAO;
 import com.nfledmedia.sorm.entity.Attribute;
 import com.nfledmedia.sorm.entity.Channel;
 import com.nfledmedia.sorm.entity.Clienttype;
@@ -55,7 +56,8 @@ public class BaseService {
 	private PlaystrategyDAO playstrategyDAO;
 	@Autowired
 	private OpereventDAO opereventDAO;
-
+	@Autowired
+	private PublishstyleDAO publishstyleDAO;
 
 	public List ledList() {
 		return ledDAO.findByState(TypeCollections.LED_ACTIVE_STATE);
@@ -159,7 +161,11 @@ public class BaseService {
 	
 	public List<Operevent> getOpereventByOrderId(int orderid){
 		
-		return opereventDAO.findByOrder(orderid);
+		return opereventDAO.findByOrderId(orderid);
 		
+	}
+
+	public List publishstyleList() {
+		return publishstyleDAO.findAll();
 	}
 }

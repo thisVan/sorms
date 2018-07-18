@@ -180,7 +180,13 @@
 									list="playstrategyList" listKey="id" listValue="strategyname">
 								</s:select>
 							</div>
-							<div id="showOriginOrderdetail">
+							<div class="form-group">
+							    <label for="name">备注</label>
+							    <!-- <input class="form-control" name="remark" id="batchStopAdRemark" /> -->
+							    <textarea class="form-control input-sm " rows="2"
+									name="remark" id="batchStopAdRemark" maxlength="150" ></textarea>
+							</div>
+							<div class="form-group" id="showOriginOrderdetail">
 								
 							</div>
 						</form>
@@ -191,6 +197,42 @@
 						</button>
 						<button id="ok" type="button" class="btn btn-custom-primary" >
 							<i class="fa fa-check-circle"></i> 确认
+						</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+		<div class="modal fade " id="modal-batchStopAdvertise">
+			<div class="modal-dialog ">
+				<div class="modal-content col-sm-12">
+					<div class="modal-header">
+						<h4 class="modal-title" >停撤刊信息</h4>
+					</div>
+					<div class="modal-body " >
+						<form id="batchStopAdvertise_form" action="" class="form-horizontal" role="form">
+							<div class="form-group">
+							    <label for="name">日期</label>
+							    <input type="date" class="form-control" name="adEndDate" id="adEndDate" />
+							</div>
+							<div class="form-group">
+							    <label for="name">备注</label>
+							    <!-- <input class="form-control" name="remark" id="batchStopAdRemark" /> -->
+							    <textarea class="form-control input-sm " rows="2"
+									name="remark" id="batchStopAdRemark" maxlength="150" ></textarea>
+							</div>
+							
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">
+							<i class="fa fa-times-circle"></i> 取消
+						</button>
+						<button id="batchOperate_ok" type="button" class="btn btn-custom-primary" >
+							<i class="fa fa-check-circle"></i> 提交
 						</button>
 					</div>
 				</div>
@@ -213,6 +255,7 @@
 <script src="js/moment.js"></script>
 <script src="js/daterangepicker.js"></script>
 <script>
+
 	var nameValid = true;
 
 	var originalAdcontractid = '${adcontract.id}';
@@ -222,7 +265,7 @@
 	var originalAdcontractchannel = '${adcontract.channel.id}';
 	var originalAdcontractremark = '${adcontract.remark}';
 
-	var originalOrderid = '${order.id}';
+/* 	var originalOrderid = '${order.id}';
 	var originalOrdercontent = '${order.content}';
 	var originalOrderled = '${order.led.id}';
 	var originalOrderindustry = '${order.industry.industryid}';
@@ -232,12 +275,12 @@
 	var originalOrderstartdate = '<s:date name="#order.startdate" format="yyyy-MM-dd" />';
 	var originalOrderenddate = '<s:date name="#order.enddate" format="yyyy-MM-dd" />';
 	var originalOrderstarttime = '${order.starttime}';
-	var originalOrderendtime = '${order.endtime}';
+	var originalOrderendtime = '${order.endtime}'; */
 	
 	var orderListRows = new Array();
 
 	//保存按钮的点击事件
-	$("#save")
+/* 	$("#save")
 		.click(
 			function() {
 
@@ -291,7 +334,7 @@
 						}
 					});
 				}
-			});
+			}); */
 
 	function goBack() {
 		if (confirm("您确定要放弃相关操作，返回到认刊书列表中吗？")) {
@@ -346,13 +389,16 @@
 			showColumns : true, //是否显示所有的列
 			showRefresh : true, //是否显示刷新按钮
 			minimumCountColumns : 5, //最少允许的列数
-			clickToSelect : true, //是否启用点击选中行
+			clickToSelect : false, //是否启用点击选中行
 			height : 500, //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 			uniqueId : "id", //每一行的唯一标识，一般为主键列
 			showToggle : false, //是否显示详细视图和列表视图的切换按钮
 			cardView : false, //是否显示详细视图
 			detailView : false, //是否显示父子表
 			columns : [
+			{
+				checkbox : true
+			},
 			{
 				field : 'id',
 				title : '编号',
@@ -398,10 +444,7 @@
 				title : '操作',
 				formatter : actionFormatter
 			}, ]
-		});
-		
-		
-		
+		});	
 
 	});
 
@@ -417,6 +460,7 @@
 	}
 	
 	function alterAdvertise(rowIndex){
+		checkLocalStorageSupport();
 		console.log(orderListRows);
 		var target = orderListRows[rowIndex];
 		$("input[name='order.content']").val(target.content);
@@ -466,100 +510,263 @@
 			orderdetaildata += "起止时间："+target.starttime+" - "+target.endtime+"<br>";
 			orderdetaildata += "播放策略："+target.playstrategy+"<br>";
 			
+		localStorage.setItem("singleRowSelected", rowIndex);
+		var selectedRows = $("#tb_order").bootstrapTable('getSelections')
+		//多选的时候，不显示原单内容，显示确认改刊信息
+		if(selectedRows.length > 1){
+			var alterPropertiesCheckbox = "<h4>改刊信息</h4>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='content' id='contentCheck' onclick='checkSelect(this)'>发布内容</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='duration' id='durationCheck' onclick='checkSelect(this)'>时长</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='frequency' id='frequencyCheck' onclick='checkSelect(this)'>频次</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='startdate' id='startdateCheck' onclick='checkSelect(this)'>起始日期</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='enddate' id='enddateCheck' onclick='checkSelect(this)'>结束日期</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='starttime' id='starttimeCheck' onclick='checkSelect(this)'>开始时间</button>";
+			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='endtime' id='endtimeCheck' onclick='checkSelect(this)'>结束时间</button>";
+	
+			orderdetaildata = alterPropertiesCheckbox;
+		}
+			
 		$("#showOriginOrderdetail").html(orderdetaildata);
 		$("#modal-alterAdvertise").modal('show');
 	}
-	
+
 	$("#ok").click(function() {
 		var str1 = $("input[name='order.starttime']").val();
 		var str2 = $("input[name='order.endtime']").val();
-		if(str1.length < 8){
+		if (str1.length < 8) {
 			$("input[name='order.starttime']").val(str1 + ":00")
 		}
-		if(str2.length < 8){
+		if (str2.length < 8) {
 			$("input[name='order.endtime']").val(str2 + ":00")
 		}
-		var alterAdvertiseConfirm = confirm("确定要改刊吗？");
-		if(alterAdvertiseConfirm == true){
-			$.ajax({
-        		url:"alterAdvertisingAction.action",
-        		data:$("#alterAdvertise_form").serializeArray(),
-        		type:"post",
-        		dataType:"json",
-        		async: false,
-        		success:function(data){
-        			if(data.state===0){
-        				alert(data.info);
-        				location.reload();
-        			}else{
-        				alert(data.info);
-        			}
-        		},
-        		error:function(XMLHttpRequest, textStatus, errorThrown){
-						alert('操作失败\nXMLHttpRequest.readyState['+XMLHttpRequest.readyState+']\nXMLHttpRequest.status['+XMLHttpRequest.status+']\ntextStatus['+textStatus+']');
-				}
-        	})		
-		}else{
-			return;
+
+		var selectedRows = $("#tb_order").bootstrapTable('getSelections');
+		var orderArray = new Array();
+		var alterPropertiesArray = new Array();
+		var confirmTip = "确定要改刊吗？";
+		var orderRowData = orderListRows[localStorage.getItem("singleRowSelected")];
+		console.log(orderRowData);
+		var confirmContentText = completeConfirmContent(orderRowData);
+		var multiSelectConfirmContentTemp = "";
+		if (selectedRows.length > 1) {
+			for (var i = 0; i < selectedRows.length; i++) {
+				var target = selectedRows[i];
+				orderArray.push(target.id);
+				multiSelectConfirmContentTemp += completeConfirmContent(target);
+			}
+			confirmTip = "你选中了多条数据，确定要改刊吗？"
 		}
-        	$("#modal-alterAdvertise").modal('hide');
+		var propertiesButtonCheck = $(":input[name='propertiesCheck']");
+		if(propertiesButtonCheck.length > 0){
+			for(var i=0; i< propertiesButtonCheck.length; i++){
+				if($(propertiesButtonCheck[i]).hasClass("btn-success")){
+					alterPropertiesArray.push($(propertiesButtonCheck[i]).val());
+				}
+			}
+		}
+		var alterPropertiesObj = {
+			name : "alterPropertiesArray",
+			value : alterPropertiesArray
+		};
+		var multiselectedarrayobject = {
+			name : "orderArray",
+			value : orderArray
+		};
+
+		var alterAdsFormData = $("#alterAdvertise_form").serializeArray();
+		console.log(alterAdsFormData);
+		alterAdsFormData.push(multiselectedarrayobject);
+		alterAdsFormData.push(alterPropertiesObj);
+		console.log(alterAdsFormData);
+		$.confirm({
+			title : confirmTip,
+			content : multiSelectConfirmContentTemp,
+			type : "blue",
+			icon : "glyphicon glyphicon-question-sign",
+			buttons : {
+				confirm : {
+					text : "确认",
+					btnClass : "btn-primary",
+					action : function() {
+						$.ajax({
+							url : "alterAdvertisingAction.action",
+							data : alterAdsFormData,
+							type : "post",
+							dataType : "json",
+							traditional : true,
+							async : false,
+							success : function(data) {
+								if (data.state === 0) {
+									location.reload();
+								} else {
+									alert(data.info);
+								}
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+								alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
+							}
+						});
+						localStorage.clear();
+						$("#modal-alterAdvertise").modal('hide');
+					},
+				},
+				cancel : {
+					text : "取消",
+					action : function() {
+						localStorage.clear();
+						$("#modal-alterAdvertise").modal('hide');
+						return;
+					}
+				}
+			}
+		});
+
+	});
+
+	$("#batchOperate_ok").click(function() {
+		var selectedRows = $("#tb_order").bootstrapTable('getSelections');
+		var orderArray = new Array();
+		var adEndDate = $("#adEndDate").val();
+		var remark = $("#batchStopAdRemark").val();
+
+		var confirmTip = "确定要" + localStorage.getItem("stopOrRevoke") + "吗？";
+		var orderRowData = orderListRows[localStorage.getItem("singleRowSelected")];
+		var confirmContentText = completeConfirmContent(orderRowData);
+		var multiSelectConfirmContentTemp = "";
+		if (selectedRows.length > 0) {
+			for (var i = 0; i < selectedRows.length; i++) {
+				var target = selectedRows[i];
+				orderArray.push(target.id);
+				multiSelectConfirmContentTemp += completeConfirmContent(target);
+			}
+			confirmTip = "你选中了多条数据，确定要" + localStorage.getItem("stopOrRevoke") + "吗？"
+		}
+		console.log(orderArray);
+
+		/* 		var stopAdvertiseConfirm = confirm(confirmTip);
+				if (stopAdvertiseConfirm == true) {
+					$.ajax({
+						url : localStorage.getItem("operateUrl"),
+						data : {
+							tid : orderListRows[localStorage.getItem("singleRowSelected")].id,
+							orderArray : orderArray,
+							adEndDate : adEndDate,
+							remark : remark
+						},
+						type : "post",
+						dataType : "json",
+						traditional : true,
+						success : function(data) {
+							if (data.state === 0) {
+								location.reload();
+							} else {
+								alert(data.info);
+							}
+						},
+						error : function(XMLHttpRequest, textStatus, errorThrown) {
+							alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
+						}
+					});
+				} else {
+					return;
+				} */
+		$.confirm({
+			title : confirmTip,
+			content : multiSelectConfirmContentTemp,
+			type : "blue",
+			icon : "glyphicon glyphicon-question-sign",
+			buttons : {
+				confirm : {
+					text : "确认",
+					btnClass : "btn-primary",
+					action : function() {
+						$.ajax({
+							url : localStorage.getItem("operateUrl"),
+							data : {
+								tid : orderListRows[localStorage.getItem("singleRowSelected")].id,
+								orderArray : orderArray,
+								adEndDate : adEndDate,
+								remark : remark
+							},
+							type : "post",
+							dataType : "json",
+							traditional : true,
+							async: false,
+							success : function(data) {
+								if (data.state === 0) {
+									location.reload();
+								} else {
+									alert(data.info);
+								}
+							},
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
+								alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
+							}
+						});
+					localStorage.clear();
+					$("#modal-batchStopAdvertise").modal('hide');
+					},
+				},
+				cancel : {
+					text : "取消",
+					action : function() {
+						localStorage.clear();
+						$("#modal-batchStopAdvertise").modal('hide');
+						return;
+					}
+				}
+			}
+		});
+
 	});
 
 	function stopAdvertise(target) {
-		var stopAdvertiseConfirm = confirm("确定要停刊吗？");
-		if (stopAdvertiseConfirm == true) {
-			$.ajax({
-				url : "stopAdvertisingAction.action",
-				data : {
-					tid : target
-				},
-				type : "post",
-				dataType : "json",
-				success : function(data) {
-					if (data.state === 0) {
-						alert(data.info);
-						location.reload();
-					} else {
-						alert(data.info);
-					}
-				},
-				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
-				}
-			});
-		} else {
-			return;
-		}
-	}
+		checkLocalStorageSupport();
+		localStorage.setItem("singleRowSelected", target);
+		localStorage.setItem("stopOrRevoke", "停刊");
+		localStorage.setItem("operateUrl", "stopAdvertisingAction.action");
+		$("#modal-batchStopAdvertise").modal('show');
+	}	
 
-	function revokeAdvertise(target) {
-		var revokeAdvertiseConfirm = confirm("确定要撤刊吗？");
-		if (revokeAdvertiseConfirm == true) {
-			$.ajax({
-				url : "revokeAdvertisingAction.action",
-				data : {
-					tid : target
-				},
-				type : "post",
-				dataType : "json",
-				success : function(data) {
-					if (data.state === 0) {
-						alert(data.info);
-						location.reload();
-					} else {
-						alert(data.info);
-					}
-				},
-				error : function(XMLHttpRequest, textStatus, errorThrown) {
-					alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
-				}
-			});
-		} else {
-			return;
-		}
+	function revokeAdvertise(target) {	
+		checkLocalStorageSupport();
+		localStorage.setItem("singleRowSelected", target);
+		localStorage.setItem("stopOrRevoke", "撤刊");
+		localStorage.setItem("operateUrl", "revokeAdvertisingAction.action");
+		$("#modal-batchStopAdvertise").modal('show');
 	}
 
 
+	function checkLocalStorageSupport() {
+		if(window.localStorage){			 
+		}else{
+			alert('您的浏览器不支持本地功能，推荐使用Chrome内核浏览器进行操作！');
+			return;
+		}
+	}
+	
+	function completeConfirmContent(target){
+		var confirmContent = "";
+		confirmContent += "发布内容："+target.content+" ";
+		confirmContent += "上画点位："+target.led+" ";
+		confirmContent += "时长："+target.duration+" ";
+		confirmContent += "频次："+target.frequency+" ";		
+		confirmContent += "起止日期："+target.startdate+" - "+target.enddate+" ";
+		confirmContent += "起止时间："+target.starttime+" - "+target.endtime+" ";
+		confirmContent += "播放策略："+target.playstrategy+" ";
+		confirmContent += "<br>";
+		
+		return confirmContent;
+	}
+	
+	function checkSelect(obj){
+		if($(obj).hasClass("btn-success")){
+			$(obj).removeClass("btn-success");
+		}else {
+			$(obj).addClass("btn-success");
+		}
+	}
+	
 	//加
 	Number.prototype.add = function(arg) {
 		var r1,

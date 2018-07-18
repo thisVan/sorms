@@ -12,7 +12,7 @@ public class Operevent implements java.io.Serializable {
 
 	private Integer id;
 	private Operatetype operatetype;
-	private Order order;
+	private Integer orderId;
 	private Timestamp time;
 	private String operater;
 	private String remark;
@@ -30,11 +30,11 @@ public class Operevent implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Operevent(Integer id, Operatetype operatetype, Order order, Timestamp time, String operater, String remark,
+	public Operevent(Integer id, Operatetype operatetype, Integer orderId, Timestamp time, String operater, String remark,
 			Integer originorder) {
 		this.id = id;
 		this.operatetype = operatetype;
-		this.order = order;
+		this.orderId = orderId;
 		this.time = time;
 		this.operater = operater;
 		this.remark = remark;
@@ -59,12 +59,12 @@ public class Operevent implements java.io.Serializable {
 		this.operatetype = operatetype;
 	}
 
-	public Order getOrder() {
-		return this.order;
+	public Integer getOrderId() {
+		return this.orderId;
 	}
 
-	public void setOrder(Order order) {
-		this.order = order;
+	public void setOrderId(Integer orderId) {
+		this.orderId = orderId;
 	}
 
 	public Timestamp getTime() {
@@ -101,7 +101,7 @@ public class Operevent implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "Operevent [id=" + id + ", operatetype=" + operatetype.getOperatetype() + ", order=" + order.getId() + ", time=" + time + ", operater=" + operater
+		return "Operevent [id=" + id + ", operatetype=" + operatetype.getOperatetype() + ", orderId=" + orderId + ", time=" + time + ", operater=" + operater
 				+ ", remark=" + remark + ", originorder=" + originorder + "]";
 	}
 

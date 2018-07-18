@@ -61,6 +61,8 @@ public class DirectionAction extends SuperAction implements ModelDriven<User> {
 		ctx.put("clienttypeList", baseService.clienttypeList());
 		ctx.put("channelList", baseService.channelList());
 		ctx.put("strategyList", baseService.strategyList());
+		System.out.println(baseService.strategyList());
+		ctx.put("publishstyleList", baseService.publishstyleList());
 		System.out.println(ctx.get("ledList"));
 		System.out.println(baseService.ledList().size());
 		System.out.println(baseService.industryList().size());

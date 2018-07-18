@@ -13,11 +13,11 @@
         <many-to-one name="operatetype" class="com.nfledmedia.sorm.entity.Operatetype" fetch="select">
             <column name="operate_id" />
         </many-to-one>
-        <many-to-one name="order" class="com.nfledmedia.sorm.entity.Order" fetch="select">
+        <property name="orderId" type="java.lang.Integer">
             <column name="order_id">
-                <comment>单号</comment>
+            	<comment>单号</comment>
             </column>
-        </many-to-one>
+        </property>
         <property name="time" type="java.sql.Timestamp">
             <column name="time" length="19" />
         </property>

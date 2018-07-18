@@ -10,7 +10,7 @@
             <column name="id" />
             <generator class="identity" />
         </id>
-        <many-to-one name="adcontract" class="com.nfledmedia.sorm.entity.Adcontract" fetch="select" lazy="false">
+        <many-to-one name="adcontract" class="com.nfledmedia.sorm.entity.Adcontract" not-found="ignore" fetch="select" lazy="false">
             <column name="adcontract_id">
                 <comment>认刊书id，绑定认刊书</comment>
             </column>
@@ -88,9 +88,19 @@
                 <comment>修改时间</comment>
             </column>
         </property>
+        <property name="operatetime" type="java.sql.Timestamp">
+            <column name="operatetime" length="19">
+                <comment>操作时间，指改刊，下画，撤刊时间</comment>
+            </column>
+        </property>
         <property name="state" type="java.lang.String">
             <column name="state">
                 <comment>状态，活动"A"或死亡"D"</comment>
+            </column>
+        </property>
+        <property name="md5encrypt" type="java.lang.String">
+            <column name="md5encrypt">
+                <comment>MD5值，为了校验重复</comment>
             </column>
         </property>
     </class>

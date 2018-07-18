@@ -15,6 +15,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Operevent;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Publishdetail;
+import com.nfledmedia.sorm.entity.Publishstyle;
 import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
@@ -1621,25 +1623,45 @@ public class YewuAction extends SuperAction {
 	 */
 	public String orderDetailExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
 		DateFormat sdfHm = new SimpleDateFormat("HH:mm");
+		Date dayEnd = sdf.parse(endTime);
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(dayEnd);
+		calendar.set(Calendar.HOUR_OF_DAY, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
 
 		// 数据集
-		List dataList = renkanshuService.getOrderInDuration(sdf.parse(startTime), sdf.parse(endTime));
+		List dataList = renkanshuService.getOrderInDuration(sdf.parse(startTime), calendar.getTime());
+		System.out.println(sdfFull.format(calendar.getTime()));
 
 		// 处理为需要的格式
 		List dataResultList = new ArrayList();
 		for (Object object : dataList) {
 			Order order = (Order) object;
 			List order2ArrayList = new ArrayList();
-			order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
-			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源
 			List opereventList = baseService.getOpereventByOrderId(order.getId());
-			if (opereventList.size() > 0) {
+			int opereventListSize = opereventList.size();
+			if (opereventListSize > 0) {
+				order2ArrayList.add(sdfMd.format(order.getAdcontract().getLastModifytime()));// 单据时间
+			} else {
+				order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
+			}
+			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源		
+			if (opereventListSize > 0) {
 				order2ArrayList.add(((Operevent) opereventList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
 			} else {
-				order2ArrayList.add("认刊");// 单据类型，指认刊，改刊，停刊
+				Publishstyle operatestyle = order.getAdcontract().getPublishstyle();
+				if (operatestyle != null && !"".equals(operatestyle.getName())) {
+					order2ArrayList.add(operatestyle.getName());
+				} else {
+					order2ArrayList.add("认刊");// 单据类型，指认刊，改刊，停刊
+				}
+				
 			}
+//			order2ArrayList.add(order.getAttribute().getAttributename());// 下单属性
 			order2ArrayList.add(order.getLed().getCity());// 区域
 			order2ArrayList.add(order.getLed().getName());// 屏点
 			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
@@ -1649,10 +1671,9 @@ public class YewuAction extends SuperAction {
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
 			order2ArrayList.add(order.getDuration());// 时长
 			order2ArrayList.add(order.getFrequency());// 频次
-			order2ArrayList.add("");// 排播接单人
+			//order2ArrayList.add("");// 排播接单人
 			order2ArrayList.add(order.getAdcontract().getPlacer());// 下单人
-			order2ArrayList.add(order.getAdcontract().getRemark());// 备注
-
+			order2ArrayList.add(order.getAdcontract().getRemark() == null ? "" : order.getAdcontract().getRemark());// 备注
 			dataResultList.add(order2ArrayList);
 		}
 
@@ -1662,8 +1683,8 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = { "单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次", "排播接单人", "下单人",
-				"备注" };
+		String[] arr = { "单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期",
+				"下刊日期", "时长", "频次", "下单人", "备注" };
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
 		}
@@ -1672,14 +1693,17 @@ public class YewuAction extends SuperAction {
 		String[] sheetTitles = new String[title.size()];
 		String[] timearrs = startTime.split("-");
 		String ledTimeRange = sdfMd.format(sdf.parse(startTime)) + " 至 " + sdfMd.format(sdf.parse(endTime));
-		sheetTitles[0] = "新视界+新帆下单明细表（2017.7.1始）";
+		if (startTime.equals(endTime)) {
+			ledTimeRange = sdfMd.format(sdf.parse(startTime));
+		}
+		sheetTitles[0] = "下单明细表";
 		String[] titles = new String[title.size()];
 		for (int i = 0; i < title.size(); i++) {
 			titles[i] = (String) title.get(i);
 		}
 
 		String fileName = new String(sheetTitles[0]);
-		String codedFileName = java.net.URLEncoder.encode(fileName, "UTF-8");
+		String codedFileName = java.net.URLEncoder.encode(fileName+"（"+ledTimeRange+"）", "UTF-8");
 
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("aplication/vnd.ms-excel");
@@ -1734,12 +1758,12 @@ public class YewuAction extends SuperAction {
 			// 下面是填充数据
 			if (dataResultList != null && dataResultList.size() > 0) {
 				for (int i = 0, size = dataResultList.size(); i < size; i++) {
-					for (int j = 0; j < titles.length - 1; j++) {
+					for (int j = 0; j < titles.length; j++) {
 						List dataRow = (ArrayList) dataResultList.get(i);
 						String value = null;
 						if (dataRow.get(j) != null)
 							value = dataRow.get(j).toString();
-						if (value != null && !value.equals("")) {
+						if (value != null && !"".equals(value)) {
 							label = new Label(j, i + mergeCellPoint, value, dataRowCellFormat);
 						} else {
 							label = new Label(j, i + mergeCellPoint, "", dataRowCellFormat);
@@ -1957,6 +1981,7 @@ public class YewuAction extends SuperAction {
 		ctx.put("clienttypeList", baseService.clienttypeList());
 		ctx.put("playstrategyList", baseService.strategyList());
 		ctx.put("channelList", baseService.channelList());
+		ctx.put("publishstyleList", baseService.publishstyleList());
 		ctx.put("adcontract", adcontract);
 		ctx.put("order", order);
 		return SUCCESS;
@@ -1969,8 +1994,9 @@ public class YewuAction extends SuperAction {
 	 */
 	public String operateOrderPage() throws Exception {
 		ActionContext ctx = ActionContext.getContext();
-		Order order = adcontractService.getOrderById(orderid);
-		Adcontract adcontract = order.getAdcontract();
+//		Order order = adcontractService.getOrderById(orderid);
+//		Adcontract adcontract = order.getAdcontract();
+		Adcontract adcontract = adcontractService.getAdcontractById(adcontractid);
 		ctx.put("ledList", baseService.ledList());
 		ctx.put("industryList", baseService.industryList());
 		ctx.put("attributeList", baseService.attributeList());
@@ -1978,8 +2004,23 @@ public class YewuAction extends SuperAction {
 		ctx.put("playstrategyList", baseService.strategyList());
 		ctx.put("channelList", baseService.channelList());
 		ctx.put("adcontract", adcontract);
-		ctx.put("order", order);
+//		ctx.put("order", order);
 		return SUCCESS;
+	}
+	
+	/**
+	 * 根据orderid查询 adcontractid
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public String getAdcontractidByOrderid() throws IOException{
+		JSONObject jsonObject = new JSONObject();
+		Adcontract adc = adcontractService.getAdcontractByOrderId(orderid);
+		jsonObject.put("state", 0);
+		jsonObject.put("info", adc.getId());
+		sentMsg(jsonObject.toString());
+		return null;
 	}
 	
 	/**
@@ -3280,5 +3321,9 @@ public class YewuAction extends SuperAction {
 	// return null;
 	//
 	// }
+	
+	public void calcOrderMd5(){
+		renkanshuService.calcOrderMd5Service();
+	}
 
 }

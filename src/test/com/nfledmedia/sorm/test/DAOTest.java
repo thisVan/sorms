@@ -162,11 +162,11 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 	
 	@Test
 	public void testOpereventDAO(){
-		Operevent op = (Operevent) opereventDAO.findByOrder(2280).get(0);
+		Operevent op = (Operevent) opereventDAO.findByOrderId(2280).get(0);
 		Operevent op1 = new Operevent();
 		op1.setOperater("杨洋");
 		op1.setOperatetype(new Operatetype((short) 1));
-		op1.setOrder(new Order(2280));
+		op1.setOrderId(2280);
 		op1.setTime(new Timestamp(System.currentTimeMillis()));
 		op1.setOriginorder(2280);
 		opereventDAO.save(op1);

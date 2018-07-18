@@ -171,4 +171,7 @@
 	<bean id="opereventDAO" class="com.nfledmedia.sorm.dao.OpereventDAO">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
+		<bean id="publishstyleDAO" class="com.nfledmedia.sorm.dao.PublishstyleDAO">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
 </beans>

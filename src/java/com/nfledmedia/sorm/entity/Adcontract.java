@@ -16,6 +16,7 @@ public class Adcontract implements java.io.Serializable {
 	private Integer id;
 	private Channel channel;
 	private Clienttype clienttype;
+	private Publishstyle publishstyle;
 	private String sn;
 	private Date date;
 	private String client;
@@ -39,12 +40,11 @@ public class Adcontract implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Adcontract(Channel channel, Clienttype clienttype, String sn,
-			Date date, String client, String agency, String placer, String remark,
-			Timestamp createtime, String state, Timestamp lastModifytime,
-			Set orders) {
+	public Adcontract(Channel channel, Clienttype clienttype, Publishstyle publishstyle, String sn, Date date, String client, String agency,
+			String placer, String remark, Timestamp createtime, String state, Timestamp lastModifytime, Set orders) {
 		this.channel = channel;
 		this.clienttype = clienttype;
+		this.publishstyle = publishstyle;
 		this.sn = sn;
 		this.date = date;
 		this.client = client;
@@ -81,6 +81,14 @@ public class Adcontract implements java.io.Serializable {
 
 	public void setClienttype(Clienttype clienttype) {
 		this.clienttype = clienttype;
+	}
+
+	public Publishstyle getPublishstyle() {
+		return publishstyle;
+	}
+
+	public void setPublishstyle(Publishstyle publishstyle) {
+		this.publishstyle = publishstyle;
 	}
 
 	public String getSn() {
@@ -162,30 +170,30 @@ public class Adcontract implements java.io.Serializable {
 	public void setOrders(Set orders) {
 		this.orders = orders;
 	}
-	
+
 	@Override
 	public String toString() {
-		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname() + ", clienttype=" + clienttype.getCtypedesc() + ", sn=" + sn + ", date=" + date
-				+ ", client=" + client + ", agency=" + agency + ", placer=" + placer + ", remark=" + remark + ", createtime=" + createtime
-				+ ", state=" + state + ", lastModifytime=" + lastModifytime + "]";
+		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname() + ", clienttype=" + clienttype.getCtypedesc()
+				+ ", publishstyle=" + publishstyle.getName() + ", sn=" + sn + ", date=" + date + ", client=" + client + ", agency=" + agency
+				+ ", placer=" + placer + ", remark=" + remark + ", createtime=" + createtime + ", state=" + state + ", lastModifytime="
+				+ lastModifytime + "]";
 	}
-	
+
 	/**
 	 * 比较adcontract修改时关键属性是否改变，是，则所有的order以及级联的publishdetail都要修改
+	 * 
 	 * @param adcontract
 	 * @return
 	 */
 	public boolean keyPropertiesModified(Adcontract adcontract) {
 		// TODO Auto-generated method stub
-		if (this.client.equals(adcontract.client) 
-				|| this.agency.equals(adcontract.agency)
-				|| this.clienttype.getId().equals(adcontract.clienttype.getId())
-				|| this.channel.getId().equals(adcontract.channel.getId())
+		if (this.client.equals(adcontract.client) || this.agency.equals(adcontract.agency)
+				|| this.clienttype.getId().equals(adcontract.clienttype.getId()) || this.channel.getId().equals(adcontract.channel.getId())
 				|| adcontract.placer.equals(this.placer)) {
 			return true;
 		}
 
 		return false;
 	}
-	
+
 }

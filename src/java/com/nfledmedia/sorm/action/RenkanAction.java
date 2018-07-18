@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -31,12 +32,14 @@ import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Order;
 import com.nfledmedia.sorm.entity.Playstrategy;
+import com.nfledmedia.sorm.entity.Publishstyle;
 import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.AdcontractService;
 import com.nfledmedia.sorm.service.BaseService;
 import com.nfledmedia.sorm.service.RenkanshuService;
 import com.nfledmedia.sorm.service.UserService;
 import com.nfledmedia.sorm.service.YewuService;
+import com.nfledmedia.sorm.util.MD5Util;
 import com.opensymphony.xwork2.ActionContext;
 
 /**
@@ -86,6 +89,45 @@ public class RenkanAction extends SuperAction {
 	private Attribute attribute;
 	private Clienttype clienttype;
 	private Playstrategy playstrategy;
+	private Publishstyle publishstyle;
+	
+	//停撤刊时间
+	private Date adEndDate;
+	private String remark;
+	private String[] orderArray;
+	private String[] alterPropertiesArray;
+	
+	public String[] getAlterPropertiesArray() {
+		return alterPropertiesArray;
+	}
+
+	public void setAlterPropertiesArray(String[] alterPropertiesArray) {
+		this.alterPropertiesArray = alterPropertiesArray;
+	}
+
+	public String[] getOrderArray() {
+		return orderArray;
+	}
+
+	public void setOrderArray(String[] orderArray) {
+		this.orderArray = orderArray;
+	}
+
+	public Date getAdEndDate() {
+		return adEndDate;
+	}
+
+	public void setAdEndDate(Date adEndDate) {
+		this.adEndDate = adEndDate;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
 	public Adcontract getAdcontract() {
 		return adcontract;
@@ -133,6 +175,14 @@ public class RenkanAction extends SuperAction {
 
 	public void setClienttype_id(String clienttype_id) {
 		this.clienttype_id = clienttype_id;
+	}
+
+	public Publishstyle getPublishstyle() {
+		return publishstyle;
+	}
+
+	public void setPublishstyle(Publishstyle publishstyle) {
+		this.publishstyle = publishstyle;
 	}
 
 	public String getChannel_id() {
@@ -352,6 +402,8 @@ public class RenkanAction extends SuperAction {
 	public void setAudit_id(String audit_id) {
 		this.audit_id = audit_id;
 	}
+	
+	private String saveStateInfo;
 
 	public String saverenkan() throws JSONException, IOException {
 		String tip;
@@ -359,7 +411,7 @@ public class RenkanAction extends SuperAction {
 			tip = "您填写的信息已经提交成功！";
 
 		} else {
-			tip = "提交失败，请联系管理员处理！";
+			tip = saveStateInfo;
 		}
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("state", 0);
@@ -388,11 +440,13 @@ public class RenkanAction extends SuperAction {
 			Channel cha = new Channel();
 			cha.setId(Integer.parseInt(channel_id));
 			adcontract.setChannel(cha);
+			
+			adcontract.setPublishstyle(publishstyle);
 
 			adcontract.setCreatetime(new Timestamp(System.currentTimeMillis()));
 			adcontract.setState(TypeCollections.ADCONTRACT_ACTIVE_STATE);
 
-			System.out.println(adcontract.toString());
+//			System.out.println(adcontract.toString());
 			List<Order> ordList = new ArrayList<Order>();
 
 			for (int i = 0; i < enddateledtable.length; i++) {
@@ -429,14 +483,32 @@ public class RenkanAction extends SuperAction {
 				}
 
 				ord.setState(TypeCollections.ORDER_STATE_ACTIVE);
+				String attrValue = "";
+				attrValue += ord.getAttribute().getId();
+				attrValue += ord.getLed().getId();
+				attrValue += ord.getContent();
+				attrValue += ord.getDuration();
+				attrValue += ord.getFrequency();			
+				attrValue += ord.getStartdate().toString();
+				attrValue += ord.getEnddate().toString();
+				attrValue += ord.getStarttime().toString();
+				attrValue += ord.getEndtime().toString();
+				
+				ord.setMd5encrypt(MD5Util.encrypt32(attrValue));
 				System.out.println(ord.toString());
+				if (adcontractService.repeatabilityCheckOfOrder(ord.getMd5encrypt())) {
+					returnStr = "failed";
+					saveStateInfo = "订单重复，系统保存失败！如有问题，请联系管理员处理。";
+					return returnStr;
+				}
 				ordList.add(ord);
 			}
 
 			adcontractService.saveAdcontract(adcontract, ordList);
 		} catch (ParseException e) {
 			e.printStackTrace();
-			returnStr = "failure";
+			returnStr = "failed";
+			saveStateInfo = "后台数据解析异常，保存失败！请联系管理员处理！";
 			throw new RuntimeException();
 		}
 		return returnStr;
@@ -451,7 +523,22 @@ public class RenkanAction extends SuperAction {
 		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
 		User u = userService.getUserById(uid);
 		String operater = u.getRealname();
-		String info = adcontractService.alterAdvertisingService(tid, order, operater);
+		//String info = adcontractService.alterAdvertisingService(tid, order, operater);
+		String info = "";
+		//如果orderArray不为空且length大于0，转批量停刊
+		if(orderArray.length == 1 && orderArray[0].contains(",")){
+			orderArray = orderArray[0].split(",");
+		}
+		if(alterPropertiesArray.length == 1 && alterPropertiesArray[0].contains(",")){
+			alterPropertiesArray = alterPropertiesArray[0].split(",");
+		}
+		if (orderArray != null && orderArray.length > 0) {
+			for (String tid : orderArray) {
+				info = adcontractService.alterAdvertisingService(tid, order, operater, alterPropertiesArray);
+			}
+		}else {
+			info = adcontractService.alterAdvertisingService(tid, order, operater, alterPropertiesArray);
+		}
 		
 		String recallTip = "操作成功！".equals(info)?info:"操作失败，请联系管理员处理！";
 		
@@ -465,30 +552,48 @@ public class RenkanAction extends SuperAction {
 	 * 停刊的业务流程
 	 * @throws IOException 
 	 */
-	public void stopAdvertisingAction() throws IOException {
+	public String stopAdvertisingAction() throws IOException {
 		Map session = ActionContext.getContext().getSession();
 		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
 		User u = userService.getUserById(uid);
 		String operater = u.getRealname();
-		String info = adcontractService.stopAdvertisingService(tid, operater);
+		String info = "";
+		//如果orderArray不为空且length大于0，转批量停刊
+		if (orderArray != null && orderArray.length > 0) {
+			for (String tid : orderArray) {
+				info = adcontractService.stopAdvertisingService(tid, operater, remark, adEndDate);
+			}
+		}else {
+			info = adcontractService.stopAdvertisingService(tid, operater, remark, adEndDate);
+		}
+		
 		String recallTip = "操作成功！".equals(info)?info:"操作失败，请联系管理员处理！";
 		
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("info", recallTip);
 		
 		sentMsg(jsonObject.toString());
+		return null;
 	}
 
 	/**
 	 * 撤刊的业务流程
 	 * @throws IOException 
 	 */
-	public void revokeAdvertisingAction() throws IOException {
+	public String revokeAdvertisingAction() throws IOException {
 		Map session = ActionContext.getContext().getSession();
 		Integer uid = (Integer) session.get(CommonConstant.SESSION_ID);
 		User u = userService.getUserById(uid);
 		String operater = u.getRealname();
-		String info = adcontractService.revokeAdvertisingService(tid, operater);
+		String info = "";
+		//如果orderArray不为空且length大于0，转批量撤刊
+		if (orderArray != null && orderArray.length > 0) {
+			for (String tid : orderArray) {
+				info = adcontractService.revokeAdvertisingService(tid, operater, adEndDate, remark);
+			}
+		}else {
+			info = adcontractService.revokeAdvertisingService(tid, operater, adEndDate, remark);
+		}
 
 		String recallTip = "操作成功！".equals(info) ? info : "操作失败，请联系管理员处理！";
 
@@ -496,6 +601,7 @@ public class RenkanAction extends SuperAction {
 		jsonObject.put("info", recallTip);
 
 		sentMsg(jsonObject.toString());
+		return null;
 	}
 
 	// public void deleteRenkanshu() throws Exception {

@@ -29,7 +29,9 @@ public class Order implements java.io.Serializable {
 	private Time endtime;
 	private String modifier;
 	private Timestamp modtime;
+	private Timestamp operatetime;
 	private String state;
+	private String md5encrypt;
 
 	// Constructors
 
@@ -45,7 +47,7 @@ public class Order implements java.io.Serializable {
 	/** full constructor */
 	public Order(Integer id, Adcontract adcontract, Led led, Industry industry, Attribute attribute, String ordersn, String content,
 			Short duration, Short frequency, Short addfreq, Date startdate, Date enddate, Time starttime, Time endtime,
-			Playstrategy playstrategy, String modifier, Timestamp modtime, String state) {
+			Playstrategy playstrategy, String modifier, Timestamp modtime, Timestamp operatetime, String state, String md5encrypt) {
 		this.id = id;
 		this.adcontract = adcontract;
 		this.led = led;
@@ -63,7 +65,9 @@ public class Order implements java.io.Serializable {
 		this.playstrategy = playstrategy;
 		this.modifier = modifier;
 		this.modtime = modtime;
+		this.operatetime = operatetime;
 		this.state = state;
+		this.md5encrypt = md5encrypt;
 	}
 
 	// Property accessors
@@ -204,6 +208,14 @@ public class Order implements java.io.Serializable {
 		this.modtime = modtime;
 	}
 
+	public Timestamp getOperatetime() {
+		return operatetime;
+	}
+
+	public void setOperatetime(Timestamp operatetime) {
+		this.operatetime = operatetime;
+	}
+
 	public String getState() {
 		return this.state;
 	}
@@ -212,13 +224,21 @@ public class Order implements java.io.Serializable {
 		this.state = state;
 	}
 
+	public String getMd5encrypt() {
+		return md5encrypt;
+	}
+
+	public void setMd5encrypt(String md5encrypt) {
+		this.md5encrypt = md5encrypt;
+	}
+
 	@Override
 	public String toString() {
 		return "Order [id=" + id + ", led=" + led.getName() + ", industry=" + industry.getIndustryname() + ", attribute="
 				+ attribute.getAttributename() + ", playstrategy=" + playstrategy.getStrategyname() + ", ordersn=" + ordersn + ", content="
 				+ content + ", duration=" + duration + ", frequency=" + frequency + ", addfreq=" + addfreq + ", startdate=" + startdate
 				+ ", enddate=" + enddate + ", starttime=" + starttime + ", endtime=" + endtime + ", modifier=" + modifier + ", modtime="
-				+ modtime + ", state=" + state + "]";
+				+ modtime + ", operatetime=" + operatetime + ", state=" + state + ", md5encrypt=" + md5encrypt + "]";
 	}
 
 }

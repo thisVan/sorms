@@ -8,32 +8,31 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.nfledmedia.sorm.entity.Operevent;
+import com.nfledmedia.sorm.entity.Publishstyle;
 
 /**
  * A data access object (DAO) providing persistence and search support for
- * Operevent entities. Transaction control of the save(), update() and delete()
+ * Publishstyle entities. Transaction control of the save(), update() and delete()
  * operations can directly support Spring container-managed transactions or they
  * can be augmented to handle user-managed Spring transactions. Each of these
  * methods provides additional information for how to configure it for the
  * desired type of transaction control.
  * 
- * @see com.nfledmedia.sorm.entity.Operevent
+ * @see com.nfledmedia.sorm.entity.Publishstyle
  * @author MyEclipse Persistence Tools
  */
 @Repository
-public class OpereventDAO extends HibernateDaoSupport {
-	private static final Logger log = LoggerFactory.getLogger(AdcontractDAO.class);
+public class PublishstyleDAO extends HibernateDaoSupport {
+	private static final Logger log = LoggerFactory.getLogger(PublishstyleDAO.class);
+	// property constants
 
 	protected void initDao() {
 		// do nothing
 	}
-	
-	@Transactional(readOnly=false)
-	public void save(Operevent transientInstance) {
-		log.debug("saving Operevent instance");
+
+	public void save(Publishstyle transientInstance) {
+		log.debug("saving Publishstyle instance");
 		try {
 			getHibernateTemplate().save(transientInstance);
 			log.debug("save successful");
@@ -43,9 +42,8 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	@Transactional(readOnly=false)
-	public void delete(Operevent persistentInstance) {
-		log.debug("deleting Operevent instance");
+	public void delete(Publishstyle persistentInstance) {
+		log.debug("deleting Publishstyle instance");
 		try {
 			getHibernateTemplate().delete(persistentInstance);
 			log.debug("delete successful");
@@ -55,10 +53,10 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public Operevent findById(java.lang.Integer id) {
-		log.debug("getting Operevent instance with id: " + id);
+	public Publishstyle findById(java.lang.Short id) {
+		log.debug("getting Publishstyle instance with id: " + id);
 		try {
-			Operevent instance = (Operevent) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Operevent", id);
+			Publishstyle instance = (Publishstyle) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Publishstyle", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -66,8 +64,8 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public List findByExample(Operevent instance) {
-		log.debug("finding Operevent instance by example");
+	public List findByExample(Publishstyle instance) {
+		log.debug("finding Publishstyle instance by example");
 		try {
 			List results = getHibernateTemplate().findByExample(instance);
 			log.debug("find by example successful, result size: " + results.size());
@@ -79,9 +77,9 @@ public class OpereventDAO extends HibernateDaoSupport {
 	}
 
 	public List findByProperty(String propertyName, Object value) {
-		log.debug("finding Operevent instance with property: " + propertyName + ", value: " + value);
+		log.debug("finding Publishstyle instance with property: " + propertyName + ", value: " + value);
 		try {
-			String queryString = "from Operevent as model where model." + propertyName + "= ?";
+			String queryString = "from Publishstyle as model where model." + propertyName + "= ?";
 			return getHibernateTemplate().find(queryString, value);
 		} catch (RuntimeException re) {
 			log.error("find by property name failed", re);
@@ -89,22 +87,10 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public List findByOrderId(Object orderId) {
-		return findByProperty("orderId", orderId);
-	}
-
-	public List findByOperater(Object operater) {
-		return findByProperty("operater", operater);
-	}
-
-	public List findByOriginorder(Object originorder) {
-		return findByProperty("originorder", originorder);
-	}
-
 	public List findAll() {
-		log.debug("finding all Operevent instances");
+		log.debug("finding all Publishstyle instances");
 		try {
-			String queryString = "from Operevent";
+			String queryString = "from Publishstyle";
 			return getHibernateTemplate().find(queryString);
 		} catch (RuntimeException re) {
 			log.error("find all failed", re);
@@ -112,10 +98,10 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public Operevent merge(Operevent detachedInstance) {
-		log.debug("merging Operevent instance");
+	public Publishstyle merge(Publishstyle detachedInstance) {
+		log.debug("merging Publishstyle instance");
 		try {
-			Operevent result = (Operevent) getHibernateTemplate().merge(detachedInstance);
+			Publishstyle result = (Publishstyle) getHibernateTemplate().merge(detachedInstance);
 			log.debug("merge successful");
 			return result;
 		} catch (RuntimeException re) {
@@ -124,8 +110,8 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public void attachDirty(Operevent instance) {
-		log.debug("attaching dirty Operevent instance");
+	public void attachDirty(Publishstyle instance) {
+		log.debug("attaching dirty Publishstyle instance");
 		try {
 			getHibernateTemplate().saveOrUpdate(instance);
 			log.debug("attach successful");
@@ -135,8 +121,8 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public void attachClean(Operevent instance) {
-		log.debug("attaching clean Operevent instance");
+	public void attachClean(Publishstyle instance) {
+		log.debug("attaching clean Publishstyle instance");
 		try {
 			getHibernateTemplate().lock(instance, LockMode.NONE);
 			log.debug("attach successful");
@@ -146,8 +132,7 @@ public class OpereventDAO extends HibernateDaoSupport {
 		}
 	}
 
-	public static AdcontractDAO getFromApplicationContext(ApplicationContext ctx) {
-		return (AdcontractDAO) ctx.getBean("opereventDAO");
+	public static PublishstyleDAO getFromApplicationContext(ApplicationContext ctx) {
+		return (PublishstyleDAO) ctx.getBean("PublishstyleDAO");
 	}
-
 }

@@ -75,7 +75,17 @@
 						</s:select>
 					</div>
 				</div>
-
+				
+				<div class="form-group col-lg-6 col-md-12">
+					<label for="" class="col-sm-3 control-label">单据类型</label>
+					<div class="col-sm-9">
+						<s:select name="adcontract.publishstyle.id" cssClass="form-control input-sm"
+							list="publishstyleList" listKey="id" listValue="name"
+							value="#adcontract.publishstyle.id">
+						</s:select>
+					</div>
+				</div>
+				
 				<div class="form-group col-lg-6 col-md-12">
 					<label for="" class="col-sm-3 control-label">单据来源</label>
 					<div class="col-sm-9">
@@ -123,33 +133,33 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td><input name="order.content"
+								<td width="200"><input name="order.content"
 									class="form-control input-sm" id="fabuneirong1"
 									value="${order.content }"></td>
-								<td><s:select name="led.id" id="shanghuadianwei1"
+								<td width="105"><s:select name="led.id" id="shanghuadianwei1"
 										cssClass="form-control input-sm" list="ledList" listKey="id"
 										listValue="name" value="#order.led.id"
 										onchange="setSSTime(this)"></s:select></td>
-								<td><s:select name="industry.industryid"
+								<td width="70"><s:select name="industry.industryid"
 										id="hangyeleixing1" cssClass="form-control input-sm"
 										list="industryList" listKey="industryid"
 										listValue="industryname" value="#order.industry.industryid"></s:select>
 								</td>
-								<td><s:select name="attribute.id" id="guanggaoleixing1"
+								<td width="70"><s:select name="attribute.id" id="guanggaoleixing1"
 										cssClass="form-control input-sm" list="attributeList"
 										listKey="id" listValue="attributename"
 										value="#order.attribute.id"></s:select></td>
-								<td><input name="order.frequency"
+								<td width="50"><input name="order.frequency"
 									class="form-control input-sm" id="pinci1"
 									value="${order.frequency }"></td>
-								<td><input name="order.duration"
+								<td width="50"><input name="order.duration"
 									class="form-control input-sm" id="shichang1"
 									value="${order.duration }"></td>
-								<td><input name="order.startdate"
+								<td width="100"><input name="order.startdate"
 									class="form-control input-sm" type="date" max="9999-12-31"
 									id="startdate1"
 									value="<s:date name='#order.startdate' format="yyyy-MM-dd" />"></td>
-								<td><input name="order.enddate"
+								<td width="100"><input name="order.enddate"
 									class="form-control input-sm" type="date" max="9999-12-31"
 									id="enddate1"
 									value="<s:date name='#order.enddate' format="yyyy-MM-dd" />"></td>
@@ -208,6 +218,7 @@
 		var originalAdcontractagency = '${adcontract.agency}';
 		var originalAdcontractclienttype = '${adcontract.clienttype.id}';
 		var originalAdcontractchannel = '${adcontract.channel.id}';
+		var originalAdcontractpublishstyle = '${adcontract.publishstyle.id}';
 		var originalAdcontractremark = '${adcontract.remark}';
 	
 		var originalOrderid = '${order.id}';
@@ -239,6 +250,7 @@
 							if ($("input[name='adcontract.client']").val() == originalAdcontractclient
 									&& $("input[name='adcontract.agency']").val() == originalAdcontractagency
 									&& $("textarea[name='adcontract.remark']").val() == originalAdcontractremark
+									&& $("select[name='adcontract.publishstyle.id']").val() == originalAdcontractpublishstyle
 									&& $("select[name='channel.id']").val() == originalAdcontractchannel
 									&& $("select[name='clienttype.id']").val() == originalAdcontractclienttype
 									&& $("input[name='order.content']").val() == originalOrdercontent
