@@ -532,7 +532,8 @@ public class RenkanAction extends SuperAction {
 		if(alterPropertiesArray.length == 1 && alterPropertiesArray[0].contains(",")){
 			alterPropertiesArray = alterPropertiesArray[0].split(",");
 		}
-		if (orderArray != null && orderArray.length > 0) {
+		System.out.println(orderArray.length);
+		if (orderArray != null && orderArray.length > 1) {
 			for (String tid : orderArray) {
 				info = adcontractService.alterAdvertisingService(tid, order, operater, alterPropertiesArray);
 			}

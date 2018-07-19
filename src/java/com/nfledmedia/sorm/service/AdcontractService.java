@@ -144,7 +144,8 @@ public class AdcontractService {
 		Order order = orderDAO.findById(Integer.valueOf(tid));
 		Adcontract adcontract = order.getAdcontract();
 		String[] ignoreProperties = new String[] { "id","content", "led", "duration", "frequency", "startdate", "enddate", "starttime", "endtime", "playstrategy" };
-		if (noIgnoreProperties.length > 0) {
+		System.out.println(noIgnoreProperties.length);
+		if (noIgnoreProperties.length > 1) {
 			ignoreProperties = noIgnoreProperties;
 //			for (String string : noIgnoreProperties) {
 //				for (String str : ignoreProperties) {
@@ -180,6 +181,13 @@ public class AdcontractService {
 		List<Publishdetail> publishdetailList = publishdetailDAO.findByOrderid(order.getId());
 		for (Publishdetail publishdetail : publishdetailList) {
 			publishdetailDAO.delete(publishdetail);
+		}
+		//如果operevent表中有数据，删除
+		List<Operevent> opereventList = (List<Operevent>) opereventDAO.findByOrderId(order.getId());
+		if (opereventList.size() > 0) {
+			for (Operevent ope : opereventList) {
+				opereventDAO.delete(ope);
+			}
 		}
 		//删除order
 		orderDAO.delete(order);

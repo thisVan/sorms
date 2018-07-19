@@ -1645,7 +1645,11 @@ public class YewuAction extends SuperAction {
 			List opereventList = baseService.getOpereventByOrderId(order.getId());
 			int opereventListSize = opereventList.size();
 			if (opereventListSize > 0) {
-				order2ArrayList.add(sdfMd.format(order.getAdcontract().getLastModifytime()));// 单据时间
+				if (order.getOperatetime() != null && !"".equals(order.getOperatetime())) {
+					order2ArrayList.add(sdfMd.format(order.getOperatetime()));// 单据时间
+				} else {
+					order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
+				}			
 			} else {
 				order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
 			}
