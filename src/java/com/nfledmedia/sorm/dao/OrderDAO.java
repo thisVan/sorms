@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.nfledmedia.sorm.cons.ProjectAttributeConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
@@ -30,6 +31,7 @@ import com.nfledmedia.sorm.util.Page;
  * @see com.nfledmedia.sorm.entity.Order
  * @author MyEclipse Persistence Tools
  */
+@Transactional
 @Repository
 public class OrderDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(OrderDAO.class);

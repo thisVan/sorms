@@ -66,6 +66,8 @@
 		<action name="alterAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="alterAdvertisingAction">
 			<result name="input"></result>
 		</action>
+		<action name="getAlterrecordsByOrderid" class="com.nfledmedia.sorm.action.YewuAction" method="getAlterrecordsByOrderid">
+		</action>
 		<!-- 停刊操作 -->
 		<action name="stopAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="stopAdvertisingAction">
 		</action>

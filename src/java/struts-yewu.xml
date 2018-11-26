@@ -51,6 +51,10 @@
 		</action>
 		<action name="renkanshuManageList" class="com.nfledmedia.sorm.action.YewuAction" method="renkanshuManageList">
 		</action>
+		
+		<action name="publishdetailManageList" class="com.nfledmedia.sorm.action.YewuAction" method="publishdetailManageList">
+		</action>
+		
 		<action name="orderUpdatePage" class="com.nfledmedia.sorm.action.YewuAction" method="orderUpdatePage">
 			<result>/WEB-INF/pages/orderUpdatePage.jsp</result>
 		</action>
@@ -65,6 +69,8 @@
 		<!-- 改刊业务操作 -->
 		<action name="alterAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="alterAdvertisingAction">
 			<result name="input"></result>
+		</action>
+		<action name="getAlterrecordsByOrderid" class="com.nfledmedia.sorm.action.YewuAction" method="getAlterrecordsByOrderid">
 		</action>
 		<!-- 停刊操作 -->
 		<action name="stopAdvertisingAction" class="com.nfledmedia.sorm.action.RenkanAction" method="stopAdvertisingAction">

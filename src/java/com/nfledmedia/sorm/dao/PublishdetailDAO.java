@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 
+import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.util.Page;
 
@@ -39,8 +40,11 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	public static final String ADDFREQ = "addfreq";
 	public static final String DURATION = "duration";
 
-	public static final String LED_START_END_DISTINCT = "select p.id, p.ledname, p.client, p.adcontent, p.attributename, p.ctypename, p.frequency, p.addfreq, p.duration,"
-			+ " p.date from Publishdetail p ";
+	public static final String LED_START_END_DISTINCT = "select p.id, p.ledname, p.client, p.adcontent, p.attributename, p.ctypename, p.frequency, p.addfreq, p.duration, "
+			+ "p.date, p.orderid from Publishdetail p ";
+
+	private static final String GET_PUBLISH_LIST = "select p.id, p.orderid, p.ledname, p.client, p.adcontent, p.attributename, p.ctypename, p.frequency, p.addfreq, p.duration, p.date, p.starttime, p.endtime "
+			+ "from Publishdetail p ";;
 
 	protected void initDao() {
 		// do nothing
@@ -71,7 +75,8 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	public Publishdetail findById(java.lang.Integer id) {
 		log.debug("getting Publishdetail instance with id: " + id);
 		try {
-			Publishdetail instance = (Publishdetail) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Publishdetail", id);
+			Publishdetail instance = (Publishdetail) getHibernateTemplate()
+					.get("com.nfledmedia.sorm.entity.Publishdetail", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -198,8 +203,8 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	public List getResourceListAll(String startdate, String enddate, String ledname) {
 		List lst = null;
 		try {
-			String hql = LED_START_END_DISTINCT + " where p.ledname ='" + ledname + "' and p.date >= '" + startdate + "' and p.date <= '"
-					+ enddate + "'" + " order by p.attributename ";
+			String hql = LED_START_END_DISTINCT + " where p.date <='" + enddate + "' and p.date >= '" + startdate
+					+ "' and p.ledname = '" + ledname + "'" + " order by p.attributename ";
 			lst = find(hql);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -273,17 +278,65 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd + "'";
 		return find(hql);
 	}
-	
+
 	/**
 	 * 根据日期范围和所选led导出publishdetail
+	 * 
 	 * @param dateStart
 	 * @param dateEnd
 	 * @param ledname
 	 * @return
 	 */
-	public List<Publishdetail> getPublishdetailFromDaterangeAndLedname(String dateStart, String dateEnd, String ledname) {
-		// TODO Auto-generated method stub
-		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd + "' and p.ledname ='" + ledname + "'";
+	public List<Publishdetail> getPublishdetailFromDaterangeAndLedname(String dateStart, String dateEnd,
+			String ledname) {
+		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd
+				+ "' and p.ledname ='" + ledname + "'";
 		return find(hql);
 	}
+
+	/**
+	 * 
+	 * 查询下单明细表DAO层方法
+	 * @since 2018年11月24日 16点53分
+	 * @author 广渊
+	 * @param sidx
+	 * @param sord
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public Page getPublishdetailManageList(String sidx, String sord, int pageNo, int pageSize) {
+		Page page = null;
+		try {
+			page = pagedQuery(GET_PUBLISH_LIST + " order by p." + sidx + " " + sord, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("查询下单明细表失败！");
+		}
+		return page;
+	}
+
+	/**
+	 * 根据关键字where条件查询下单明细表
+	 * @author 广渊
+	 * @since 2018年11月24日 16点54分
+	 * @param keyword
+	 * @param sidx
+	 * @param sord
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public Page getPublishdetailManageListByKeyword(String keyword, String sidx, String sord, int pageNo,
+			int pageSize) {
+		Page page = null;
+		try {
+			page = pagedQuery(GET_PUBLISH_LIST + keyword + " order by p." + sidx + " " + sord, pageNo, pageSize);
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error("查询下单明细表失败！");
+		}
+		return page;
+	}
+
 }

@@ -194,6 +194,36 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 		sentMsg(jsonObject.toString());
 		return null;
 	}
+	
+	public String updateMyPassword() throws IOException {
+		Map session = ActionContext.getContext().getSession();
+		JSONObject jsonObject = new JSONObject();
+		user = userService.getUserById((Integer) session.get(CommonConstant.SESSION_ID));
+		if (oldPassword != null && !"".equals(oldPassword) && user.getPassword().equals(MD5Util.encrypt32(oldPassword))) {
+			if (newPassword != null && !"".equals(newPassword) && repeatedNewPassword != null && !"".equals(repeatedNewPassword)) {
+				if (newPassword.equals(repeatedNewPassword)) {
+					user.setPassword(MD5Util.encrypt32(newPassword));
+					if(userService.saveUser(user)) {
+						jsonObject.put("info", "密码修改成功！");
+					} else {
+						jsonObject.put("info", "服务器问题，密码修改失败！");
+					}
+					
+				}else {
+					jsonObject.put("info", "两次密码输入不一致！");
+				}
+			}else {
+				jsonObject.put("info", "新密码或重复密码为空！");
+			}
+			
+		}else {
+			jsonObject.put("info", "旧密码为空或不正确！");
+		}
+		
+		sentMsg(jsonObject.toString());
+		
+		return null;
+	}
 
 	public void setUserService(UserService userService) {
 		this.userService = userService;

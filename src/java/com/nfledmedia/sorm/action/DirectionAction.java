@@ -81,6 +81,13 @@ public class DirectionAction extends SuperAction implements ModelDriven<User> {
 		ctx.put("ledList", baseService.ledList());
 		return SUCCESS;
 	}
+	
+	public String publishdetailListManage() throws Exception {
+		ActionContext ctx = ActionContext.getContext();
+		// ctx.put("clients", baseService.clientsList());
+		ctx.put("ledList", baseService.ledList());
+		return SUCCESS;
+	}
 
 	public String avgScreenOccupancyRate() throws Exception {
 		return SUCCESS;

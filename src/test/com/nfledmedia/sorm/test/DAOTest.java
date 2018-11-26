@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.nfledmedia.sorm.dao.AlterrecordDAO;
 import com.nfledmedia.sorm.dao.IndustryDAO;
 import com.nfledmedia.sorm.dao.LedDAO;
 import com.nfledmedia.sorm.dao.OperatetypeDAO;
@@ -60,6 +61,9 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 	
 	@Resource
 	OpereventDAO opereventDAO;
+	
+	@Resource
+	AlterrecordDAO alterrecordDAO;
 	
 	@Test
 	public void getAll(){
@@ -203,5 +207,17 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 			e.printStackTrace();
 		}
 
+	}
+	
+	@Test
+	public void testFindByOrder() {
+		try {
+			Order order = orderDAO.findById(47);
+			List list = alterrecordDAO.findByOrderId(47);
+			System.out.println(list.size());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

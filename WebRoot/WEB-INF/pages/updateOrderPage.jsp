@@ -46,9 +46,8 @@
 		<!--/.row-->
 		<div class="row">
 			<form id="updateOrderForm" class="form-horizontal" role="form">
-				<input type="text" class="hidden" name="adcontract.id"
-					value='${adcontract.id }'> <input type="text"
-					class="hidden" name="order.id" value='${order.id }'>
+				<input type="text" class="hidden" name="adcontract.id" value='${adcontract.id }'>
+				<input type="text" class="hidden" name="order.id" value='${order.id }'>
 				<div class="form-group col-lg-6 col-md-12">
 					<label for="account" class="col-sm-3 control-label">广告刊户</label>
 					<div class="col-sm-9">
@@ -100,7 +99,7 @@
 					<label for="" class="col-sm-3 control-label">下单人</label>
 					<div class="col-sm-9">
 						<textarea class="form-control input-sm " rows="1"
-							name="adcontract.place" maxlength="150"><s:property
+							name="adcontract.placer" maxlength="150"><s:property
 								value="#adcontract.placer" /></textarea>
 					</div>
 				</div>
@@ -121,8 +120,8 @@
 								<th data-field="shanghuadianwei" data-sortable="true">上画点位</th>
 								<th data-field="hangyeleixing" data-sortable="true">行业类型</th>
 								<th data-field="xiadanshuxing" data-sortable="true">下单属性</th>
-								<th data-field="pinci" data-sortable="true">广告频次</th>
-								<th data-field="shichang" data-sortable="true">广告时长(秒)</th>
+								<th data-field="pinci" data-sortable="true">频次</th>
+								<th data-field="shichang" data-sortable="true">时长</th>
 								<th data-field="startdate" data-sortable="true">开始日期</th>
 								<th data-field="enddate" data-sortable="true">结束日期</th>
 								<th data-field="starttime" data-sortable="true">开始时间</th>
@@ -133,48 +132,48 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td width="200"><input name="order.content"
+								<td width="18%"><input name="order.content"
 									class="form-control input-sm" id="fabuneirong1"
 									value="${order.content }"></td>
-								<td width="105"><s:select name="led.id" id="shanghuadianwei1"
+								<td width="11%"><s:select name="led.id" id="shanghuadianwei1"
 										cssClass="form-control input-sm" list="ledList" listKey="id"
 										listValue="name" value="#order.led.id"
 										onchange="setSSTime(this)"></s:select></td>
-								<td width="70"><s:select name="industry.industryid"
+								<td width="6%"><s:select name="industry.industryid"
 										id="hangyeleixing1" cssClass="form-control input-sm"
 										list="industryList" listKey="industryid"
 										listValue="industryname" value="#order.industry.industryid"></s:select>
 								</td>
-								<td width="70"><s:select name="attribute.id" id="guanggaoleixing1"
+								<td width="6%"><s:select name="attribute.id" id="guanggaoleixing1"
 										cssClass="form-control input-sm" list="attributeList"
 										listKey="id" listValue="attributename"
 										value="#order.attribute.id"></s:select></td>
-								<td width="50"><input name="order.frequency"
+								<td width="5%"><input name="order.frequency"
 									class="form-control input-sm" id="pinci1"
 									value="${order.frequency }"></td>
-								<td width="50"><input name="order.duration"
+								<td width="5%"><input name="order.duration"
 									class="form-control input-sm" id="shichang1"
 									value="${order.duration }"></td>
-								<td width="100"><input name="order.startdate"
+								<td width="13%"><input name="order.startdate"
 									class="form-control input-sm" type="date" max="9999-12-31"
 									id="startdate1"
 									value="<s:date name='#order.startdate' format="yyyy-MM-dd" />"></td>
-								<td width="100"><input name="order.enddate"
+								<td width="13%"><input name="order.enddate"
 									class="form-control input-sm" type="date" max="9999-12-31"
 									id="enddate1"
 									value="<s:date name='#order.enddate' format="yyyy-MM-dd" />"></td>
-								<td><input name="order.starttime"
+								<td width="7%"><input name="order.starttime"
 									class="form-control input-sm" type="time"
 									value="${order.starttime }" id="starttime1"></td>
-								<td><input name="order.endtime"
+								<td width="7%"><input name="order.endtime"
 									class="form-control input-sm" type="time"
 									value="${order.endtime }" id="endtime1"></td>
-								<td><s:select name="playstrategy.id" id="playstrategy1"
+								<td width="6%"><s:select name="playstrategy.id" id="playstrategy1"
 										cssClass="form-control input-sm" list="playstrategyList"
 										listKey="id" listValue="strategyname"
 										value="#order.playstrategy.id"></s:select></td>
-								<td><button class="btn btn-danger btn-sm"
-										onclick="deletePublishdetail(this)">删除</button></td>
+								<td width="4%"><a class="form-control input-sm" onclick="deletePublishdetail(this)">
+									<span class="glyphicon glyphicon-remove" style="color:red;"></span></a></td>
 							</tr>
 						</tbody>
 					</table>
@@ -220,6 +219,7 @@
 		var originalAdcontractchannel = '${adcontract.channel.id}';
 		var originalAdcontractpublishstyle = '${adcontract.publishstyle.id}';
 		var originalAdcontractremark = '${adcontract.remark}';
+		var originalAdcontractplacer = '${adcontract.placer}';
 	
 		var originalOrderid = '${order.id}';
 		var originalOrdercontent = '${order.content}';
@@ -234,62 +234,61 @@
 		var originalOrderendtime = '${order.endtime}';
 	
 		//保存按钮的点击事件
-		$("#save")
-				.click(
-						function() {
+		$("#save").click( function() {
 	
-							//时间需要格式化为HH:mm:ss格式，否则后台无法封装对象
-							if ($("#starttime1").val().length == 5) {
-								$("#starttime1")
-										.val($("#starttime1").val() + ":00");
+			//时间需要格式化为HH:mm:ss格式，否则后台无法封装对象
+			if ($("#starttime1").val().length == 5) {
+				$("#starttime1")
+						.val($("#starttime1").val() + ":00");
+			}
+			if ($("#endtime1").val().length == 5) {
+				$("#endtime1").val($("#endtime1").val() + ":00");
+			}
+
+			if ($("input[name='adcontract.client']").val() == originalAdcontractclient
+					&& $("input[name='adcontract.agency']").val() == originalAdcontractagency
+					&& $("textarea[name='adcontract.remark']").val() == originalAdcontractremark
+					&& $("textarea[name='adcontract.placer']").val() == originalAdcontractplacer
+					&& $("select[name='adcontract.publishstyle.id']").val() == originalAdcontractpublishstyle
+					&& $("select[name='channel.id']").val() == originalAdcontractchannel
+					&& $("select[name='clienttype.id']").val() == originalAdcontractclienttype
+					&& $("input[name='order.content']").val() == originalOrdercontent
+					&& $("select[name='led.id']").val() == originalOrderled
+					&& $("select[name='industry.industryid']").val() == originalOrderindustry
+					&& $("select[name='attribute.id']").val() == originalOrderattribute
+					&& $("input[name='order.frequency']").val() == originalOrderfrequency
+					&& $("input[name='order.duration']").val() == originalOrderduration
+					&& $("input[name='order.startdate']").val() == originalOrderstartdate
+					&& $("input[name='order.enddate']").val() == originalOrderenddate
+					&& $("input[name='order.starttime']").val() == originalOrderstarttime
+					&& $("input[name='order.endtime']").val() == originalOrderendtime) {
+				alert("您没有修改信息！");
+				return;
+			} else {
+				$('#save').attr('disabled',"true");
+				$.ajax({
+					url : "updateOrder.action",
+					type : "post",
+					data : $("#updateOrderForm").serializeArray(),
+					dataType : "json",
+					success : function(data) {
+						alert(data.info);
+						if (data.state === 0) { //操作成功
+							$('#save').removeAttr("disabled");
 							}
-							if ($("#endtime1").val().length == 5) {
-								$("#endtime1").val($("#endtime1").val() + ":00");
-							}
-	
-							if ($("input[name='adcontract.client']").val() == originalAdcontractclient
-									&& $("input[name='adcontract.agency']").val() == originalAdcontractagency
-									&& $("textarea[name='adcontract.remark']").val() == originalAdcontractremark
-									&& $("select[name='adcontract.publishstyle.id']").val() == originalAdcontractpublishstyle
-									&& $("select[name='channel.id']").val() == originalAdcontractchannel
-									&& $("select[name='clienttype.id']").val() == originalAdcontractclienttype
-									&& $("input[name='order.content']").val() == originalOrdercontent
-									&& $("select[name='led.id']").val() == originalOrderled
-									&& $("select[name='industry.industryid']").val() == originalOrderindustry
-									&& $("select[name='attribute.id']").val() == originalOrderattribute
-									&& $("input[name='order.frequency']").val() == originalOrderfrequency
-									&& $("input[name='order.duration']").val() == originalOrderduration
-									&& $("input[name='order.startdate']").val() == originalOrderstartdate
-									&& $("input[name='order.enddate']").val() == originalOrderenddate
-									&& $("input[name='order.starttime']").val() == originalOrderstarttime
-									&& $("input[name='order.endtime']").val() == originalOrderendtime) {
-								alert("您没有修改信息！");
-								return;
-							} else {
-								$('#save').attr('disabled',"true");
-								$.ajax({
-									url : "updateOrder.action",
-									type : "post",
-									data : $("#updateOrderForm").serializeArray(),
-									dataType : "json",
-									success : function(data) {
-										alert(data.info);
-										if (data.state === 0) { //操作成功
-											$('#save').removeAttr("disabled");
-											}
-										},
-										error : function(XMLHttpRequest,textStatus, errorThrown) {
-											alert('保存失败，请联系系统管理员处理！\nXMLHttpRequest.readyState['
-												+ XMLHttpRequest.readyState
-												+ ']\nXMLHttpRequest.status['
-												+ XMLHttpRequest.status
-												+ ']\ntextStatus['
-												+ textStatus + ']');
-											$('#save').removeAttr("disabled");
-										}
-								});
-							}
-						});
+						},
+						error : function(XMLHttpRequest,textStatus, errorThrown) {
+							alert('保存失败，请联系系统管理员处理！\nXMLHttpRequest.readyState['
+								+ XMLHttpRequest.readyState
+								+ ']\nXMLHttpRequest.status['
+								+ XMLHttpRequest.status
+								+ ']\ntextStatus['
+								+ textStatus + ']');
+							$('#save').removeAttr("disabled");
+						}
+				});
+			}
+		});
 	
 		function goBack() {
 			if (confirm("您确定要放弃相关操作，返回到认刊书列表中吗？")) {

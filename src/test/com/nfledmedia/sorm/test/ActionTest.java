@@ -82,4 +82,10 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 		
 		yewuAction.orderDetailExport();
 	}
+	
+	@Test
+	public void getAlterHistoryTest() throws IOException {
+		yewuAction.setOrderid(69);
+		yewuAction.getAlterrecordsByOrderid();
+	}
 }

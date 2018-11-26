@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.nfledmedia.sorm.cons.TypeCollections;
+import com.nfledmedia.sorm.dao.AlterrecordDAO;
 import com.nfledmedia.sorm.dao.AttributeDAO;
 import com.nfledmedia.sorm.dao.ChannelDAO;
 import com.nfledmedia.sorm.dao.ClienttypeDAO;
@@ -24,6 +25,7 @@ import com.nfledmedia.sorm.dao.OpereventDAO;
 import com.nfledmedia.sorm.dao.PlaystrategyDAO;
 import com.nfledmedia.sorm.dao.PublishdetailDAO;
 import com.nfledmedia.sorm.dao.PublishstyleDAO;
+import com.nfledmedia.sorm.entity.Alterrecord;
 import com.nfledmedia.sorm.entity.Attribute;
 import com.nfledmedia.sorm.entity.Channel;
 import com.nfledmedia.sorm.entity.Clienttype;
@@ -58,6 +60,8 @@ public class BaseService {
 	private OpereventDAO opereventDAO;
 	@Autowired
 	private PublishstyleDAO publishstyleDAO;
+	@Autowired
+	private AlterrecordDAO alterrecordDAO;
 
 	public List ledList() {
 		return ledDAO.findByState(TypeCollections.LED_ACTIVE_STATE);
@@ -159,9 +163,15 @@ public class BaseService {
 		return (Playstrategy) playstrategyDAO.findByStrategyname(playstrategyname).get(0);
 	}
 	
-	public List<Operevent> getOpereventByOrderId(int orderid){
+/*	public List<Operevent> getOpereventByOrderId(int orderid){
 		
 		return opereventDAO.findByOrderId(orderid);
+		
+	}*/
+	
+	public List<Alterrecord> getAlterrecordByOrderId(int orderid){
+		
+		return alterrecordDAO.findByOrderId(orderid);
 		
 	}
 

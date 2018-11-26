@@ -33,8 +33,7 @@
 <body style="font-family: '微软雅黑';">
 
 	<div class="main">
-		<form class="form-horizontal" role="form" action="updateOrderPage"
-			id="updateRenkanshuForm">
+		<form class="form-horizontal" role="form" action="updateOrderPage" id="updateRenkanshuForm">
 			<div class="input-group input-group-sm">
 				<input type="text" class="hidden" name="orderid"
 					id="update_order_id">

@@ -97,6 +97,36 @@ public class RenkanshuService {
 	}
 	
 	/**
+	 * 下单明细表service层方法
+	 * @author 广渊
+	 * @since 2018年11月24日
+	 * @param keyword
+	 * @param sidx
+	 * @param sord
+	 * @param pageNo
+	 * @param pageSize
+	 * @return Page
+	 */
+	public Page getPublishdetailManageList(String sidx, String sord, int pageNo, int pageSize) {
+		return publishdetailDAO.getPublishdetailManageList(sidx, sord, pageNo, pageSize);
+	}
+	
+	/**
+	 * 根据关键字where条件查询下单明细表
+	 * @author 广渊
+	 * @since 2018年11月24日 16点55分
+	 * @param keyword
+	 * @param sidx
+	 * @param sord
+	 * @param pageNo
+	 * @param pageSize
+	 * @return
+	 */
+	public Page getPublishdetailManageListByKeyword(String keyword, String sidx, String sord, int pageNo, int pageSize) {
+		return publishdetailDAO.getPublishdetailManageListByKeyword(keyword, sidx, sord, pageNo, pageSize);
+	}
+	
+	/**
 	 * 根据条件返回publishdetail列表，
 	 * 注意：此处的最后一个参数
 	 * @param startdate

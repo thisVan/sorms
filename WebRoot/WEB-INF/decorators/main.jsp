@@ -61,13 +61,13 @@
 				<!-- <div class="container"> -->
 				<div class="row">
 					<!-- left sidebar -->
-					<div class="col-md-2 left-sidebar">
+					<div class="col-md-2 left-sidebar" id="leftBreadMenu">
 						<jsp:include page="left.jsp" flush="true"></jsp:include>
 					</div>
 					<!-- end left sidebar -->
 
 					<!-- content-wrapper -->
-					<div class="col-md-9 content-wrapper">
+					<div class="col-md-9 content-wrapper" id="mainContentWrapper">
 						<!--     <div class="row">
 									<jsp:include page="breadCrumb.jsp" flush="true"></jsp:include>
 								</div>  -->
@@ -97,6 +97,18 @@
 	</s:else>
 
 	<script src="js/bootstrap.min.js"></script>
+	<script type="text/javascript">
+		$("#hideSideBar").click(function() {
+			if($("#hideSideBar").hasClass("fa-angle-right")){
+				$("#mainContentWrapper").removeClass("col-md-11");
+				$("#mainContentWrapper").addClass("col-md-9");
+			} else {
+				$("#mainContentWrapper").removeClass("col-md-9");
+				$("#mainContentWrapper").addClass("col-md-11");
+			}
+		});
+
+	</script>
 	<s:if test="#request.firstLogin">
 		<script src="js/my-firstLogin.js"></script>
 	</s:if>

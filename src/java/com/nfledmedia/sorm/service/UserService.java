@@ -109,5 +109,18 @@ public class UserService {
 		// TODO Auto-generated method stub
 		return userDAO.findByUsername(username);
 	}
+	
+	public boolean saveUser(User user) {
+		boolean state = false;
+		try {
+			userDAO.save(user);
+			state = true;
+		} catch (RuntimeException re) {
+			throw re;			
+		} finally {
+			return state;
+		}
+		
+	}
 
 }

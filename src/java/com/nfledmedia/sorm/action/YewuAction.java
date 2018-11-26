@@ -1,8 +1,5 @@
 package com.nfledmedia.sorm.action;
 
-import static org.hamcrest.CoreMatchers.nullValue;
-
-import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
@@ -15,7 +12,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,18 +21,21 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 
+import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.components.Else;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import com.google.gson.JsonArray;
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Adcontract;
+import com.nfledmedia.sorm.entity.Alterrecord;
 import com.nfledmedia.sorm.entity.Industry;
 import com.nfledmedia.sorm.entity.Led;
 import com.nfledmedia.sorm.entity.Operevent;
@@ -55,17 +54,14 @@ import com.nfledmedia.sorm.util.TypeNullProcess;
 import com.opensymphony.xwork2.ActionContext;
 
 import jxl.Cell;
-import jxl.CellType;
 import jxl.CellView;
 import jxl.Workbook;
-import jxl.biff.DisplayFormat;
 import jxl.format.Alignment;
 import jxl.format.Colour;
 import jxl.format.VerticalAlignment;
 import jxl.write.Formula;
 import jxl.write.Label;
 import jxl.write.NumberFormats;
-import jxl.write.WritableCell;
 import jxl.write.WritableCellFormat;
 import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
@@ -376,6 +372,60 @@ public class YewuAction extends SuperAction {
 		
 	}
 	
+	/**
+	 * 下单明细列表
+	 * @author 广渊
+	 * @since 2018年11月24日
+	 * @return String
+	 * @throws Exception
+	 */
+	public String publishdetailManageList() throws Exception {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
+
+		Map session = ActionContext.getContext().getSession();
+		Integer id = (Integer) session.get(CommonConstant.SESSION_ID);
+		System.out.println("调用YewuAction中的renkanshuManageList: ");
+		System.out.println("  sidx=" + sidx + "  sord=" + sord + "  page=" + page + "  rows=" + rows);
+		Page result = null;
+		if (_search == false) {
+			result = renkanshuService.getPublishdetailManageList(sidx, sord, page, rows);
+		} else {
+			System.out.println("searchString:" + searchString);
+			result = renkanshuService.getPublishdetailManageListByKeyword(searchString, sidx, sord, page, rows);
+		}
+
+		JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
+		JSONArray jsonArray = new JSONArray();
+		List data = result.getResult();
+
+		for (int i = 0, size = data.size(); i < size; i++) {
+
+			Object[] row = (Object[]) data.get(i);
+
+			JSONObject jsonObject1 = new JSONObject();
+			jsonObject1.put("id", row[1]);// 订单编号
+			
+			JSONArray jsonArray2 = new JSONArray(); // 求取cell
+			jsonArray2.put(row[2]);// 上画点位
+			jsonArray2.put(row[3]);//客户
+			jsonArray2.put(row[6]);// 客户属性
+			jsonArray2.put(row[5]);// 下单属性
+			jsonArray2.put(row[4]);// 发布内容
+			jsonArray2.put(row[7]);// 广告频次
+			jsonArray2.put(row[9]);// 广告时长
+			jsonArray2.put(sdf.format(row[10]));// 日期
+			jsonArray2.put(tdf.format(row[11]) + "-" + tdf.format(row[12]));// 时段
+			jsonObject1.put("cell", jsonArray2); // 加入cell
+			
+			jsonArray.put(jsonObject1);
+		}
+		jsonObject.put("rows", jsonArray); // 加入rows
+		System.out.println("jsonObject:" + jsonObject.toString());
+		sentMsg(jsonObject.toString());
+		return null;
+	}
+	
 	public String renkanshuManageList() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
@@ -433,6 +483,8 @@ public class YewuAction extends SuperAction {
 	/**
 	 * 资源管理表导出为Excel
 	 * 
+	 * @author 广渊
+	 * @since 2018年11月24日 23点36分
 	 * @return
 	 * @throws Exception
 	 */
@@ -445,17 +497,33 @@ public class YewuAction extends SuperAction {
 		List<Object[]> queryResult = renkanshuService.publishResourceList(startTime, endTime, ledId);
 		List distinctQueryResult = new ArrayList();
 		Set contentSet = new HashSet();
+		Set orderidSet = new HashSet();
+		List programContentList = new ArrayList<String>();
 		Map<String, ArrayList> pubDateMap = new HashMap<String, ArrayList>();
-		// 根据发布内容区分不同的单
+		// 根据orderid和发布内容区分不同的单，orderid 和 发布内容全部相同才为一个
 		for (int i = 0; i < queryResult.size(); i++) {
 			Object[] os = queryResult.get(i);
 			if (contentSet.add(os[3])) {
+				programContentList.add(os[3]);
+				orderidSet.add(os[10]);
+				
 				List l = new ArrayList();
 				for (int j = 0; j < os.length; j++) {
 					l.add(os[j]);
 				}
+				l.remove(10);
+				distinctQueryResult.add(l);
+			}else if (orderidSet.add(os[10])) {
+				programContentList.add(os[3]);
+				
+				List l = new ArrayList();
+				for (int j = 0; j < os.length; j++) {
+					l.add(os[j]);
+				}
+				l.remove(10);
 				distinctQueryResult.add(l);
 			}
+			
 			if (pubDateMap.containsKey(os[3])) {
 				ArrayList arrList = pubDateMap.get(os[3]);
 				arrList.add(os[9]);
@@ -467,9 +535,12 @@ public class YewuAction extends SuperAction {
 			}
 		}
 
-		System.out.println(startTime + "--" + endTime + "  " + ledId);
+		System.out.println(startTime + "至" + endTime + "  " + ledId);
+		for (int i=0;i<programContentList.size();i++) {
+			System.out.println("programContentList[" + i + "]:" + programContentList.get(i));
+		}
 
-		List resultList = new ArrayList();		
+		List resultList = new ArrayList();
 		String[] arr = { "序号", "屏幕", "客户", "发布内容", "下单属性", "客户属性", "频次", "增加频次", "时长", "日期" };
 		ArrayList<String> title = new ArrayList<String>(Arrays.asList(arr));
 		
@@ -488,7 +559,6 @@ public class YewuAction extends SuperAction {
 						procfreq = (((Short) subList.get(6)).intValue() + addfreq) * ((Short) subList.get(8)).intValue() / 15;
 					} catch (Exception e) {
 						e.printStackTrace();
-						System.out.println(e);
 					}
 					subList.add(procfreq);
 				} else {
@@ -1095,7 +1165,6 @@ public class YewuAction extends SuperAction {
 			wwb.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
 		}
 		return null;
 	}
@@ -1151,8 +1220,7 @@ public class YewuAction extends SuperAction {
 			try {
 				System.out.println(renkanshuService.getOrderById(thisPbs.getOrderid()));
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				System.out.println(e);
+				
 				e.printStackTrace();
 			}
 			dataList.add(renkanshuService.getOrderById(thisPbs.getOrderid()).getIndustry().getIndustryname());
@@ -1301,7 +1369,7 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
+			
 
 		}
 
@@ -1442,7 +1510,7 @@ public class YewuAction extends SuperAction {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				System.out.println(e);
+				
 				e.printStackTrace();
 			}
 
@@ -1608,7 +1676,7 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
+			
 
 		}
 
@@ -1642,9 +1710,10 @@ public class YewuAction extends SuperAction {
 		for (Object object : dataList) {
 			Order order = (Order) object;
 			List order2ArrayList = new ArrayList();
-			List opereventList = baseService.getOpereventByOrderId(order.getId());
-			int opereventListSize = opereventList.size();
-			if (opereventListSize > 0) {
+//			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			List alterrecordList = baseService.getAlterrecordByOrderId(order.getId());
+			int alterrecordListSize = alterrecordList.size();
+			if (alterrecordListSize > 0) {
 				if (order.getOperatetime() != null && !"".equals(order.getOperatetime())) {
 					order2ArrayList.add(sdfMd.format(order.getOperatetime()));// 单据时间
 				} else {
@@ -1654,8 +1723,8 @@ public class YewuAction extends SuperAction {
 				order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
 			}
 			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源		
-			if (opereventListSize > 0) {
-				order2ArrayList.add(((Operevent) opereventList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
+			if (alterrecordListSize > 0) {
+				order2ArrayList.add(((Operevent) alterrecordList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
 			} else {
 				Publishstyle operatestyle = order.getAdcontract().getPublishstyle();
 				if (operatestyle != null && !"".equals(operatestyle.getName())) {
@@ -1799,7 +1868,7 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println(e);
+			
 
 		}
 
@@ -1808,9 +1877,7 @@ public class YewuAction extends SuperAction {
 	}
 
 	public String calcScreenRate() {
-
 		return addReason;
-
 	}
 
 	public List createEmptyListBySize(int n) {
@@ -1861,14 +1928,10 @@ public class YewuAction extends SuperAction {
 	/**
 	 * 计算在startTimeLong和endTimeLong时间范围内订单的播放天数占所有天数的比例
 	 * 
-	 * @param object1
-	 *            订单播放开始时间
-	 * @param object2
-	 *            订单播放结束时间
-	 * @param startTimeLong
-	 *            时间范围起始时间
-	 * @param endTimeLong
-	 *            时间范围结束时间
+	 * @param object1 订单播放开始时间
+	 * @param object2 订单播放结束时间
+	 * @param startTimeLong 时间范围起始时间
+	 * @param endTimeLong 时间范围结束时间
 	 * @return 返回比例
 	 * @throws ParseException
 	 */
@@ -2013,6 +2076,38 @@ public class YewuAction extends SuperAction {
 	}
 	
 	/**
+	 * 
+	 * @return
+	 * @throws IOException
+	 */
+	public String getAlterrecordsByOrderid() throws IOException{
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArray = new JSONArray();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.M.d");
+		SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy.M.d HH:mm:ss");
+		List<Alterrecord> altrList = baseService.getAlterrecordByOrderId(orderid);
+		for (Alterrecord alterrecord : altrList) {
+
+			JSONObject json = new JSONObject();
+			json.put("adcontent", alterrecord.getAdcontent());
+			json.put("ledname", alterrecord.getLedname());
+			json.put("duration", alterrecord.getDuration());
+			json.put("frequency", alterrecord.getFrequency());
+			json.put("datetimeRange", dateFormat.format(alterrecord.getDatestart()) + "-" + dateFormat.format(alterrecord.getDateend()));
+			json.put("operatetype", alterrecord.getOperatetype().getOperatetype());
+			json.put("playstrategyname", alterrecord.getPlaystrategyname());
+			json.put("operatetime", fullDateFormat.format(alterrecord.getCreatetime()));
+			
+			jsonArray.put(json);
+		}
+		jsonObject.put("state", 0);
+		jsonObject.put("listSize", jsonArray.length());
+		jsonObject.put("listData", jsonArray);
+		sentMsg(jsonObject.toString());
+		return null;
+	}
+	
+	/**
 	 * 根据orderid查询 adcontractid
 	 * 
 	 * @return
@@ -2058,11 +2153,11 @@ public class YewuAction extends SuperAction {
 			}else {
 				rowObject.put("playstrategy", order.getPlaystrategy().getStrategyname());
 			}
-			
-			List opereventList = baseService.getOpereventByOrderId(order.getId());
-			if (opereventList.size() > 0) {
+//			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			List alterrecordList = baseService.getAlterrecordByOrderId(order.getId());
+			if (alterrecordList.size() > 0) {
 				// 单据类型，指认刊，改刊，停刊
-				rowObject.put("operatetype", ((Operevent) opereventList.get(0)).getOperatetype().getOperatetype());
+				rowObject.put("operatetype", ((Alterrecord) alterrecordList.get(0)).getOperatetype().getOperatetype());
 			} else {
 				// 单据类型，指认刊，改刊，停刊
 				rowObject.put("operatetype", "认刊");
@@ -3086,7 +3181,7 @@ public class YewuAction extends SuperAction {
 	// ratiosCount[k] += Double.parseDouble(df.format(ratios[j][k]));
 	// } catch (Exception e) {
 	// e.printStackTrace();
-	// // System.out.println(e);
+	// // 
 	// }
 	// // System.out.println(ratiosCount[k]);
 	// }

@@ -9,7 +9,7 @@
     		<s:if test="value.size==1">
     			<li<s:if test="#request.curParentName == key"> class="active"</s:if>>
     				<a href='<s:property value="value[0].url"/>'>
-    					<i class="fa fa-bullseye fa-fw"></i>
+    					<!-- <i class="fa fa-bullseye fa-fw"></i> -->
     					<span class="text"><s:property value="value[0].name"/></span>
     				</a>
     			</li>
@@ -17,7 +17,7 @@
     			<s:set var="flag" value="0"/>
     			<li>
     				<a href='<s:property value="value[0].url"/>' class="js-sub-menu-toggle">
-    					<i class="fa fa-bullseye fa-fw"></i>
+    					<!-- <i class="fa fa-bullseye fa-fw"></i> -->
     					<span class="text"><s:property value="key"/></span>
     					<i class="toggle-icon fa fa-angle-left"></i>
     				</a>
@@ -39,5 +39,5 @@
 </nav>
 <!-- /main-nav -->
 <div class="sidebar-minified js-toggle-minified">
-    <i class="fa fa-angle-left"></i>
+    <i class="fa fa-angle-left" id="hideSideBar"></i>
 </div>
