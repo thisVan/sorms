@@ -1875,6 +1875,49 @@ public class YewuAction extends SuperAction {
 		return null;
 
 	}
+	
+	/**
+	 * 月平均占屏率
+	 * @return String
+	 * @throws Exception
+	 */
+	public String avgOccuByMonthsReport() throws Exception {
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		DateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		//DecimalFormat doubleDotCentDF = new DecimalFormat("0.##%");
+		DecimalFormat doubleDotDF = new DecimalFormat("0.##");
+
+		// 数据集
+		List dataList = yewuService.avgOccuByMonthsReportService(year, led);
+		
+		JSONObject jsonObject = new JSONObject();
+		JSONArray jsonArrayMonths = new JSONArray();
+		JSONArray jsonArrayOccupys = new JSONArray();
+		JSONArray jsonArrayDurations = new JSONArray();
+
+		for (int i = 0, size = dataList.size(); i < size; i++) {
+			JSONObject json = new JSONObject();
+			List list = (List) dataList.get(i);
+			jsonArrayMonths.put(list.get(0) + "月");// 订单编号
+			jsonArrayOccupys.put(doubleDotDF.format((double)list.get(1) * 100));
+			jsonArrayDurations.put(doubleDotDF.format(list.get(2)) + " h");
+		}
+		jsonObject.put("months", jsonArrayMonths); 
+		jsonObject.put("occupys", jsonArrayOccupys); 
+		jsonObject.put("durations", jsonArrayDurations); 
+		
+		String chartTitle = "";
+		if (led != null && "".equals(led)) {
+			chartTitle = "自有屏" + year + "年平均占屏率";
+		} else {
+			chartTitle = led + year + "年平均占屏率";
+		}
+		jsonObject.put("title", chartTitle);
+		System.out.println("jsonObject:" + jsonObject.toString());
+		sentMsg(jsonObject.toString());
+		return null;
+
+	}
 
 	public String calcScreenRate() {
 		return addReason;
@@ -2076,7 +2119,7 @@ public class YewuAction extends SuperAction {
 	}
 	
 	/**
-	 * 
+	 * 根据orderid获取alterrecord记录
 	 * @return
 	 * @throws IOException
 	 */
@@ -2173,11 +2216,9 @@ public class YewuAction extends SuperAction {
 		return null;
 		
 	}
-	
 
 	/**
 	 * 占屏率图表，以日期列出
-	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -2232,6 +2273,8 @@ public class YewuAction extends SuperAction {
 		jsonObject1.put("commOccus", commOccus);
 
 		jsonObject.put("ledOccuRates", jsonObject1);
+		
+		System.out.println(jsonObject.toString());
 
 		sentMsg(jsonObject.toString());
 		return null;

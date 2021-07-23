@@ -5,7 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -219,5 +221,14 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void testGetAvgOccuDataset() {
+		Map map = new HashMap<String, String>();
+		System.out.println(System.currentTimeMillis());
+		map = publishdetailDAO.getAvgOccuDataset(2019,"南都楼顶");
+		System.out.println(System.currentTimeMillis());
+		System.out.println(map);
 	}
 }

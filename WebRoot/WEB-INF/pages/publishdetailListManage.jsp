@@ -43,7 +43,7 @@
 
 		<!--/.row-->
 		<div class="row">
-			<h3 class="page-header" style=" margin-bottom: 0px;">下单明细</h3>
+			<h3 class="page-header" style=" margin-bottom: 0px;">播放明细</h3>
 		</div>
 		<!--/.row-->
 
@@ -182,7 +182,7 @@
 	<script>
 		var operateisdisabled = "";
 	
-		var dateRangeSQL = "";
+		var pbdDateRangeSQL = "";
 		var dateRangeSQLByDateStart = "";
 		var dateRangeSQLByCreateDate = "";
 		var daterangepicker_startdate;
@@ -237,7 +237,7 @@
 			
 			$('#daterange-default').on('cancel.daterangepicker', function(ev, picker) {
 				$('#daterange-default').val('');
-				dateRangeSQL = "";
+				pbdDateRangeSQL = "";
 				dateRangeSQLByDateStart = "";
 				dateRangeSQLByCreateDate = "";
 				$("#daterange-default").change();
@@ -246,7 +246,7 @@
 				startTime = picker.startDate.format('YYYY-MM-DD');
 				endTime = picker.endDate.format('YYYY-MM-DD');
 				//console.log("start:"+startTime+"\nend:"+endTime);
-				dateRangeSQL = " p.date >= '" + picker.startDate.format('YYYY-MM-DD') + "' and p.date <= '" + picker.endDate.format('YYYY-MM-DD') + "' ";
+				pbdDateRangeSQL = " p.date >= '" + picker.startDate.format('YYYY-MM-DD') + "' and p.date <= '" + picker.endDate.format('YYYY-MM-DD') + "' ";
 				dateRangeSQLByDateStart = "o.startdate >= '" + picker.startDate.format('YYYY-MM-DD') + "' and o.startdate <= '" + picker.endDate.format('YYYY-MM-DD') + "' ";
 				dateRangeSQLByCreateDate = "(o.adcontract.createtime >= '" + picker.startDate.format('YYYY-MM-DD HH:mm:ss') + "' and o.adcontract.createtime <= '" + picker.endDate.format('YYYY-MM-DD 23:59:59') + "') ";
 				dateRangeSQLByCreateDate += "or (o.modtime >= '" + picker.startDate.format('YYYY-MM-DD HH:mm:ss') + "' and o.modtime <= '" + picker.endDate.format('YYYY-MM-DD 23:59:59') + "') ";
@@ -366,8 +366,8 @@
 					});
 				} else {
 					var dateRangeValue = "";
-					if (dateRangeSQL != null && dateRangeSQL.length != 0) {
-						dateRangeValue = dateRangeSQL + " and ";
+					if (pbdDateRangeSQL != null && pbdDateRangeSQL.length != 0) {
+						dateRangeValue = pbdDateRangeSQL + " and ";
 					}
 					searchFilter = " where " + dateRangeValue + " (p.orderid like '%" + searchFilter + "%' or p.client like '%" 
 					+ searchFilter + "%' or p.adcontent like '%" + searchFilter + "%' or p.ledname like '%" 
@@ -405,7 +405,7 @@
 		function exactQuery() {
 			var client = $.trim($("#client").val());
 			var ledname = $.trim($("#ledlist").val());
-			if (dateRangeSQL === "" && client === "" && ledname === "") {
+			if (pbdDateRangeSQL === "" && client === "" && ledname === "") {
 				t[0].p.search = false;
 				$.extend(t[0].p.postData, {
 					searchString : "",
@@ -420,8 +420,8 @@
 				if (client !== "") {
 					searchFilter += " p.client like '%" + client + "%' and ";
 				}
-				if (dateRangeSQL !== "") {
-					searchFilter += dateRangeSQL;
+				if (pbdDateRangeSQL !== "") {
+					searchFilter += pbdDateRangeSQL;
 				} else {
 					searchFilter = searchFilter.substring(0, searchFilter.lastIndexOf('and '));
 				}
@@ -580,8 +580,8 @@
 			localStorage.setItem("ledlist_Local", ledlist_Local)
 			localStorage.setItem("client_Local", client_Local)
 	
-			if (dateRangeSQL != "") {
-				localStorage.setItem("dateRangeSQL", dateRangeSQL)
+			if (pbdDateRangeSQL != "") {
+				localStorage.setItem("pbdDateRangeSQL", pbdDateRangeSQL)
 			}
 			if (dateRangeSQLByDateStart != "") {
 				localStorage.setItem("dateRangeSQLByDateStart", dateRangeSQLByDateStart)
@@ -598,7 +598,7 @@
 			$("#ledlist").val(localStorage.getItem("ledlist_Local"));
 			$("#client").val(localStorage.getItem("client_Local"));
 	
-			dateRangeSQL = localStorage.getItem("dateRangeSQL");
+			pbdDateRangeSQL = localStorage.getItem("pbdDateRangeSQL");
 			dateRangeSQLByDateStart = localStorage.getItem("dateRangeSQLByDateStart");
 			dateRangeSQLByCreateDate = localStorage.getItem("dateRangeSQLByCreateDate");
 	

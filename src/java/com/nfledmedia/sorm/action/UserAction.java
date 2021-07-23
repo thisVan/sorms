@@ -1,73 +1,212 @@
 package com.nfledmedia.sorm.action;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
-
-import javax.persistence.ManyToOne;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.struts2.ServletActionContext;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
-
-import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.entity.Resource;
+import com.nfledmedia.sorm.entity.Role;
+import com.nfledmedia.sorm.entity.RoleResource;
 import com.nfledmedia.sorm.entity.User;
+import com.nfledmedia.sorm.service.ResourceService;
 import com.nfledmedia.sorm.service.UserService;
 import com.nfledmedia.sorm.service.YewuService;
 import com.nfledmedia.sorm.util.MD5Util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ModelDriven;
 
-/**
- * 项目名称：sorm 类全名:com.nfledmedia.sorm.action.UserAction 类描述： 创建人：Van@nfledmedia
- * 创建时间：2016年6月13日 下午1:30:44 修改备注：
- * 
- * @version jdk1.7 Copyright (c) 2016, bolven@qq.com All Rights Reserved.
- */
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import org.apache.struts2.ServletActionContext;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+
 @Controller
 public class UserAction extends SuperAction implements ModelDriven<User> {
-
 	private static final long serialVersionUID = 1L;
-	
 	private String returnURL;
 	private User user;
 	private String oldPassword;
 	private String newPassword;
 	private String repeatedNewPassword;
 	private String account;
-
 	private int page;
 	private String sidx;
 	private String sord;
 	private int rows;
-
 	private boolean _search;
 	private String searchField;
 	private String searchString;
 	private String searchOper;
 	private String usernameAuto;
-
 	private Long tid;
+	
+	/*
+	 * @Value("#{ipallowedProperties.allowip}") private String allowip;
+	 */
 
-	@Override
-	public User getModel() {
-		// TODO Auto-generated method stub
-		if (user == null) {
-			user = new User();
-		}
-		return user;
-	}
-
-	// 注入userservice
 	@Autowired
 	private UserService userService;
+
 	@Autowired
 	private YewuService yewuService;
+
+	@Autowired
+	private ResourceService resourceService;
+
+	public User getModel() {
+		if (this.user == null) {
+			this.user = new User();
+		}
+		return this.user;
+	}
+
+	public String login() {
+		System.out.println("loginAuto:" + this.usernameAuto);
+		ActionContext ctx = ActionContext.getContext();
+		
+		if (this.user.getUsername()!= null && !verifyRemoteAccess(this.user.getUsername())) {
+			this.request.setAttribute("message", "登录失败，注意：此应用不被允许在办公室以外网络使用！");
+			return "login_failure";
+		}
+		
+		if (this.usernameAuto != null && !"".equals(this.usernameAuto)) {
+			// 自动登录
+			User userAuto = new User();
+			this.user.setPassword(MD5Util.encrypt32(this.user.getPassword()));
+			userAuto.setUsername(this.usernameAuto);
+			userAuto.setPassword(this.user.getPassword());
+			User userAutoPojo = this.userService.chkAndBackPojo(userAuto);
+			if (userAutoPojo != null) {
+				this.session.setAttribute("username", userAutoPojo.getUsername());
+				this.request.setAttribute("message", "登录成功！");
+				ctx.getSession().put("id", userAutoPojo.getId());
+				String homePage = "screenOccupancyRate";
+
+				// 2019年3月11日 18点48分 修改resource列表的处理方法
+				// List<?> resourceList =
+				// userAutoPojo.getRole().getRoleResources();
+				List<RoleResource> roleResourcesList = resourceService.getResourcesByRole(userAutoPojo.getRole().getId());
+				List<Resource> resourceList = new ArrayList<Resource>();
+				for (RoleResource roleResource : roleResourcesList) {
+					resourceList.add(roleResource.getResource());
+				}
+				System.out.println("资源列表：" + resourceList + "长度" + resourceList.size());
+				if ((resourceList != null) && (resourceList.size() > 0)) {
+					homePage = ((Resource) resourceList.get(0)).getUrl();
+				}
+				ctx.getSession().put("home", homePage);
+				if (this.returnURL == null) {
+					this.returnURL = homePage;
+				}
+				System.out.println("UserAction(returnURL):" + this.returnURL);
+				return "login_success";
+			}
+			this.request.setAttribute("message", "用户名或密码错误，请重新登录！");
+			return "login_failure";
+		}
+		if ((this.usernameAuto == null) && ((this.user.getUsername() == null) || (this.user.getUsername() == ""))
+				&& ((this.user.getPassword() == null) || (this.user.getPassword() == ""))) {
+			return "login_failure";
+		}
+
+		// 用户登录
+		this.user.setPassword(MD5Util.encrypt32(this.user.getPassword()));
+		User userPojo = this.userService.chkAndBackPojo(this.user);
+		if (userPojo != null) {
+			System.out.println("UserAction(userName):" + userPojo.getUsername());
+			this.session.setAttribute("username", userPojo.getUsername());
+			this.request.setAttribute("message", "登录成功！");
+			ctx.getSession().put("id", userPojo.getId());
+			String homePage = "screenOccupancyRate";
+
+			// 2019年3月11日 18点48分 修改resource列表的处理方法
+			List<RoleResource> roleResourcesList = resourceService.getResourcesByRole(userPojo.getRole().getId());
+			List<Resource> resourceList = new ArrayList<Resource>();
+			for (RoleResource roleResource : roleResourcesList) {
+				resourceList.add(roleResource.getResource());
+				System.out.println(roleResource.getResource().getName());
+			}
+			// System.out.println("资源列表：" + resourceList + "长度" +
+			// resourceList.size());
+			if ((resourceList != null) && (resourceList.size() > 0)) {
+				homePage = resourceList.get(0).getUrl();
+			}
+			ctx.getSession().put("home", homePage);
+			if (this.returnURL == null) {
+				this.returnURL = homePage;
+			}
+			System.out.println("UserAction(returnURL):" + this.returnURL);
+			return "login_success";
+		}
+		this.request.setAttribute("message", "用户名或密码错误，请重新登录！");
+		return "login_failure";
+	}
+
+	public String userInfo() throws Exception {
+		Map session = ActionContext.getContext().getSession();
+		this.user = this.userService.getUserById((Integer) session.get("id"));
+		return "success";
+	}
+
+	public String getAllRole() throws Exception {
+		List result = null;
+		result = this.userService.getAllRole();
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("info", result);
+		sentMsg(jsonObject.toString());
+		return null;
+	}
+
+	/**
+	 * 修改密码
+	 * 
+	 * @throws IOException
+	 */
+	public String updateMyPassword() throws IOException {
+		ActionContext ctx = ActionContext.getContext();
+		User user = userService.getUserById((Integer) ctx.getSession().get("id"));
+		String tipInfo = "";
+		// 验证非空
+		if (oldPassword != null && newPassword != null && repeatedNewPassword != null && !"".equals(oldPassword) && !"".equals(newPassword)
+				&& !"".equals(repeatedNewPassword)) {
+			// 验证重复密码是否一致
+			if (newPassword.equals(repeatedNewPassword)) {
+				// 验证旧密码是否正确
+				if (MD5Util.encrypt32(oldPassword).equals(user.getPassword())) {
+					// 验证新密码长度
+					if (newPassword.length() <= 6) {
+						tipInfo = "新密码长度太短！";
+					} else {
+						// 更改密码
+						user.setPassword(MD5Util.encrypt32(newPassword));
+						tipInfo = userService.updateUser(user);
+					}
+				} else {
+					tipInfo = "旧密码不正确！";
+				}
+			} else {
+				tipInfo = "两次输入不一致！";
+			}
+		} else {
+			tipInfo = "必填选项未填写！";
+		}
+
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put("info", tipInfo);
+		sentMsg(jsonObject.toString());
+
+		return null;
+	}
 
 	private void sentMsg(String content) throws IOException {
 		HttpServletResponse response = ServletActionContext.getResponse();
@@ -78,159 +217,89 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 		out.flush();
 		out.close();
 	}
-
-	public String login() {
-		System.out.println("loginAuto:" + usernameAuto);
-		ActionContext ctx = ActionContext.getContext();
-		if (usernameAuto != null && !"".equals(usernameAuto)) {
-			User userAuto = new User();
-			user.setPassword(MD5Util.encrypt32(user.getPassword()));
-			userAuto.setUsername(usernameAuto);
-			userAuto.setPassword(user.getPassword());
-			User userAutoPojo = userService.chkAndBackPojo(userAuto);
-			if (userAutoPojo != null) {
-				session.setAttribute("username", userAutoPojo.getUsername());
-				request.setAttribute("message", "登录成功！");
-				ctx.getSession().put(CommonConstant.SESSION_ID, userAutoPojo.getId());
-				String homePage = ((Resource) (userAutoPojo.getRole().getRoleResources().get(0))).getUrl();
-				ctx.getSession().put(CommonConstant.SESSION_HOMEPAGE, homePage);
-				if (returnURL == null) {
-					returnURL = homePage;
-				}
-				System.out.println("~~~~~~~~~~UserAction(returnURL):" + returnURL);
-				return "login_success";
-			} else {
-				request.setAttribute("message", "用户名或密码错误，请重新登录！");
-				return "login_failure";
-			}
-		} else {
-			if (usernameAuto == null && (user.getUsername() == null || user.getUsername() == "")
-					&& (user.getPassword() == null || user.getPassword() == "")) {
-				return "login_failure";
-			} else {
-				user.setPassword(MD5Util.encrypt32(user.getPassword()));
-				User userPojo = userService.chkAndBackPojo(user);
-				assert userPojo == null;
-
-				if (userPojo != null) {
-					System.out.println("~~~~~~~~~~UserAction(userName):" + userPojo.getUsername());
-					session.setAttribute("username", userPojo.getUsername());
-					request.setAttribute("message", "登录成功！");
-					ctx.getSession().put(CommonConstant.SESSION_ID, userPojo.getId());
-					String homePage = ((Resource) (userPojo.getRole().getRoleResources().get(0))).getUrl();
-					ctx.getSession().put(CommonConstant.SESSION_HOMEPAGE, homePage);
-					if (returnURL == null) {
-						returnURL = homePage;
+	
+	/**
+	 * 校验是否拥有远程访问权限
+	 * @param uname
+	 * @return
+	 */
+	public boolean verifyRemoteAccess(String uname) {
+		String realIp = getRealIp();
+		System.out.println("客户端IP：" + realIp);
+		// 读取文件
+		String configPath = this.getClass().getResource("/").getPath().replaceAll("%20", " ");
+		// 截取字符串得到WEB-INF路径然后拼接
+		System.out.println("configPath=" + configPath);
+		Properties properties = new Properties();
+		try {
+			properties.load(new FileInputStream(configPath + "ipsconfig.properties"));
+			// 获得属性文件中的IP
+			String ips = properties.getProperty("allow_ip");
+			String excludes = properties.getProperty("exclude_user");
+			System.out.println("allow_ip=" + ips);
+			System.out.println("exclude_user=" + excludes);
+			if (!StringUtils.isEmpty(ips)) {
+				//校验用户在不在排除列表
+				if (!StringUtils.isEmpty(excludes)) {
+					if (excludes.contains(uname)) {
+						//如果在排除列表或IP被接受，允许访问
+						return true;
 					}
-					System.out.println("~~~~~~~~~~UserAction(returnURL):" + returnURL);
-					return "login_success";
-				} else {
-					request.setAttribute("message", "用户名或密码错误，请重新登录！");
-					return "login_failure";
 				}
-
+				//校验realIp是否在IP列表
+				if (ips.contains(realIp)) {
+					return true;
+				}
+			} else {
+				// ip列表为空，允许所有访问
+				return true;
 			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			// 没有配置文件，默认不限制
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
-	}
-
-	public String userInfo() throws Exception {
-		Map session = ActionContext.getContext().getSession();
-		user = userService.getUserById((Integer) session.get(CommonConstant.SESSION_ID));
-		return SUCCESS;
-	}
-
-	// public String userlist() throws Exception {
-	// Map session = ActionContext.getContext().getSession();
-	// Integer id = (Integer) session.get(CommonConstant.SESSION_ID);
-	// System.out.println("！！！！！！！！！！！！！！！！！！！ sidx=" + sidx + " sord="
-	// + sord + " page=" + page + " rows=" + rows
-	// + " !!!!!!!!!!!!!!!!!!!");
-	// Page result = null;
-	// if (_search == false) {
-	// result = userService.getUserList(sidx, sord, page, rows);
-	// } else {
-	// result = userService.getUserListByKeyword(searchString, sidx, sord,
-	// page, rows);
-	// System.out.println("searchString:" + searchString);
-	// }
-	//
-	// JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
-	// JSONArray jsonArray = new JSONArray();
-	// List data = result.getResult();
-	// SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-	// for (int i = 0, size = data.size(); i < size; i++) {
-	//
-	// Object[] row = (Object[]) data.get(i);
-	//
-	// JSONObject jsonObject1 = new JSONObject();
-	// JSONArray jsonArray2 = new JSONArray(); // 求取cell
-	//
-	// JSONObject jsonObject2 = new JSONObject();
-	// jsonObject2.put("id", row[0]);
-	// jsonObject2.put("name", row[1]);
-	// jsonArray2.put(row[0]);// id
-	// jsonArray2.put(jsonObject2); // 用户名
-	// jsonArray2.put(row[2]);// 姓名
-	// jsonArray2.put(row[3]);// 部门
-	// jsonArray2.put(row[4]);// 角色
-	// jsonArray2.put(row[5]);// 密码
-	//
-	// jsonObject1.put("cell", jsonArray2); // 加入cell
-	// jsonArray.put(jsonObject1);
-	//
-	// }
-	// jsonObject.put("rows", jsonArray); // 加入rows
-	//
-	// sentMsg(jsonObject.toString());
-	// return null;
-	// }
-
-	public String getAllRole() throws Exception {
-		List result = null;
-		result = userService.getAllRole();
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", result);
-		sentMsg(jsonObject.toString());
-		return null;
+		return false;
 	}
 	
-	public String updateMyPassword() throws IOException {
-		Map session = ActionContext.getContext().getSession();
-		JSONObject jsonObject = new JSONObject();
-		user = userService.getUserById((Integer) session.get(CommonConstant.SESSION_ID));
-		if (oldPassword != null && !"".equals(oldPassword) && user.getPassword().equals(MD5Util.encrypt32(oldPassword))) {
-			if (newPassword != null && !"".equals(newPassword) && repeatedNewPassword != null && !"".equals(repeatedNewPassword)) {
-				if (newPassword.equals(repeatedNewPassword)) {
-					user.setPassword(MD5Util.encrypt32(newPassword));
-					if(userService.saveUser(user)) {
-						jsonObject.put("info", "密码修改成功！");
-					} else {
-						jsonObject.put("info", "服务器问题，密码修改失败！");
-					}
-					
-				}else {
-					jsonObject.put("info", "两次密码输入不一致！");
-				}
-			}else {
-				jsonObject.put("info", "新密码或重复密码为空！");
+	/**
+	 * 获取客户端真实IP
+	 * @return
+	 */
+	public String getRealIp() {
+		// 获取真实IP
+		String ip = request.getHeader("X-Forwarded-For");
+		System.out.println("X-Forwarded-For ip:" + ip);
+		System.out.println("X-Real-IP ip:" + request.getHeader("X-Real-IP"));
+		System.out.println("remoteAddr ip:" + request.getRemoteAddr());
+		if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+			// 多次反向代理后会有多个ip值，第一个ip才是真实ip
+			int index = ip.indexOf(",");
+			if (index != -1) {
+				return ip.substring(0, index);
+			} else {
+				return ip;
 			}
-			
-		}else {
-			jsonObject.put("info", "旧密码为空或不正确！");
 		}
-		
-		sentMsg(jsonObject.toString());
-		
-		return null;
-	}
+		ip = request.getHeader("X-Real-IP");
+		if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+			return ip;
+		}
+		ip = request.getRemoteAddr();
+		return ip;
 
+	}
+	
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
 
 	public String getReturnURL() {
-		return returnURL;
+		return this.returnURL;
 	}
 
 	public void setReturnURL(String returnURL) {
@@ -238,7 +307,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getOldPassword() {
-		return oldPassword;
+		return this.oldPassword;
 	}
 
 	public void setOldPassword(String oldPassword) {
@@ -246,7 +315,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getNewPassword() {
-		return newPassword;
+		return this.newPassword;
 	}
 
 	public void setNewPassword(String newPassword) {
@@ -254,7 +323,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getRepeatedNewPassword() {
-		return repeatedNewPassword;
+		return this.repeatedNewPassword;
 	}
 
 	public void setRepeatedNewPassword(String repeatedNewPassword) {
@@ -262,7 +331,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public User getUser() {
-		return user;
+		return this.user;
 	}
 
 	public void setUser(User user) {
@@ -270,7 +339,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getAccount() {
-		return account;
+		return this.account;
 	}
 
 	public void setAccount(String account) {
@@ -278,7 +347,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public int getPage() {
-		return page;
+		return this.page;
 	}
 
 	public void setPage(int page) {
@@ -286,7 +355,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getSidx() {
-		return sidx;
+		return this.sidx;
 	}
 
 	public void setSidx(String sidx) {
@@ -294,7 +363,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getSord() {
-		return sord;
+		return this.sord;
 	}
 
 	public void setSord(String sord) {
@@ -302,7 +371,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public int getRows() {
-		return rows;
+		return this.rows;
 	}
 
 	public void setRows(int rows) {
@@ -310,7 +379,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public boolean is_search() {
-		return _search;
+		return this._search;
 	}
 
 	public void set_search(boolean _search) {
@@ -318,7 +387,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getSearchString() {
-		return searchString;
+		return this.searchString;
 	}
 
 	public void setSearchString(String searchString) {
@@ -326,7 +395,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getSearchOper() {
-		return searchOper;
+		return this.searchOper;
 	}
 
 	public void setSearchOper(String searchOper) {
@@ -334,7 +403,7 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public Long getTid() {
-		return tid;
+		return this.tid;
 	}
 
 	public void setTid(Long tid) {
@@ -346,11 +415,10 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String getUsernameAuto() {
-		return usernameAuto;
+		return this.usernameAuto;
 	}
 
 	public void setUsernameAuto(String usernameAuto) {
 		this.usernameAuto = usernameAuto;
 	}
-
 }

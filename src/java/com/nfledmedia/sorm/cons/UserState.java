@@ -29,10 +29,13 @@ public class UserState implements Serializable {
 		return symbol;
 	}
 
-	public static final UserState NORMAL = new UserState(new Character('N'));
-	public static final UserState FIRST_LOGIN = new UserState(
-			new Character('F'));
-	public static final UserState DELETE = new UserState(new Character('D'));
+//	public static final UserState NORMAL = new UserState(new Character('N'));
+//	public static final UserState FIRST_LOGIN = new UserState(new Character('F'));
+//	public static final UserState DELETE = new UserState(new Character('D'));
+	
+	public static final String NORMAL = "N";
+	public static final String FIRST_LOGIN = "F";
+	public static final String DELETE = "D";
 
 	public static UserState getInstanceBySymbol(Character symbol) {
 		UserState result = (UserState) instancesBySymbol.get(symbol);

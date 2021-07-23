@@ -15,15 +15,15 @@ public class Alterrecord implements java.io.Serializable {
 	private Operatetype operatetype;
 	private Order order;
 	private String adcontent;
-	private String ledname;
 	private Date datestart;
 	private Date dateend;
 	private Short duration;
 	private Short frequency;
-	private String playstrategyname;
 	private Date alterdate;
 	private String remark;
 	private String operater;
+	private String ledname;
+	private String playstrategyname;
 	private Timestamp createtime;
 
 	// Constructors
@@ -33,8 +33,8 @@ public class Alterrecord implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Alterrecord(Integer id, Operatetype operatetype, String operater, Order order, String adcontent, Date datestart,
-			Date dateend, Short duration, Short frequency, Date alterdate, Timestamp createtime) {
+	public Alterrecord(Integer id, Operatetype operatetype, User user, Order order, String adcontent, Date datestart,
+			Date dateend, Short duration, Short frequency, Date alterdate, String operater, Timestamp createtime) {
 		this.id = id;
 		this.operatetype = operatetype;
 		this.operater = operater;
@@ -48,30 +48,25 @@ public class Alterrecord implements java.io.Serializable {
 		this.createtime = createtime;
 	}
 
-	/**
-	 * full constructor
-	 * 
-	 */
-	public Alterrecord(Integer id, Operatetype operatetype, String operater, Order order, String adcontent, String ledname,
-			Date datestart, Date dateend, Short duration, Short frequency, String playstrategyname, Date alterdate,
-			String remark, Timestamp createtime) {
+	/** full constructor */
+	public Alterrecord(Integer id, Operatetype operatetype, Order order, String adcontent, Date datestart, Date dateend, Short duration, Short frequency,
+			Date alterdate, String remark, String operater, String ledname, String playstrategyname, Timestamp createtime) {
+		super();
 		this.id = id;
 		this.operatetype = operatetype;
-		this.operater = operater;
 		this.order = order;
 		this.adcontent = adcontent;
-		this.ledname = ledname;
 		this.datestart = datestart;
 		this.dateend = dateend;
 		this.duration = duration;
 		this.frequency = frequency;
-		this.playstrategyname = playstrategyname;
 		this.alterdate = alterdate;
 		this.remark = remark;
+		this.operater = operater;
+		this.ledname = ledname;
+		this.playstrategyname = playstrategyname;
 		this.createtime = createtime;
 	}
-
-	// Property accessors
 
 	public Integer getId() {
 		return this.id;
@@ -89,6 +84,30 @@ public class Alterrecord implements java.io.Serializable {
 		this.operatetype = operatetype;
 	}
 
+	public String getOperater() {
+		return operater;
+	}
+
+	public void setOperater(String operater) {
+		this.operater = operater;
+	}
+
+	public String getLedname() {
+		return ledname;
+	}
+
+	public void setLedname(String ledname) {
+		this.ledname = ledname;
+	}
+
+	public String getPlaystrategyname() {
+		return playstrategyname;
+	}
+
+	public void setPlaystrategyname(String playstrategyname) {
+		this.playstrategyname = playstrategyname;
+	}
+
 	public Order getOrder() {
 		return this.order;
 	}
@@ -103,14 +122,6 @@ public class Alterrecord implements java.io.Serializable {
 
 	public void setAdcontent(String adcontent) {
 		this.adcontent = adcontent;
-	}
-
-	public String getLedname() {
-		return ledname;
-	}
-
-	public void setLedname(String ledname) {
-		this.ledname = ledname;
 	}
 
 	public Date getDatestart() {
@@ -145,14 +156,6 @@ public class Alterrecord implements java.io.Serializable {
 		this.frequency = frequency;
 	}
 
-	public String getPlaystrategyname() {
-		return playstrategyname;
-	}
-
-	public void setPlaystrategyname(String playstrategyname) {
-		this.playstrategyname = playstrategyname;
-	}
-
 	public Date getAlterdate() {
 		return this.alterdate;
 	}
@@ -169,14 +172,6 @@ public class Alterrecord implements java.io.Serializable {
 		this.remark = remark;
 	}
 
-	public String getOperater() {
-		return operater;
-	}
-
-	public void setOperater(String operater) {
-		this.operater = operater;
-	}
-
 	public Timestamp getCreatetime() {
 		return this.createtime;
 	}
@@ -187,11 +182,10 @@ public class Alterrecord implements java.io.Serializable {
 
 	@Override
 	public String toString() {
-		return "Alterrecord [id=" + id + ", operatetype=" + operatetype.getOperatetype() + ", operater="
-				+ operater + ", order=" + order.getId() + ", adcontent=" + adcontent + ", ledname=" + ledname
-				+ ", datestart=" + datestart + ", dateend=" + dateend + ", duration=" + duration + ", frequency="
-				+ frequency + ", playstrategyname=" + playstrategyname + ", alterdate=" + alterdate + ", remark="
-				+ remark + ", createtime=" + createtime + "]";
+		return "Alterrecord [id=" + id + ", operatetype=" + operatetype.getOperatetype() + ", operater=" + operater
+				+ ", order=" + order.getId() + ", adcontent=" + adcontent + ", datestart=" + datestart + ", dateend="
+				+ dateend + ", duration=" + duration + ", frequency=" + frequency + ", alterdate=" + alterdate
+				+ ", remark=" + remark + ", createtime=" + createtime + "]";
 	}
 
 }

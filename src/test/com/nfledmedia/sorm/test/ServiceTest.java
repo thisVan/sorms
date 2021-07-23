@@ -1,6 +1,7 @@
 package com.nfledmedia.sorm.test;
 
 import java.text.ParseException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -115,5 +116,14 @@ public class ServiceTest extends AbstractJUnit4SpringContextTests {
 		}
 	}
 	
+	@Test
+	public void avgOccuByMonthsReportServiceTest(){
+		List list = yewuService.avgOccuByMonthsReportService(2019, "南都楼顶");
+		System.out.println("数据长度：" + list.size());
+		for (Object object : list) {
+			List lst = (List) object;
+			System.out.println(lst.get(0) + " " + lst.get(1) + " " + lst.get(2));
+		}
+	}
 
 }

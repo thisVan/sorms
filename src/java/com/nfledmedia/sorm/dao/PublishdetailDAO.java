@@ -1,18 +1,23 @@
 package com.nfledmedia.sorm.dao;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.transaction.Transactional;
+
 import org.hibernate.LockMode;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
+import org.hibernate.query.NativeQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.orm.hibernate5.support.HibernateDaoSupport;
 
-import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.util.Page;
 
@@ -27,6 +32,7 @@ import com.nfledmedia.sorm.util.Page;
  * @see com.nfledmedia.sorm.entity.Publishdetail
  * @author MyEclipse Persistence Tools
  */
+@Transactional
 public class PublishdetailDAO extends HibernateDaoSupport {
 	private static final Logger log = LoggerFactory.getLogger(PublishdetailDAO.class);
 	// property constants
@@ -261,8 +267,7 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	 * 对于需要first,max,fetchsize,cache,cacheRegion等诸多设置的函数,可以在返回Query后自行设置.
 	 * 留意可以连续设置
 	 * 
-	 * @param values
-	 *            可变参数.
+	 * @param values 可变参数.
 	 */
 	public Query createQuery(String hql, Object... values) {
 		// Assert.hasText(hql);
@@ -274,9 +279,17 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 	}
 
 	public List<Publishdetail> getPublishdetailFromDaterange(String dateStart, String dateEnd) {
-		// TODO Auto-generated method stub
-		String hql = "select p from Publishdetail p where p.date >='" + dateStart + "' and p.date <='" + dateEnd + "'";
-		return find(hql);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String hql = "select p from Publishdetail p where p.date >= :dateStart and p.date <= :dateEnd";
+		Query<Publishdetail> query = currentSession().createQuery(hql);
+		try {
+			query.setParameter("dateStart", sdf.parse(dateStart));
+			query.setParameter("dateEnd", sdf.parse(dateEnd));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		List<Publishdetail> list = query.getResultList();
+		return list;
 	}
 
 	/**
@@ -337,6 +350,34 @@ public class PublishdetailDAO extends HibernateDaoSupport {
 			log.error("查询下单明细表失败！");
 		}
 		return page;
+	}
+	
+	public Map<String, String> getAvgOccuDataset(Integer reportYear) {
+		String sql = "SELECT MONTH(date), SUM((frequency + IFNULL(addfreq,0))*duration) AS totalSeconds FROM publishdetail WHERE ledname IN(SELECT name FROM led WHERE state='A') AND YEAR(date) = '"
+				+ reportYear + "' GROUP BY MONTH(date)";
+		NativeQuery query = currentSession().createNativeQuery(sql);
+		List list = query.getResultList();
+		Map<String, String> dataMap = new LinkedHashMap<String, String>();
+		for (Object o : list) {
+//			System.out.println(((Object[]) o)[0] + ": " + ((Object[]) o)[1]);
+			dataMap.put(String.valueOf(((Object[]) o)[0]), String.valueOf(((Object[]) o)[1]));
+		}
+
+		return dataMap;
+	}
+
+	public Map<String, String> getAvgOccuDataset(Integer reportYear, String ledname) {
+		String sql = "SELECT MONTH(date) AS yearMonth, SUM((frequency + IFNULL(addfreq,0))*duration) AS totalSeconds FROM publishdetail WHERE ledname='" + ledname
+				+ "' AND YEAR(date) = '" + reportYear + "' GROUP BY MONTH(date)";
+		NativeQuery query = currentSession().createNativeQuery(sql);
+		List list = query.getResultList();
+		Map<String, String> dataMap = new LinkedHashMap<String, String>();
+		for (Object o : list) {
+//			System.out.println(((Object[]) o)[0] + ": " + ((Object[]) o)[1]);
+			dataMap.put(String.valueOf(((Object[]) o)[0]), String.valueOf(((Object[]) o)[1]));
+		}
+
+		return dataMap;
 	}
 
 }

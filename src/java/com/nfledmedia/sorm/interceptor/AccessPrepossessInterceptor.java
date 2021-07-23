@@ -14,9 +14,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import com.nfledmedia.sorm.cons.UserState;
 import com.nfledmedia.sorm.entity.Resource;
+import com.nfledmedia.sorm.entity.RoleResource;
 import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.ResourceService;
 import com.nfledmedia.sorm.service.UserService;
@@ -30,8 +32,7 @@ import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 @SuppressWarnings({ "serial", "unchecked" })
 public class AccessPrepossessInterceptor extends AbstractInterceptor {
 
-	private static final Log logger = LogFactory
-			.getLog(AccessPrepossessInterceptor.class);
+	private static final Log logger = LogFactory.getLog(AccessPrepossessInterceptor.class);
 	@ManyToOne
 	private UserService userService;
 	@ManyToOne
@@ -50,6 +51,26 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 	public String intercept(ActionInvocation arg0) throws Exception {
 		// 获取去掉应用名的uri
 		HttpServletRequest sq = ServletActionContext.getRequest();
+		
+		//获取真实IP
+		String realIp = "";
+	    String ip = sq.getHeader("X-Forwarded-For");
+	    if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+	        //多次反向代理后会有多个ip值，第一个ip才是真实ip
+	        int index = ip.indexOf(",");
+	        if (index != -1) {
+	        	realIp = ip.substring(0,index);
+	        } else {
+	        	realIp = ip;
+	        }
+	    }
+	    ip = sq.getHeader("X-Real-IP");
+	    if (!StringUtils.isEmpty(ip) && !"unKnown".equalsIgnoreCase(ip)) {
+	        return ip;
+	    }
+	    realIp =  sq.getRemoteAddr();
+	    System.out.println("客户端IP：" + realIp);
+	    
 		String uri = sq.getRequestURI();
 		// getContextPath:项目名
 		// 截取掉uri从首字母起长度为sq.getContextPath().length()+1的字符串，将剩余字符串赋值给str
@@ -59,30 +80,23 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 		String returnURL = uri + (queryString == null ? "" : "?" + queryString);
 		// 进入每个action都进行拦截，并进行日志信息输出
 		logger.info("进入AccessPrepossessInterceptor：" + returnURL);
-		System.out
-				.println("  @@@@@@@@@@@@@@@@@@@@@@@ （AccessPrepossessInterceptor）中returnURL:"
-						+ returnURL);
+		System.out.println("AccessPrepossessInterceptor中returnURL:" + returnURL);
 		ActionContext ctx = ActionContext.getContext();
 		Integer userID = (Integer) ctx.getSession().get("id");
-		System.out.println("   @@@@@@@@@@@@@@@@@@@@@@@ AccessPrepossessInterceptor中的userID:"
-						+ userID);
+		System.out.println("AccessPrepossessInterceptor中的userID:" + userID);
 		// 首先检查是否登录
-		if (userID == null) { // 未登录的情况a
+		if (userID == null) { // 未登录的情况
 			ctx.put("messageCode", "notLogin");
 			ctx.put("returnURL", returnURL);
 			return "redirectLogin";
 		} else { // 已登录的情况
 			User user = userService.getUserById(userID);
 			// Assert:方法入参检测工具类
-			Assert.notNull(user);
+			Assert.notNull(user, "用户实例为空！");
 
 			String state = user.getState();
-			System.out
-					.println("   @@@@@@@@@@@@@@@@@@@@@@@  AccessPrepossessInterceptor中UserName:"
-							+ user.getUsername());
-			System.out
-					.println("   @@@@@@@@@@@@@@@@@@@@@@@  AccessPrepossessInterceptor中UserState:"
-							+ state);
+			System.out.println("AccessPrepossessInterceptor中UserName:" + user.getUsername());
+			System.out.println("AccessPrepossessInterceptor中UserState:" + state);
 			if (state.equals(UserState.DELETE)) { // 账户已删除
 				ctx.put("messageCode", "deleted");
 				ctx.put("returnURL", returnURL);
@@ -100,7 +114,14 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 				prefix = uri;
 			}
 
-			List<Resource> resourcesList = user.getRole().getRoleResources();
+			// 2019年3月11日 18点48分 修改resource列表的处理方法
+			// List<Resource> resourcesList = user.getRole().getRoleResources();
+			List<RoleResource> roleResourcesList = resourceService.getResourcesByRole(user.getRole().getId());
+			List<Resource> resourcesList = new ArrayList<Resource>();
+			for (RoleResource roleResource : roleResourcesList) {
+				resourcesList.add(roleResource.getResource());
+			}
+
 			addResourcesMapToActionContext(resourcesList, ctx);
 			List<Resource> resourcesListAll = resourceService.getAllResource();
 			System.out.println("prefix:" + prefix);
@@ -110,8 +131,7 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 			// for(int i=0;i<resourcesListAll.size();i++){
 			// System.out.println(resourcesListAll.get(i).getUrl());
 			// }
-			boolean flag = getResourcesMapAndActiveMessage(resourcesList,
-					resourcesListAll, prefix);
+			boolean flag = getResourcesMapAndActiveMessage(resourcesList, resourcesListAll, prefix);
 			if (flag == false) { // 无访问权限
 				ctx.put("messageCode", "对不起，您没有访问权限");
 				return "noAccess";
@@ -126,24 +146,20 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 		}
 	}
 
-	private void addResourcesMapToActionContext(
-			final List<Resource> resourcesList, ActionContext ctx) {
-		TreeMap<String, List<Resource>> resourcesMap = new TreeMap<String, List<Resource>>(
-				new Comparator<String>() {
-					// TreeMap实现SortMap接口，能够把它保存的记录根据键排序,默认是按键值的升序排序
-					@Override
-					public int compare(String o1, String o2) {
-						if (o1 == null || o2 == null)
-							return 0;
-						Collator collator = Collator.getInstance();
-						CollationKey ck1 = collator.getCollationKey(String
-								.valueOf(o1));
-						CollationKey ck2 = collator.getCollationKey(String
-								.valueOf(o2));
-						return -ck1.compareTo(ck2);
-					}
+	private void addResourcesMapToActionContext(final List<Resource> resourcesList, ActionContext ctx) {
+		TreeMap<String, List<Resource>> resourcesMap = new TreeMap<String, List<Resource>>(new Comparator<String>() {
+			// TreeMap实现SortMap接口，能够把它保存的记录根据键排序,默认是按键值的升序排序
+			@Override
+			public int compare(String o1, String o2) {
+				if (o1 == null || o2 == null)
+					return 0;
+				Collator collator = Collator.getInstance();
+				CollationKey ck1 = collator.getCollationKey(String.valueOf(o1));
+				CollationKey ck2 = collator.getCollationKey(String.valueOf(o2));
+				return -ck1.compareTo(ck2);
+			}
 
-				});
+		});
 		for (int i = 0, size = resourcesList.size(); i < size; i++) {
 			// 搜索资源列表的所有资源，得到某个资源对象以及该资源对象的parentName
 			Resource resource = resourcesList.get(i);
@@ -165,9 +181,7 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 	}
 
 	// resourcesList权限验证，获取resourcesMap和激活信息(curParentName和curIndex)
-	private boolean getResourcesMapAndActiveMessage(
-			final List<Resource> resourcesList,
-			final List<Resource> resourcesListAll, String uri) {
+	private boolean getResourcesMapAndActiveMessage(final List<Resource> resourcesList, final List<Resource> resourcesListAll, String uri) {
 		int count = 0;
 		for (int i = 0; i < resourcesListAll.size(); i++) {
 			if (uri.equals(resourcesListAll.get(i).getUrl())) {
@@ -181,7 +195,6 @@ public class AccessPrepossessInterceptor extends AbstractInterceptor {
 		}
 		return true;
 	}
-
 
 	public UserService getUserService() {
 		return userService;

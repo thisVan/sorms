@@ -102,7 +102,10 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-					<a class="navbar-brand" href=""><img height="26" width="40" src="images/logo.png" alt="南方新视界传媒科技有限公司" /><span style="font-size: x-large;font-weight: bold;">新视界传媒</span>&nbsp;&nbsp;占屏率监控系统</a>
+					<a class="navbar-brand" href="">
+					<img height="26" width="40" src="images/logo.png" style="display: inline-block;" alt="南方新视界传媒科技有限公司" />
+					<span style="font-size: x-large;font-weight: bold;display: inline-block;">新视界传媒</span>&nbsp;&nbsp;占屏率监控系统
+					</a>
 				</div>
 
 			</div>

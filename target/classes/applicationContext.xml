@@ -25,7 +25,18 @@
 			</list>
 		</property>
 	</bean>
-	<!-- 配置数据库连接池 -->
+	
+<!-- 	<bean id="ipallowedProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<array>
+				<value>classpath:ipsconfig.properties</value>
+			</array>
+		</property>
+		<property name="fileEncoding" value="UTF-8" />
+	</bean> -->
+				
+    <!-- 配置数据库连接池 -->
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="${jdbc.driver}"></property>
 		<property name="url" value="${jdbc.url}"></property>

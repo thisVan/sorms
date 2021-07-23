@@ -20,7 +20,10 @@
             <column name="adcontent" not-null="true" />
         </property>
         <property name="ledname" type="java.lang.String">
-            <column name="ledname" length="50" not-null="false" />
+            <column name="ledname" length="50"/>
+        </property>
+        <property name="playstrategyname" type="java.lang.String">
+            <column name="playstrategyname" length="20"/>
         </property>
         <property name="datestart" type="java.util.Date">
             <column name="datestart" length="10" not-null="true" />
@@ -34,17 +37,14 @@
         <property name="frequency" type="java.lang.Short">
             <column name="frequency" not-null="true" />
         </property>
-        <property name="playstrategyname" type="java.lang.String">
-            <column name="playstrategyname" length="20" not-null="false" />
-        </property>
-        <property name="operater" type="java.lang.String">
-            <column name="operater" length="20" not-null="true" />
-        </property>
         <property name="alterdate" type="java.util.Date">
             <column name="alterdate" length="10" not-null="true" />
         </property>
         <property name="remark" type="java.lang.String">
             <column name="remark" length="500" />
+        </property>
+        <property name="operater" type="java.lang.String">
+            <column name="operater" length="20" />
         </property>
         <property name="createtime" type="java.sql.Timestamp">
             <column name="createtime" length="19" not-null="true" />

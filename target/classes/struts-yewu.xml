@@ -51,6 +51,10 @@
 		</action>
 		<action name="renkanshuManageList" class="com.nfledmedia.sorm.action.YewuAction" method="renkanshuManageList">
 		</action>
+		
+		<action name="publishdetailManageList" class="com.nfledmedia.sorm.action.YewuAction" method="publishdetailManageList">
+		</action>
+		
 		<action name="orderUpdatePage" class="com.nfledmedia.sorm.action.YewuAction" method="orderUpdatePage">
 			<result>/WEB-INF/pages/orderUpdatePage.jsp</result>
 		</action>

@@ -163,11 +163,13 @@ public class BaseService {
 		return (Playstrategy) playstrategyDAO.findByStrategyname(playstrategyname).get(0);
 	}
 	
-/*	public List<Operevent> getOpereventByOrderId(int orderid){
-		
-		return opereventDAO.findByOrderId(orderid);
-		
-	}*/
+	/*
+	 * public List<Operevent> getOpereventByOrderId(int orderid){
+	 * 
+	 * return opereventDAO.findByOrderId(orderid);
+	 * 
+	 * }
+	 */
 	
 	public List<Alterrecord> getAlterrecordByOrderId(int orderid){
 		

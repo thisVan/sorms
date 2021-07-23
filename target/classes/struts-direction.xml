@@ -21,6 +21,9 @@
 		<action name="renkanshuManage" class="com.nfledmedia.sorm.action.DirectionAction" method="renkanshuManage">
 			<result>/WEB-INF/pages/renkanshuManage.jsp</result>
 		</action>
+		<action name="publishdetailListManage" class="com.nfledmedia.sorm.action.DirectionAction" method="publishdetailListManage">
+			<result>/WEB-INF/pages/publishdetailListManage.jsp</result>
+		</action>
 		<action name="screenOccupancyRate" class="com.nfledmedia.sorm.action.DirectionAction" method="screenOccupancyRate">
 			<result>/WEB-INF/pages/screenOccupancyRate.jsp</result>
 		</action>

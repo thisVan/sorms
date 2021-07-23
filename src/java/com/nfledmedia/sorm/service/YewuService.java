@@ -3,7 +3,9 @@ package com.nfledmedia.sorm.service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -296,7 +298,6 @@ public class YewuService {
 		try {
 			publishData = publishdetailDAO.getPublishdetailFromDaterange(dateStart, dateEnd);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -315,17 +316,6 @@ public class YewuService {
 		for (Publishdetail pbd : publishData) {
 			// 该广告的开始和结束时间
 			seconds = (pbd.getFrequency() + TypeNullProcess.nullValueProcess(pbd.getAddfreq())) * pbd.getDuration();
-
-			// // 计算天数
-			// if (ywstart >= timestart && ywend <= timeend) {// 头尾都没超出该月的范围
-			// days = (int) ((ywend - ywstart) / oneDay + 1);
-			// } else if (ywstart <= timestart && ywend <= timeend) {// 头超尾不超
-			// days = (int) ((ywend - timestart) / oneDay + 1);
-			// } else if (ywstart >= timestart && ywend >= timeend) {// 尾超头不超
-			// days = (int) ((timeend - ywstart) / oneDay + 1);
-			// } else {// 头尾皆超
-			// days = (int) ((timeend - timestart) / oneDay + 1);
-			// }
 	
 			if (ledAvailableMap.containsKey(pbd.getLedname())) {
 				switch (pbd.getAttributename()) {
@@ -371,7 +361,6 @@ public class YewuService {
 					ledOccu.put(pbd.getLedname(), theValue);
 				}
 			}
-
 		}
 
 		resultData.add(ledOccu);
@@ -381,6 +370,50 @@ public class YewuService {
 		resultData.add(commonwealOccu);
 
 		return resultData;
+	}
+	
+	public List avgOccuByMonthsReportService(Integer reportYear, String ledname) {
+		List dataList = new ArrayList();
+		// 查询数据集
+		Map<String, String> dataMap = new LinkedHashMap<String, String>();
+		if ("".equals(ledname)) {
+			dataMap = publishdetailDAO.getAvgOccuDataset(reportYear);
+		} else {
+			dataMap = publishdetailDAO.getAvgOccuDataset(reportYear, ledname);
+		}
+
+		// 取得屏点可播时长
+		List<Led> ledList = ledDAO.findAllAvailable();
+		Integer allLedsAviliableDuration = 0;
+		Integer ledAviliableDuration = 0;
+		for (Led led : ledList) {
+			allLedsAviliableDuration += led.getAvlduration();
+			if (!"".equals(ledname) && ledname.equals(led.getName())) {
+				ledAviliableDuration = led.getAvlduration();
+			}
+		}
+		
+		// 处理每月可播时长，封装数据
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, Integer.valueOf(reportYear));
+
+		for (Map.Entry<String, String> entry : dataMap.entrySet()) {
+			List list = new ArrayList();
+			list.add(entry.getKey());
+			int days = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			if (ledAviliableDuration == 0) {
+				//未指定点位
+				list.add(Integer.valueOf(entry.getValue()) / (double)(days * allLedsAviliableDuration));
+				list.add(Integer.valueOf(entry.getValue()) / (double)(days * 60 * 60 * ledList.size()));//平均每天播放小时数
+			} else {
+				list.add(Integer.valueOf(entry.getValue()) / (double)(days * ledAviliableDuration));
+				list.add(Integer.valueOf(entry.getValue()) / (double)(days * 60 * 60));//平均每天播放小时数
+			}
+			dataList.add(list);
+			System.out.println(list.get(0) + " " + list.get(1) + " " + list.get(2));
+		}
+		return dataList;
+
 	}
 
 	// // 获取待审的认刊书列表

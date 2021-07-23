@@ -1,6 +1,9 @@
 package com.nfledmedia.sorm.test;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.annotation.Resource;
 
@@ -10,8 +13,10 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.StringUtils;
 
 import com.nfledmedia.sorm.action.RenkanAction;
+import com.nfledmedia.sorm.action.UserAction;
 import com.nfledmedia.sorm.action.YewuAction;
 
 
@@ -24,6 +29,9 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 	
 	@Resource
 	RenkanAction renkanAction;
+	
+	@Resource
+	UserAction userAction;
 	
 	@Test
 	public void avgOccuRateListByScreenTest() throws Exception{
@@ -87,5 +95,19 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 	public void getAlterHistoryTest() throws IOException {
 		yewuAction.setOrderid(69);
 		yewuAction.getAlterrecordsByOrderid();
+	}
+	
+	@Test
+	public void avgOccuByMonthsReportTestf() throws Exception{
+		yewuAction.setYear(2019);
+		yewuAction.setLed("");
+		
+		yewuAction.avgOccuByMonthsReport();
+	}
+	
+	
+	@Test
+	public void testVerifyRemoteAccess() {
+		System.out.println(userAction.verifyRemoteAccess("wun"));
 	}
 }

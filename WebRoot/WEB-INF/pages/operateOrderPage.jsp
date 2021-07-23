@@ -337,7 +337,6 @@
 
 	//保存按钮的点击事件
 /* 	$("#save").click( function() {
-
 		//时间需要格式化为HH:mm:ss格式，否则后台无法封装对象
 		if ($("#starttime1").val().length == 5) {
 			$("#starttime1")
@@ -346,7 +345,6 @@
 		if ($("#endtime1").val().length == 5) {
 			$("#endtime1").val($("#endtime1").val() + ":00");
 		}
-
 		if ($("input[name='adcontract.client']").val() == originalAdcontractclient
 			&& $("input[name='adcontract.agency']").val() == originalAdcontractagency
 			&& $("textarea[name='adcontract.remark']").val() == originalAdcontractremark
@@ -498,9 +496,24 @@
 				title : '操作',
 				formatter : actionFormatter
 			}, ]
-		});	
+		});
 
 	});
+	
+	$('#tb_order').on('page-change.bs.table', function (e,number, size){
+        alert(number);
+    });
+    
+    $('#tb_order').on('refresh-options.bs.table', function (e,options){
+	   alert("hello");
+	});
+	
+	$('#tb_order').on('load-success.bs.table', function (e,data) {
+	    alert("hello");
+	});	
+	$('#tb_order').on('post-body.bs.table', function (e,data){
+	   alert("hello");
+	})
 
 	//操作栏的格式化
 	function actionFormatter(value, row, index) {
