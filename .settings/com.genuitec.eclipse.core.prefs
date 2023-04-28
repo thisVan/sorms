@@ -1,4 +1,0 @@
-eclipse.preferences.version=1
-validator.Checked=WebRoot/js,test,src,WebRoot/WEB-INF/pages,WebRoot/WEB-INF/classes/struts-login.xml
-validator.Revalidate=true
-validator.Unchecked=
