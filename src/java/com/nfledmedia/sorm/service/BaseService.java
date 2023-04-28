@@ -105,38 +105,39 @@ public class BaseService {
 		return strList;
 
 	}
-	
+
 	/**
 	 * 根据ledId获取开关屏时间
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public Time[] returnSETimeByLedId(Integer id){
-		Led l =  ledDAO.findById(id);
+	public Time[] returnSETimeByLedId(Integer id) {
+		Led l = ledDAO.findById(id);
 		Time[] setime = {l.getStarttime(), l.getEndtime()};
 		return setime;
 	}
-	
+
 	public Led getLedById(Integer id) {
 		return ledDAO.findById(id);
 	}
-	
-	public Channel getChannelById(Integer id){
+
+	public Channel getChannelById(Integer id) {
 		return channelDAO.findById(id);
 	}
-	
-	public Industry getIndustryByIndustryid(Short industryid){
+
+	public Industry getIndustryByIndustryid(Short industryid) {
 		return industryDAO.findById(industryid);
 	}
-	
-	public Clienttype getClienttypeById(Short id){
+
+	public Clienttype getClienttypeById(Short id) {
 		return clienttypeDAO.findById(id);
 	}
-	
-	public Attribute getAttributeById(Short id){
+
+	public Attribute getAttributeById(Short id) {
 		return attributeDAO.findById(id);
 	}
-	
+
 	public Attribute getAttributeByName(String attrname) {
 		return (Attribute) attributeDAO.findByArrtibutename(attrname).get(0);
 	}
@@ -145,36 +146,37 @@ public class BaseService {
 		// TODO Auto-generated method stub
 		return (Led) ledDAO.findByName(ledName).get(0);
 	}
-	
+
 	/**
 	 * 返回所有播放策略
+	 * 
 	 * @return
 	 */
 	public List<?> strategyList() {
 		// TODO Auto-generated method stub
 		return playstrategyDAO.findAll();
 	}
-	
-	public Playstrategy getPlaystrategyById(Short id){
+
+	public Playstrategy getPlaystrategyById(Short id) {
 		return playstrategyDAO.findById(id);
 	}
-	
-	public Playstrategy getPlaystrategyByName(String playstrategyname){
+
+	public Playstrategy getPlaystrategyByName(String playstrategyname) {
 		return (Playstrategy) playstrategyDAO.findByStrategyname(playstrategyname).get(0);
 	}
-	
-	/*
-	 * public List<Operevent> getOpereventByOrderId(int orderid){
-	 * 
-	 * return opereventDAO.findByOrderId(orderid);
-	 * 
-	 * }
-	 */
-	
-	public List<Alterrecord> getAlterrecordByOrderId(int orderid){
-		
+
+
+//	public List<Operevent> getOpereventByOrderId(int orderid){
+//	 
+//	    return opereventDAO.findByOrderId(orderid);
+//	  
+//	}
+
+
+	public List<Alterrecord> getAlterrecordByOrderId(int orderid) {
+
 		return alterrecordDAO.findByOrderId(orderid);
-		
+
 	}
 
 	public List publishstyleList() {
