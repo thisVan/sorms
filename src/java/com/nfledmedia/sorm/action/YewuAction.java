@@ -1847,10 +1847,16 @@ public class YewuAction extends SuperAction {
 
 				// 设置列宽度
 				if (dataResultList != null && dataResultList.size() > 0) {
-
-					for (int i = 0, size = dataResultList.size(); i < size; i++) {
-						for (int j = 0; j < titles.length - 1; j++) {
-							sheet.setColumnView(j, sheet.getCell(j, i + 1).getContents().length() * 2 + 8);
+					for (int j = 0; j < titles.length - 1; j++) {
+						int columnWidth = 0;
+						for (int i = 0, size = dataResultList.size(); i < size; i++) {
+							int cellWidth = sheet.getCell(j, i + 1).getContents().length() * 2 + 2;
+							// 列宽度自适应
+							if (cellWidth > columnWidth) {
+								columnWidth = cellWidth;
+							}
+							sheet.setColumnView(j, columnWidth);
+							System.out.println("列=" + j + "; 列宽=" + columnWidth);
 						}
 					}
 				}
@@ -1868,12 +1874,9 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			
-
 		}
-
+		
 		return null;
-
 	}
 	
 	/**
