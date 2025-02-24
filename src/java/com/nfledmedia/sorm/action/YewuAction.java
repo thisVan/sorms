@@ -21,11 +21,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-import org.apache.log4j.Logger;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.components.Else;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -81,9 +78,9 @@ public class YewuAction extends SuperAction {
 	@Autowired
 	private RenkanshuService renkanshuService;
 
-	//自动补全参数
+	// 自动补全参数
 	private String keyword;
-		
+
 	public String getKeyword() {
 		return keyword;
 	}
@@ -98,8 +95,8 @@ public class YewuAction extends SuperAction {
 	private String sord;
 	private int rows;
 	private boolean _search;
-	private String nd;//jqgrid自带时间戳参数
-	
+	private String nd;// jqgrid自带时间戳参数
+
 	private String searchField;
 	private String searchString;
 	private String searchOper;
@@ -111,7 +108,6 @@ public class YewuAction extends SuperAction {
 	private Integer adcontractid;
 	private Integer orderid;
 	private String adcontract_id;
-	
 
 	public String getAdcontract_id() {
 		return adcontract_id;
@@ -270,8 +266,8 @@ public class YewuAction extends SuperAction {
 	public void setKanlixiaoji(String kanlixiaoji) {
 		this.kanlixiaoji = kanlixiaoji;
 	}
-	
-	//添加行业
+
+	// 添加行业
 	private String industryname;
 
 	public String getIndustryname() {
@@ -299,8 +295,8 @@ public class YewuAction extends SuperAction {
 		out.flush();
 		out.close();
 	}
-	
-	//添加新的行业，返回更新的列表，同时前台更新
+
+	// 添加新的行业，返回更新的列表，同时前台更新
 	public void addIndustryCustomer() throws Exception {
 		String info = renkanshuService.saveIndustry(industryname);
 		JSONObject jsonObject = new JSONObject();
@@ -311,19 +307,19 @@ public class YewuAction extends SuperAction {
 		for (Industry ind : list) {
 			industryIdArr.put(ind.getIndustryid());
 			industryNameArr.put(ind.getIndustryname());
-			if(industryname.equals(ind.getIndustryname())){
+			if (industryname.equals(ind.getIndustryname())) {
 				this_id = ind.getIndustryid();
-			};
+			} ;
 		}
 		jsonObject.put("info", info);
 		jsonObject.put("ind_ids", industryIdArr);
 		jsonObject.put("ind_names", industryNameArr);
 		jsonObject.put("thisIndId", this_id);
-		
+
 		sentMsg(jsonObject.toString());
-		
+
 	}
-	
+
 	public String autocompleteclient() throws IOException {
 		JSONArray jsonArray = new JSONArray();
 		List<Adcontract> list = adcontractService.getClientsLikeKeyword(keyword);
@@ -337,9 +333,9 @@ public class YewuAction extends SuperAction {
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
 		return null;
-		
+
 	}
-			
+
 	public String autocompleteagency() throws IOException {
 		JSONArray jsonArray = new JSONArray();
 		List<Adcontract> list = adcontractService.getAgencysLikeKeyword(keyword);
@@ -353,9 +349,9 @@ public class YewuAction extends SuperAction {
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
 		return null;
-		
+
 	}
-	
+
 	public String autocompletecontent() throws IOException {
 		JSONArray jsonArray = new JSONArray();
 		List<Order> list = renkanshuService.getContentsLikeKeyword(keyword);
@@ -369,11 +365,12 @@ public class YewuAction extends SuperAction {
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
 		return null;
-		
+
 	}
-	
+
 	/**
 	 * 下单明细列表
+	 * 
 	 * @author 广渊
 	 * @since 2018年11月24日
 	 * @return String
@@ -383,8 +380,6 @@ public class YewuAction extends SuperAction {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
 
-		Map session = ActionContext.getContext().getSession();
-		Integer id = (Integer) session.get(CommonConstant.SESSION_ID);
 		System.out.println("调用YewuAction中的renkanshuManageList: ");
 		System.out.println("  sidx=" + sidx + "  sord=" + sord + "  page=" + page + "  rows=" + rows);
 		Page result = null;
@@ -405,10 +400,10 @@ public class YewuAction extends SuperAction {
 
 			JSONObject jsonObject1 = new JSONObject();
 			jsonObject1.put("id", row[1]);// 订单编号
-			
+
 			JSONArray jsonArray2 = new JSONArray(); // 求取cell
 			jsonArray2.put(row[2]);// 上画点位
-			jsonArray2.put(row[3]);//客户
+			jsonArray2.put(row[3]);// 客户
 			jsonArray2.put(row[6]);// 客户属性
 			jsonArray2.put(row[5]);// 下单属性
 			jsonArray2.put(row[4]);// 发布内容
@@ -417,7 +412,7 @@ public class YewuAction extends SuperAction {
 			jsonArray2.put(sdf.format(row[10]));// 日期
 			jsonArray2.put(tdf.format(row[11]) + "-" + tdf.format(row[12]));// 时段
 			jsonObject1.put("cell", jsonArray2); // 加入cell
-			
+
 			jsonArray.put(jsonObject1);
 		}
 		jsonObject.put("rows", jsonArray); // 加入rows
@@ -425,7 +420,7 @@ public class YewuAction extends SuperAction {
 		sentMsg(jsonObject.toString());
 		return null;
 	}
-	
+
 	public String renkanshuManageList() throws Exception {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		SimpleDateFormat tdf = new SimpleDateFormat("HH:mm");
@@ -454,14 +449,14 @@ public class YewuAction extends SuperAction {
 			jsonObject1.put("id", row[0]);// 订单编号
 			JSONArray jsonArray2 = new JSONArray(); // 求取cell
 			jsonArray2.put(row[1]);// 上画点位
-			jsonArray2.put(row[2]);//客户
-			jsonArray2.put(row[3]);//代理公司
+			jsonArray2.put(row[2]);// 客户
+			jsonArray2.put(row[3]);// 代理公司
 			// 放入客户
-//			if (null != row[3] && !"".equals(row[3])) {
-//				jsonArray2.put(row[3]);
-//			} else {
-//				jsonArray2.put(row[2]);
-//			}
+			// if (null != row[3] && !"".equals(row[3])) {
+			// jsonArray2.put(row[3]);
+			// } else {
+			// jsonArray2.put(row[2]);
+			// }
 			jsonArray2.put(row[14]);// 客户属性
 			jsonArray2.put(row[13]);// 下单属性
 			jsonArray2.put(row[4]);// 发布内容
@@ -488,7 +483,7 @@ public class YewuAction extends SuperAction {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public String publishResourceExport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat mdf = new SimpleDateFormat("M月d日");
@@ -506,16 +501,16 @@ public class YewuAction extends SuperAction {
 			if (contentSet.add(os[3])) {
 				programContentList.add(os[3]);
 				orderidSet.add(os[10]);
-				
+
 				List l = new ArrayList();
 				for (int j = 0; j < os.length; j++) {
 					l.add(os[j]);
 				}
 				l.remove(10);
 				distinctQueryResult.add(l);
-			}else if (orderidSet.add(os[10])) {
+			} else if (orderidSet.add(os[10])) {
 				programContentList.add(os[3]);
-				
+
 				List l = new ArrayList();
 				for (int j = 0; j < os.length; j++) {
 					l.add(os[j]);
@@ -523,7 +518,7 @@ public class YewuAction extends SuperAction {
 				l.remove(10);
 				distinctQueryResult.add(l);
 			}
-			
+
 			if (pubDateMap.containsKey(os[3])) {
 				ArrayList arrList = pubDateMap.get(os[3]);
 				arrList.add(os[9]);
@@ -536,14 +531,14 @@ public class YewuAction extends SuperAction {
 		}
 
 		System.out.println(startTime + "至" + endTime + "  " + ledId);
-		for (int i=0;i<programContentList.size();i++) {
+		for (int i = 0; i < programContentList.size(); i++) {
 			System.out.println("programContentList[" + i + "]:" + programContentList.get(i));
 		}
 
 		List resultList = new ArrayList();
-		String[] arr = { "序号", "屏幕", "客户", "发布内容", "下单属性", "客户属性", "频次", "增加频次", "时长", "日期" };
+		String[] arr = {"序号", "屏幕", "客户", "发布内容", "下单属性", "客户属性", "频次", "增加频次", "时长", "日期"};
 		ArrayList<String> title = new ArrayList<String>(Arrays.asList(arr));
-		
+
 		// 遍历所有日期
 		for (int i = 0; i < distinctQueryResult.size(); i++) {
 			Date dateInx = sdf.parse(startTime);
@@ -556,7 +551,8 @@ public class YewuAction extends SuperAction {
 					int addfreq = (Integer) ((subList.get(7) == null) ? 0 : subList.get(7));
 					int procfreq = 0;
 					try {
-						procfreq = (((Short) subList.get(6)).intValue() + addfreq) * ((Short) subList.get(8)).intValue() / 15;
+						procfreq = (((Short) subList.get(6)).intValue() + addfreq) * ((Short) subList.get(8)).intValue()
+								/ 15;
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -580,15 +576,15 @@ public class YewuAction extends SuperAction {
 		for (int i = 0; i < resultList.size(); i++) {
 			List listSort = (List) resultList.get(i);
 			switch ((String) listSort.get(4)) {
-			case TypeCollections.ATTRIBUTE_BUSSINESS:
-				subListOfBuss.add(listSort);
-				break;
-			case TypeCollections.ATTRIBUTE_COMMONWEAL:
-				subListOfComm.add(listSort);
-				break;
-			case TypeCollections.ATTRIBUTE_PRESENT:
-				subListOfPres.add(listSort);
-				break;
+				case TypeCollections.ATTRIBUTE_BUSSINESS :
+					subListOfBuss.add(listSort);
+					break;
+				case TypeCollections.ATTRIBUTE_COMMONWEAL :
+					subListOfComm.add(listSort);
+					break;
+				case TypeCollections.ATTRIBUTE_PRESENT :
+					subListOfPres.add(listSort);
+					break;
 			}
 		}
 
@@ -624,17 +620,17 @@ public class YewuAction extends SuperAction {
 			String dateRangeStr = dateRange + " " + dateRange;
 			List<Map<String, Integer>> occuDataList = yewuService.calAvgScreenOccuRate4AllScreen(dateRangeStr, leds);
 			listOccuTotal.set(9, "总占屏率");
-			listOccuTotal.add(
-					df.format(TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId)) / (double) occuDataList.get(1).get(ledId)));
+			listOccuTotal.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId))
+					/ (double) occuDataList.get(1).get(ledId)));
 			listOccuBussiness.set(9, "商业占屏率");
-			listOccuBussiness.add(df.format(
-					(Integer) TypeNullProcess.nullValueProcess(occuDataList.get(2).get(ledId)) / (double) occuDataList.get(1).get(ledId)));
+			listOccuBussiness.add(df.format((Integer) TypeNullProcess.nullValueProcess(occuDataList.get(2).get(ledId))
+					/ (double) occuDataList.get(1).get(ledId)));
 			listOccuPresent.set(9, "赠播占屏率");
-			listOccuPresent.add(df.format(
-					(Integer) TypeNullProcess.nullValueProcess(occuDataList.get(3).get(ledId)) / (double) occuDataList.get(1).get(ledId)));
+			listOccuPresent.add(df.format((Integer) TypeNullProcess.nullValueProcess(occuDataList.get(3).get(ledId))
+					/ (double) occuDataList.get(1).get(ledId)));
 			listOccuCommonweal.set(9, "公益占屏率");
-			listOccuCommonweal.add(df.format(
-					(Integer) TypeNullProcess.nullValueProcess(occuDataList.get(4).get(ledId)) / (double) occuDataList.get(1).get(ledId)));
+			listOccuCommonweal.add(df.format((Integer) TypeNullProcess.nullValueProcess(occuDataList.get(4).get(ledId))
+					/ (double) occuDataList.get(1).get(ledId)));
 
 			listOccuTotalAmount.set(9, "合计");
 			listOccuTotalAmount.add(TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId)) / 15);// 合计总量，LED屏总播放时间除以15s
@@ -646,8 +642,8 @@ public class YewuAction extends SuperAction {
 			listOccuCommonwealAmount.add(TypeNullProcess.nullValueProcess(occuDataList.get(4).get(ledId)) / 15);
 
 			listOccuTotalAmountSpare.set(9, "余量");
-			listOccuTotalAmountSpare
-					.add(occuDataList.get(1).get(ledId) / 15 - TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId)) / 15);// 合计余量
+			listOccuTotalAmountSpare.add(occuDataList.get(1).get(ledId) / 15
+					- TypeNullProcess.nullValueProcess(occuDataList.get(0).get(ledId)) / 15);// 合计余量
 
 			listOccuBussinessAmountShare.set(9, "商业占比");
 			listOccuBussinessAmountShare.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(2).get(ledId))
@@ -735,7 +731,8 @@ public class YewuAction extends SuperAction {
 		SimpleDateFormat hhmmFormat = new SimpleDateFormat("HH:mm");
 		Led theLed = baseService.getLedByName(ledId);
 		String ledTimeRange = hhmmFormat.format(theLed.getStarttime()) + "-" + hhmmFormat.format(theLed.getEndtime());
-		sheetTitles[0] = ledId + "(" + ledTimeRange + ")" + " " + "(" + theLed.getAvlduration() / 15 + "次" + "/15s" + ")";
+		sheetTitles[0] = ledId + "(" + ledTimeRange + ")" + " " + "(" + theLed.getAvlduration() / 15 + "次" + "/15s"
+				+ ")";
 		String[] titles = new String[title.size()];
 		for (int i = 0; i < title.size(); i++) {
 			titles[i] = (String) title.get(i);
@@ -777,7 +774,7 @@ public class YewuAction extends SuperAction {
 			// 表头单元格样式
 			WritableFont writableFont = new WritableFont(WritableFont.createFont("宋体"), 12, WritableFont.BOLD);
 			WritableCellFormat wcf_header = new WritableCellFormat(writableFont);
-			//wcf_header.setBackground(jxl.format.Colour.YELLOW);
+			// wcf_header.setBackground(jxl.format.Colour.YELLOW);
 			wcf_header.setVerticalAlignment(VerticalAlignment.CENTRE);
 
 			// 添加表头标题
@@ -787,13 +784,13 @@ public class YewuAction extends SuperAction {
 					sheet.addCell(label);
 				}
 			}
-			
-			//标题单元格样式
+
+			// 标题单元格样式
 			WritableFont wf_tittle = new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD);
 			WritableCellFormat wcf_tittle = new WritableCellFormat(wf_tittle);
 			wcf_tittle.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcf_tittle.setAlignment(Alignment.CENTRE);
-			wcf_tittle.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			wcf_tittle.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 
 			// 添加标题
 			if (titles != null) {
@@ -803,13 +800,13 @@ public class YewuAction extends SuperAction {
 				}
 			}
 
-			//内容单元格样式
+			// 内容单元格样式
 			WritableFont wf_content = new WritableFont(WritableFont.createFont("宋体"), 10);
 			WritableCellFormat wcf_content = new WritableCellFormat(wf_content);
 			wcf_content.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcf_content.setAlignment(Alignment.CENTRE);
-			wcf_content.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
-			
+			wcf_content.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+
 			// 下面是填充数据
 			if (list != null && list.size() > 0) {
 				for (int i = 0, size = list.size(); i < size; i++) {
@@ -827,23 +824,27 @@ public class YewuAction extends SuperAction {
 					}
 				}
 			}
-			
+
 			CellView autoColumnWidthCellView = new CellView();
 			autoColumnWidthCellView.setAutosize(true);
-			
-			//setAutosize含有中文字符无效，改为指定宽度
+
+			// setAutosize含有中文字符无效，改为指定宽度
 			Cell[] client_cells = sheet.getColumn(2);
 			int clientcells_width = 10;
 			for (Cell cell : client_cells) {
-				clientcells_width = (cell.getContents().length()*2) > clientcells_width ? (cell.getContents().length()*2 + 2) : clientcells_width;
+				clientcells_width = (cell.getContents().length() * 2) > clientcells_width
+						? (cell.getContents().length() * 2 + 2)
+						: clientcells_width;
 			}
 			Cell[] adcontent_cells = sheet.getColumn(3);
 			int adcontentcells_width = 10;
 			for (Cell cell : adcontent_cells) {
-				adcontentcells_width = (cell.getContents().length()*2) > adcontentcells_width ? (cell.getContents().length()*2 + 2) : adcontentcells_width;
+				adcontentcells_width = (cell.getContents().length() * 2) > adcontentcells_width
+						? (cell.getContents().length() * 2 + 2)
+						: adcontentcells_width;
 			}
-			sheet.setColumnView(2, clientcells_width);//客户列
-			sheet.setColumnView(3, adcontentcells_width);//发布内容列
+			sheet.setColumnView(2, clientcells_width);// 客户列
+			sheet.setColumnView(3, adcontentcells_width);// 发布内容列
 
 			// 合并单元格
 			sheet.mergeCells(0, 1, 0, 4);
@@ -855,79 +856,83 @@ public class YewuAction extends SuperAction {
 			sheet.mergeCells(6, 1, 6, 4);
 			sheet.mergeCells(7, 1, 7, 4);
 			sheet.mergeCells(8, 1, 8, 4);
-			
-			//移动增加频次列，先暂存原列单元格
+
+			// 移动增加频次列，先暂存原列单元格
 			Cell[] addfreq_cells = sheet.getColumn(7);
-			
-			//删除屏幕列
+
+			// 删除屏幕列
 			sheet.removeColumn(1);
 			sheet.removeColumn(6);
 			System.out.println(sheet.getColumns());
 			int addfreqcolumn_idx = sheet.getColumns();
-			
-			//获取增加频次max
+
+			// 获取增加频次max
 			int spareMax = 0;
 			for (int i = 8; i < addfreqcolumn_idx; i++) {
-				spareMax = Integer.valueOf(sheet.getWritableCell(i, 4).getContents()) > spareMax ? Integer.valueOf(sheet.getWritableCell(i, 4).getContents()) : spareMax;
+				spareMax = Integer.valueOf(sheet.getWritableCell(i, 4).getContents()) > spareMax
+						? Integer.valueOf(sheet.getWritableCell(i, 4).getContents())
+						: spareMax;
 			}
-			
+
 			WritableCellFormat wcf_orange = new WritableCellFormat(wf_tittle);
 			wcf_orange.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcf_orange.setAlignment(Alignment.CENTRE);
-			wcf_orange.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			wcf_orange.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 			wcf_orange.setBackground(Colour.ORANGE);
-			//增加频次列放后面
+			// 增加频次列放后面
 			for (Cell cell : addfreq_cells) {
-				//增加频次
+				// 增加频次
 				Label labeladdfreq = new Label(addfreqcolumn_idx, cell.getRow(), cell.getContents(), wcf_orange);
-				//客户排序
+				// 客户排序
 				Label labeladdfreq1 = new Label(addfreqcolumn_idx + 1, cell.getRow(), "", wcf_orange);
 				sheet.addCell(labeladdfreq);
 				sheet.addCell(labeladdfreq1);
 			}
-			
-			//放入增加频次MAX
+
+			// 放入增加频次MAX
 			sheet.addCell(new Label(addfreqcolumn_idx, 1, "增加（Max）", wcf_orange));
 			sheet.addCell(new Label(addfreqcolumn_idx, 4, String.valueOf(spareMax), wcf_orange));
-			
-			//增加客户排序列
+
+			// 增加客户排序列
 			sheet.addCell(new Label(addfreqcolumn_idx + 1, 1, "客户排序", wcf_orange));
-			
-			//合并新添加两列
+
+			// 合并新添加两列
 			sheet.mergeCells(addfreqcolumn_idx, 1, addfreqcolumn_idx, 3);
 			sheet.mergeCells(addfreqcolumn_idx + 1, 1, addfreqcolumn_idx + 1, 4);
-			
-			//合并表头行
+
+			// 合并表头行
 			sheet.mergeCells(0, 0, addfreqcolumn_idx + 1, 0);
-			
+
 			sheet.setColumnView(addfreqcolumn_idx, 12);
-			
-			//对汇总统计信息增加粗体显示和单元格底色
-			//汇总单元格样式
+
+			// 对汇总统计信息增加粗体显示和单元格底色
+			// 汇总单元格样式
 			WritableCellFormat wcf_statistic = new WritableCellFormat(wf_tittle);
 			wcf_statistic.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcf_statistic.setAlignment(Alignment.CENTRE);
-			wcf_statistic.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,jxl.format.Colour.BLACK);
+			wcf_statistic.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
 			wcf_statistic.setBackground(Colour.YELLOW);
-			
+
 			Cell[] fillFormatIdx_cells = sheet.getColumn(7);
-						
+
 			for (Cell cell : fillFormatIdx_cells) {
-				//如果fillFormatIdx_cells单元格非空，则套用格式
+				// 如果fillFormatIdx_cells单元格非空，则套用格式
 				int operRowIdx = cell.getRow();
 				int operColumnIdx = cell.getColumn();
-				if(!"".equals(cell.getContents()) && cell.getContents() != null){
+				if (!"".equals(cell.getContents()) && cell.getContents() != null) {
 					for (int i = operColumnIdx; i < addfreqcolumn_idx; i++) {
-						if(operRowIdx == 1 || i == operColumnIdx){
-							sheet.addCell(new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(), wcf_tittle));
-						}else {
-							sheet.addCell(new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(), wcf_statistic));
+						if (operRowIdx == 1 || i == operColumnIdx) {
+							sheet.addCell(
+									new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(), wcf_tittle));
+						} else {
+							sheet.addCell(new Label(i, operRowIdx, sheet.getCell(i, operRowIdx).getContents(),
+									wcf_statistic));
 						}
 					}
 				}
 			}
-			
-			//合并空白列
+
+			// 合并空白列
 			Cell[] merge_blank_col0 = sheet.getColumn(0);
 			Cell[] merge_blank_col7 = sheet.getColumn(7);
 			for (int i = 0, len = merge_blank_col0.length; i < len; i++) {
@@ -937,7 +942,7 @@ public class YewuAction extends SuperAction {
 					i++;
 				}
 			}
-			
+
 			int start_idx = 5;
 			int end_idx = 5;
 			boolean merge_flag = false;
@@ -956,28 +961,29 @@ public class YewuAction extends SuperAction {
 					merge_flag = false;
 				}
 			}
-			
+
 			// 签名单元格样式
 			WritableCellFormat wcf_sign = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
 			wcf_sign.setVerticalAlignment(VerticalAlignment.CENTRE);
-			//单独下划线
+			// 单独下划线
 			WritableCellFormat wcf_line_bottom = new WritableCellFormat();
-			wcf_line_bottom.setBorder(jxl.format.Border.BOTTOM, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
-			
-			//插入签字单元格
+			wcf_line_bottom.setBorder(jxl.format.Border.BOTTOM, jxl.format.BorderLineStyle.THIN,
+					jxl.format.Colour.BLACK);
+
+			// 插入签字单元格
 			int sign_idx = sheet.getRows() + 2;
 			sheet.addCell(new Label(0, sign_idx, "财务签字：", wcf_sign));
 			sheet.addCell(new Label(1, sign_idx, "", wcf_line_bottom));
-			sheet.addCell(new Label(addfreqcolumn_idx/2-1, sign_idx, "副总签字：", wcf_sign));
-			sheet.addCell(new Label(addfreqcolumn_idx/2, sign_idx, "", wcf_line_bottom));
-			sheet.addCell(new Label(addfreqcolumn_idx/2 + 1, sign_idx, "", wcf_line_bottom));
-			sheet.addCell(new Label(addfreqcolumn_idx-1, sign_idx, "总经理签字：", wcf_sign));
+			sheet.addCell(new Label(addfreqcolumn_idx / 2 - 1, sign_idx, "副总签字：", wcf_sign));
+			sheet.addCell(new Label(addfreqcolumn_idx / 2, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx / 2 + 1, sign_idx, "", wcf_line_bottom));
+			sheet.addCell(new Label(addfreqcolumn_idx - 1, sign_idx, "总经理签字：", wcf_sign));
 			sheet.addCell(new Label(addfreqcolumn_idx, sign_idx, "", wcf_line_bottom));
 			sheet.addCell(new Label(addfreqcolumn_idx + 1, sign_idx, "", wcf_line_bottom));
-			
-			sheet.setColumnView(addfreqcolumn_idx-1, 11);
-			
-			//设置数字格式
+
+			sheet.setColumnView(addfreqcolumn_idx - 1, 11);
+
+			// 设置数字格式
 			jxl.write.Number labelNF;
 
 			jxl.write.NumberFormat nf = new jxl.write.NumberFormat("0"); // 设置数字格式
@@ -1000,19 +1006,21 @@ public class YewuAction extends SuperAction {
 			wcfDF.setAlignment(Alignment.CENTRE);
 			wcfDF.setBackground(jxl.format.Colour.YELLOW);
 			wcfDF.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
-			
 
 			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
 				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
 					if ((!"".equals(sheet.getCell(j, i).getContents()))) {
 						if (sheet.getCell(j, i).getContents().contains(".")) {
-							labelNF = new jxl.write.Number(j, i, Double.parseDouble(sheet.getCell(j, i).getContents()), wcfDF); // 格式化数
+							labelNF = new jxl.write.Number(j, i, Double.parseDouble(sheet.getCell(j, i).getContents()),
+									wcfDF); // 格式化数
 							sheet.addCell(labelNF);
 						} else {
 							if (sheet.getCell(7, i).getContents().equals("")) {
-								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()), wcfN); // 格式化数
+								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()),
+										wcfN); // 格式化数
 							} else {
-								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()), wcfNB); // 格式化数
+								labelNF = new jxl.write.Number(j, i, Double.valueOf(sheet.getCell(j, i).getContents()),
+										wcfNB); // 格式化数
 							}
 							sheet.addCell(labelNF);
 						}
@@ -1021,21 +1029,21 @@ public class YewuAction extends SuperAction {
 				}
 
 			}
-			
+
 			String bussinessTotal = TypeCollections.ATTRIBUTE_BUSSINESS + "小计";
 			String commonwealTotal = TypeCollections.ATTRIBUTE_COMMONWEAL + "小计";
-			String presentTotal = TypeCollections.ATTRIBUTE_PRESENT+ "小计";
-			
+			String presentTotal = TypeCollections.ATTRIBUTE_PRESENT + "小计";
+
 			String bussinessRate = TypeCollections.ATTRIBUTE_BUSSINESS + "占比";
 			String commonwealRate = TypeCollections.ATTRIBUTE_COMMONWEAL + "占比";
-			String presentRate = TypeCollections.ATTRIBUTE_PRESENT+ "占比";
-			
-			Integer bussCellRow = null ;
-			Integer commCellRow = null ;
-			Integer presCellRow = null ;
+			String presentRate = TypeCollections.ATTRIBUTE_PRESENT + "占比";
+
+			Integer bussCellRow = null;
+			Integer commCellRow = null;
+			Integer presCellRow = null;
 			Integer totalOccuCellRow = null;
 			Integer remainCellRow = null;
-			
+
 			// 插入公式
 			for (int i = 2, rows = sheet.getRows() - 2; i < rows; i++) {
 				for (int j = 8, cols = sheet.getColumns() - 2; j < cols; j++) {
@@ -1074,8 +1082,12 @@ public class YewuAction extends SuperAction {
 						} else {
 							String formulaStr = "SUM(";
 							formulaStr += (bussCellRow != null ? (ExcelUtil.index2ColName(j) + (bussCellRow + 1)) : "");
-							formulaStr += (commCellRow != null ? ("," + ExcelUtil.index2ColName(j) + (commCellRow + 1)) : "");
-							formulaStr += (presCellRow != null ? ("," + ExcelUtil.index2ColName(j) + (presCellRow + 1)) : "");
+							formulaStr += (commCellRow != null
+									? ("," + ExcelUtil.index2ColName(j) + (commCellRow + 1))
+									: "");
+							formulaStr += (presCellRow != null
+									? ("," + ExcelUtil.index2ColName(j) + (presCellRow + 1))
+									: "");
 							formulaStr += ")";
 							// 插入公式
 							Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
@@ -1085,7 +1097,8 @@ public class YewuAction extends SuperAction {
 					}
 					if ("余量".equals(sheet.getCell(7, i).getContents())) {
 						String formulaStr = "SUM(";
-						formulaStr += (theLed.getAvlduration() / 15) + "-" + (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
+						formulaStr += (theLed.getAvlduration() / 15) + "-"
+								+ (ExcelUtil.index2ColName(j) + (totalOccuCellRow + 1));
 						formulaStr += ")";
 						// 插入公式
 						Formula f = new Formula(j, i, formulaStr, sheet.getCell(j, i).getCellFormat());
@@ -1181,9 +1194,9 @@ public class YewuAction extends SuperAction {
 		List<Publishdetail> queryResult;
 		if ("".equals(ledId) || ledId == null) {
 			queryResult = renkanshuService.publishInTimerangeList(startTime, endTime);
-		}else {
+		} else {
 			queryResult = renkanshuService.publishInTimerangeListAndLedname(startTime, endTime, ledId);
-		}		
+		}
 		List distinctQueryResult = new ArrayList();
 		Set contentSet = new HashSet();
 		Map<String, Integer> pubContentCountMap = new HashMap<String, Integer>();
@@ -1206,7 +1219,7 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = { "序号", "广告客户", "发布内容", "类别", "投放量(屏幕数*天数)" };
+		String[] arr = {"序号", "广告客户", "发布内容", "类别", "投放量(屏幕数*天数)"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
 		}
@@ -1220,7 +1233,7 @@ public class YewuAction extends SuperAction {
 			try {
 				System.out.println(renkanshuService.getOrderById(thisPbs.getOrderid()));
 			} catch (Exception e) {
-				
+
 				e.printStackTrace();
 			}
 			dataList.add(renkanshuService.getOrderById(thisPbs.getOrderid()).getIndustry().getIndustryname());
@@ -1244,12 +1257,12 @@ public class YewuAction extends SuperAction {
 
 		// exportExcel方法只接受object[]此处将list转为object[]
 		String[] sheetTitles = new String[title.size()];
-//		String[] timearrs = startTime.split("-");
-//		String ledTimeRange = timearrs[0] + "年" + timearrs[1] + "月";
+		// String[] timearrs = startTime.split("-");
+		// String ledTimeRange = timearrs[0] + "年" + timearrs[1] + "月";
 		Date startDate = sdf.parse(startTime);
 		Date endDate = sdf.parse(endTime);
 		String ledTimeRange = ssdf.format(startDate) + "至" + ssdf.format(endDate);
-		sheetTitles[0] = ledTimeRange + ledId +  "LED广告发布客户";
+		sheetTitles[0] = ledTimeRange + ledId + "LED广告发布客户";
 		String[] titles = new String[title.size()];
 		for (int i = 0; i < title.size(); i++) {
 			titles[i] = (String) title.get(i);
@@ -1298,7 +1311,8 @@ public class YewuAction extends SuperAction {
 				}
 			}
 
-			WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
+			WritableCellFormat wcfTtitles = new WritableCellFormat(
+					new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
 			wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcfTtitles.setAlignment(Alignment.CENTRE);
 			wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
@@ -1312,11 +1326,12 @@ public class YewuAction extends SuperAction {
 				}
 			}
 
-			WritableCellFormat dataRowCellFormat = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
+			WritableCellFormat dataRowCellFormat = new WritableCellFormat(
+					new WritableFont(WritableFont.createFont("宋体"), 10));
 			dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 			dataRowCellFormat.setAlignment(Alignment.CENTRE);
-			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
-
+			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+					jxl.format.Colour.BLACK);
 
 			// 下面是填充数据
 			if (list != null && list.size() > 0) {
@@ -1348,20 +1363,24 @@ public class YewuAction extends SuperAction {
 					}
 				}
 			}
-			
-			//setAutosize含有中文字符无效，改为指定宽度
+
+			// setAutosize含有中文字符无效，改为指定宽度
 			Cell[] client_cells = sheet.getColumn(1);
 			int clientcells_width = 10;
 			for (Cell cell : client_cells) {
-				clientcells_width = (cell.getContents().length()*2) > clientcells_width ? (cell.getContents().length()*2 + 2) : clientcells_width;
+				clientcells_width = (cell.getContents().length() * 2) > clientcells_width
+						? (cell.getContents().length() * 2 + 2)
+						: clientcells_width;
 			}
 			Cell[] adcontent_cells = sheet.getColumn(2);
 			int adcontentcells_width = 10;
 			for (Cell cell : adcontent_cells) {
-				adcontentcells_width = (cell.getContents().length()*2) > adcontentcells_width ? (cell.getContents().length()*2 + 2) : adcontentcells_width;
+				adcontentcells_width = (cell.getContents().length() * 2) > adcontentcells_width
+						? (cell.getContents().length() * 2 + 2)
+						: adcontentcells_width;
 			}
-			sheet.setColumnView(1, clientcells_width);//客户列
-			sheet.setColumnView(2, adcontentcells_width);//发布内容列
+			sheet.setColumnView(1, clientcells_width);// 客户列
+			sheet.setColumnView(2, adcontentcells_width);// 发布内容列
 
 			wwb.write();
 			// 关闭
@@ -1369,7 +1388,6 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 
 		}
 
@@ -1399,7 +1417,8 @@ public class YewuAction extends SuperAction {
 		for (int i = 0; i < ledList.size(); i++) {
 
 			Led thisLed = ledList.get(i);
-			String timerangeStr = "(" + sdfHm.format(thisLed.getStarttime()) + "-" + sdfHm.format(thisLed.getEndtime()) + ")";
+			String timerangeStr = "(" + sdfHm.format(thisLed.getStarttime()) + "-" + sdfHm.format(thisLed.getEndtime())
+					+ ")";
 			String positionAndTimerange = thisLed.getName() + timerangeStr;
 
 			List dateListData = new ArrayList();
@@ -1419,7 +1438,8 @@ public class YewuAction extends SuperAction {
 						String dateRangeStr = "";
 						if (sdfHm.format(thisLed.getStarttime()).equals(sdfHm.format(ord.getStarttime()))
 								&& sdfHm.format(thisLed.getEndtime()).equals(sdfHm.format(ord.getEndtime()))) {
-							dateRangeStr = sdfMd.format(ord.getStartdate()) + "-" + sdfMd.format(ord.getEnddate()) + "; ";
+							dateRangeStr = sdfMd.format(ord.getStartdate()) + "-" + sdfMd.format(ord.getEnddate())
+									+ "; ";
 						} else {
 							dateRangeStr = sdfMd.format(ord.getStartdate()) + "-" + sdfMd.format(ord.getEnddate()) + "("
 									+ sdfHm.format(ord.getStarttime()) + "-" + sdfHm.format(ord.getEndtime()) + ");";
@@ -1510,7 +1530,7 @@ public class YewuAction extends SuperAction {
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				
+
 				e.printStackTrace();
 			}
 
@@ -1523,7 +1543,7 @@ public class YewuAction extends SuperAction {
 				ArrayList object = (ArrayList) iterator.next();
 				for (Iterator iterator2 = object.iterator(); iterator2.hasNext();) {
 					Object object2 = iterator2.next();
-					ArrayList arrList = (ArrayList)object2;
+					ArrayList arrList = (ArrayList) object2;
 					String str = (String) arrList.get(8);
 					String[] strs = str.split("; ");
 					Set set = new HashSet();
@@ -1547,8 +1567,8 @@ public class YewuAction extends SuperAction {
 		// ------------------------以下为绘制表格------------------------
 
 		List resultList = new ArrayList();
-		List title = new ArrayList<String>();
-		String[] arr = { "日期", "位置", "序号", "客户", "发布内容", "频次", "增加", "长度", "起止日期", "备注" };
+		ArrayList<String> title = new ArrayList<String>();
+		String[] arr = {"日期", "位置", "序号", "客户", "发布内容", "频次", "增加", "长度", "起止日期", "备注"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
 		}
@@ -1596,7 +1616,8 @@ public class YewuAction extends SuperAction {
 					}
 				}
 
-				WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
+				WritableCellFormat wcfTtitles = new WritableCellFormat(
+						new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
 				wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
 				wcfTtitles.setAlignment(Alignment.CENTRE);
 				wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
@@ -1609,11 +1630,13 @@ public class YewuAction extends SuperAction {
 					}
 				}
 
-				WritableCellFormat dataRowCellFormat = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
+				WritableCellFormat dataRowCellFormat = new WritableCellFormat(
+						new WritableFont(WritableFont.createFont("宋体"), 10));
 				dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 				dataRowCellFormat.setAlignment(Alignment.CENTRE);
 				dataRowCellFormat.setWrap(true);
-				dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+				dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+						jxl.format.Colour.BLACK);
 
 				int mergeCellPoint = 2;
 				ArrayList dateArrList = new ArrayList();
@@ -1665,9 +1688,9 @@ public class YewuAction extends SuperAction {
 
 				// 1.表头标题合并
 				sheet.mergeCells(0, 0, titles.length - 1, 0);
-				
-				//起止日期合并
-				
+
+				// 起止日期合并
+
 			}
 
 			wwb.write();
@@ -1676,16 +1699,16 @@ public class YewuAction extends SuperAction {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			
 
 		}
 
 		return null;
 
 	}
-	
+
 	/**
 	 * 新视界+新帆下单明细表导出为Excel
+	 * 
 	 * @return String
 	 * @throws Exception
 	 */
@@ -1693,7 +1716,6 @@ public class YewuAction extends SuperAction {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		DateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
-		DateFormat sdfHm = new SimpleDateFormat("HH:mm");
 		Date dayEnd = sdf.parse(endTime);
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(dayEnd);
@@ -1702,7 +1724,7 @@ public class YewuAction extends SuperAction {
 		calendar.set(Calendar.SECOND, 59);
 
 		// 数据集
-		List dataList = renkanshuService.getOrderInDuration(sdf.parse(startTime), calendar.getTime());
+		List<Order> dataList = renkanshuService.getOrderInDuration(sdf.parse(startTime), calendar.getTime());
 		System.out.println(sdfFull.format(calendar.getTime()));
 
 		// 处理为需要的格式
@@ -1710,7 +1732,8 @@ public class YewuAction extends SuperAction {
 		for (Object object : dataList) {
 			Order order = (Order) object;
 			List order2ArrayList = new ArrayList();
-//			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			// List opereventList =
+			// baseService.getOpereventByOrderId(order.getId());
 			List alterrecordList = baseService.getAlterrecordByOrderId(order.getId());
 			int alterrecordListSize = alterrecordList.size();
 			if (alterrecordListSize > 0) {
@@ -1718,11 +1741,11 @@ public class YewuAction extends SuperAction {
 					order2ArrayList.add(sdfMd.format(order.getOperatetime()));// 单据时间
 				} else {
 					order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
-				}			
+				}
 			} else {
 				order2ArrayList.add(sdfMd.format(order.getAdcontract().getCreatetime()));// 单据时间
 			}
-			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源		
+			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源
 			if (alterrecordListSize > 0) {
 				order2ArrayList.add(((Operevent) alterrecordList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
 			} else {
@@ -1732,9 +1755,10 @@ public class YewuAction extends SuperAction {
 				} else {
 					order2ArrayList.add("认刊");// 单据类型，指认刊，改刊，停刊
 				}
-				
+
 			}
-//			order2ArrayList.add(order.getAttribute().getAttributename());// 下单属性
+			// order2ArrayList.add(order.getAttribute().getAttributename());//
+			// 下单属性
 			order2ArrayList.add(order.getLed().getCity());// 区域
 			order2ArrayList.add(order.getLed().getName());// 屏点
 			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
@@ -1744,7 +1768,7 @@ public class YewuAction extends SuperAction {
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
 			order2ArrayList.add(order.getDuration());// 时长
 			order2ArrayList.add(order.getFrequency());// 频次
-			//order2ArrayList.add("");// 排播接单人
+			// order2ArrayList.add("");// 排播接单人
 			order2ArrayList.add(order.getAdcontract().getPlacer());// 下单人
 			order2ArrayList.add(order.getAdcontract().getRemark() == null ? "" : order.getAdcontract().getRemark());// 备注
 			dataResultList.add(order2ArrayList);
@@ -1756,8 +1780,8 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = { "单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期",
-				"下刊日期", "时长", "频次", "下单人", "备注" };
+		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
+				"下单人", "备注"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
 		}
@@ -1776,7 +1800,7 @@ public class YewuAction extends SuperAction {
 		}
 
 		String fileName = new String(sheetTitles[0]);
-		String codedFileName = java.net.URLEncoder.encode(fileName+"（"+ledTimeRange+"）", "UTF-8");
+		String codedFileName = java.net.URLEncoder.encode(fileName + "（" + ledTimeRange + "）", "UTF-8");
 
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("aplication/vnd.ms-excel");
@@ -1787,7 +1811,7 @@ public class YewuAction extends SuperAction {
 			WritableWorkbook wwb = Workbook.createWorkbook(response.getOutputStream());
 
 			// 添加第一个工作表并设置第一个Sheet的名字
-			WritableSheet sheet = wwb.createSheet(ledTimeRange+"下单明细表", 0);
+			WritableSheet sheet = wwb.createSheet(ledTimeRange + "下单明细表", 0);
 
 			Label label;
 
@@ -1807,7 +1831,8 @@ public class YewuAction extends SuperAction {
 				}
 			}
 
-			WritableCellFormat wcfTtitles = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
+			WritableCellFormat wcfTtitles = new WritableCellFormat(
+					new WritableFont(WritableFont.createFont("宋体"), 10, WritableFont.BOLD));
 			wcfTtitles.setVerticalAlignment(VerticalAlignment.CENTRE);
 			wcfTtitles.setAlignment(Alignment.CENTRE);
 			wcfTtitles.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
@@ -1820,11 +1845,13 @@ public class YewuAction extends SuperAction {
 				}
 			}
 
-			WritableCellFormat dataRowCellFormat = new WritableCellFormat(new WritableFont(WritableFont.createFont("宋体"), 10));
+			WritableCellFormat dataRowCellFormat = new WritableCellFormat(
+					new WritableFont(WritableFont.createFont("宋体"), 10));
 			dataRowCellFormat.setVerticalAlignment(VerticalAlignment.CENTRE);
 			dataRowCellFormat.setAlignment(Alignment.CENTRE);
 			dataRowCellFormat.setWrap(true);
-			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN, jxl.format.Colour.BLACK);
+			dataRowCellFormat.setBorder(jxl.format.Border.ALL, jxl.format.BorderLineStyle.THIN,
+					jxl.format.Colour.BLACK);
 
 			int mergeCellPoint = 2;
 
@@ -1864,7 +1891,7 @@ public class YewuAction extends SuperAction {
 
 			sheet.setRowView(0, 500);
 			sheet.setRowView(1, 500);
-			
+
 			// 1.表头标题合并
 			sheet.mergeCells(0, 0, titles.length - 1, 0);
 
@@ -1875,24 +1902,25 @@ public class YewuAction extends SuperAction {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * 月平均占屏率
+	 * 
 	 * @return String
 	 * @throws Exception
 	 */
 	public String avgOccuByMonthsReport() throws Exception {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		DateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		//DecimalFormat doubleDotCentDF = new DecimalFormat("0.##%");
+		// DecimalFormat doubleDotCentDF = new DecimalFormat("0.##%");
 		DecimalFormat doubleDotDF = new DecimalFormat("0.##");
 
 		// 数据集
 		List dataList = yewuService.avgOccuByMonthsReportService(year, led);
-		
+
 		JSONObject jsonObject = new JSONObject();
 		JSONArray jsonArrayMonths = new JSONArray();
 		JSONArray jsonArrayOccupys = new JSONArray();
@@ -1902,13 +1930,13 @@ public class YewuAction extends SuperAction {
 			JSONObject json = new JSONObject();
 			List list = (List) dataList.get(i);
 			jsonArrayMonths.put(list.get(0) + "月");// 订单编号
-			jsonArrayOccupys.put(doubleDotDF.format((double)list.get(1) * 100));
+			jsonArrayOccupys.put(doubleDotDF.format((double) list.get(1) * 100));
 			jsonArrayDurations.put(doubleDotDF.format(list.get(2)) + " h");
 		}
-		jsonObject.put("months", jsonArrayMonths); 
-		jsonObject.put("occupys", jsonArrayOccupys); 
-		jsonObject.put("durations", jsonArrayDurations); 
-		
+		jsonObject.put("months", jsonArrayMonths);
+		jsonObject.put("occupys", jsonArrayOccupys);
+		jsonObject.put("durations", jsonArrayDurations);
+
 		String chartTitle = "";
 		if (led != null && "".equals(led)) {
 			chartTitle = "自有屏" + year + "年平均占屏率";
@@ -1974,14 +2002,19 @@ public class YewuAction extends SuperAction {
 	/**
 	 * 计算在startTimeLong和endTimeLong时间范围内订单的播放天数占所有天数的比例
 	 * 
-	 * @param object1 订单播放开始时间
-	 * @param object2 订单播放结束时间
-	 * @param startTimeLong 时间范围起始时间
-	 * @param endTimeLong 时间范围结束时间
+	 * @param object1
+	 *            订单播放开始时间
+	 * @param object2
+	 *            订单播放结束时间
+	 * @param startTimeLong
+	 *            时间范围起始时间
+	 * @param endTimeLong
+	 *            时间范围结束时间
 	 * @return 返回比例
 	 * @throws ParseException
 	 */
-	public Double daysRatio(Object object1, Object object2, Long startTimeLong, Long endTimeLong) throws ParseException {
+	public Double daysRatio(Object object1, Object object2, Long startTimeLong, Long endTimeLong)
+			throws ParseException {
 		long onedaytmp = 24 * 3600 * 1000;
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String kaishittm = sdf.format(object1);
@@ -1993,12 +2026,14 @@ public class YewuAction extends SuperAction {
 		int days = (int) ((jieshushijianLong - kaishishijianLong) / onedaytmp) + 1;
 		int countdays = 0;
 		// 计算在本月中某条订单的播放天数，分为四种情况
-		if (jieshushijianLong >= startTimeLong && jieshushijianLong <= endTimeLong && kaishishijianLong <= startTimeLong) {
+		if (jieshushijianLong >= startTimeLong && jieshushijianLong <= endTimeLong
+				&& kaishishijianLong <= startTimeLong) {
 			countdays = (int) ((jieshushijianLong - startTimeLong) / onedaytmp) + 1;
-		} else if (jieshushijianLong >= startTimeLong && jieshushijianLong <= endTimeLong && kaishishijianLong >= startTimeLong
-				&& kaishishijianLong <= endTimeLong) {
+		} else if (jieshushijianLong >= startTimeLong && jieshushijianLong <= endTimeLong
+				&& kaishishijianLong >= startTimeLong && kaishishijianLong <= endTimeLong) {
 			countdays = (int) ((jieshushijianLong - kaishishijianLong) / onedaytmp) + 1;
-		} else if (jieshushijianLong >= endTimeLong && kaishishijianLong >= startTimeLong && kaishishijianLong <= endTimeLong) {
+		} else if (jieshushijianLong >= endTimeLong && kaishishijianLong >= startTimeLong
+				&& kaishishijianLong <= endTimeLong) {
 			countdays = (int) ((endTimeLong - kaishishijianLong) / onedaytmp) + 1;
 		} else if (jieshushijianLong >= endTimeLong && kaishishijianLong <= startTimeLong) {
 			countdays = (int) ((endTimeLong - startTimeLong) / onedaytmp) + 1;
@@ -2019,6 +2054,7 @@ public class YewuAction extends SuperAction {
 
 	/**
 	 * 每个屏的平均占屏率，分屏列出 <br>
+	 * 
 	 * @author PC-FAN
 	 * @throws Exception
 	 * @return String
@@ -2051,7 +2087,8 @@ public class YewuAction extends SuperAction {
 			// System.out.println("key:" + mapBofang.get(ledName));
 			if (mapBofang.containsKey(ledName)) {
 				try {
-					ledOccuRate = Double.parseDouble(mapBofang.get(ledName).toString()) / (Integer) mapTotal.get(ledName) * 100;
+					ledOccuRate = Double.parseDouble(mapBofang.get(ledName).toString())
+							/ (Integer) mapTotal.get(ledName) * 100;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -2099,16 +2136,17 @@ public class YewuAction extends SuperAction {
 		ctx.put("order", order);
 		return SUCCESS;
 	}
-	
+
 	/**
 	 * 认改刊操作页面
+	 * 
 	 * @return String
 	 * @throws Exception
 	 */
 	public String operateOrderPage() throws Exception {
 		ActionContext ctx = ActionContext.getContext();
-//		Order order = adcontractService.getOrderById(orderid);
-//		Adcontract adcontract = order.getAdcontract();
+		// Order order = adcontractService.getOrderById(orderid);
+		// Adcontract adcontract = order.getAdcontract();
 		Adcontract adcontract = adcontractService.getAdcontractById(adcontractid);
 		ctx.put("ledList", baseService.ledList());
 		ctx.put("industryList", baseService.industryList());
@@ -2117,16 +2155,17 @@ public class YewuAction extends SuperAction {
 		ctx.put("playstrategyList", baseService.strategyList());
 		ctx.put("channelList", baseService.channelList());
 		ctx.put("adcontract", adcontract);
-//		ctx.put("order", order);
+		// ctx.put("order", order);
 		return SUCCESS;
 	}
-	
+
 	/**
 	 * 根据orderid获取alterrecord记录
+	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public String getAlterrecordsByOrderid() throws IOException{
+	public String getAlterrecordsByOrderid() throws IOException {
 		JSONObject jsonObject = new JSONObject();
 		JSONArray jsonArray = new JSONArray();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.M.d");
@@ -2139,11 +2178,12 @@ public class YewuAction extends SuperAction {
 			json.put("ledname", alterrecord.getLedname());
 			json.put("duration", alterrecord.getDuration());
 			json.put("frequency", alterrecord.getFrequency());
-			json.put("datetimeRange", dateFormat.format(alterrecord.getDatestart()) + "-" + dateFormat.format(alterrecord.getDateend()));
+			json.put("datetimeRange",
+					dateFormat.format(alterrecord.getDatestart()) + "-" + dateFormat.format(alterrecord.getDateend()));
 			json.put("operatetype", alterrecord.getOperatetype().getOperatetype());
 			json.put("playstrategyname", alterrecord.getPlaystrategyname());
 			json.put("operatetime", fullDateFormat.format(alterrecord.getCreatetime()));
-			
+
 			jsonArray.put(json);
 		}
 		jsonObject.put("state", 0);
@@ -2152,14 +2192,14 @@ public class YewuAction extends SuperAction {
 		sentMsg(jsonObject.toString());
 		return null;
 	}
-	
+
 	/**
 	 * 根据orderid查询 adcontractid
 	 * 
 	 * @return
 	 * @throws IOException
 	 */
-	public String getAdcontractidByOrderid() throws IOException{
+	public String getAdcontractidByOrderid() throws IOException {
 		JSONObject jsonObject = new JSONObject();
 		Adcontract adc = adcontractService.getAdcontractByOrderId(orderid);
 		jsonObject.put("state", 0);
@@ -2167,13 +2207,14 @@ public class YewuAction extends SuperAction {
 		sentMsg(jsonObject.toString());
 		return null;
 	}
-	
+
 	/**
 	 * 改刊页面加载order列表
+	 * 
 	 * @return String
-	 * @throws IOException 
+	 * @throws IOException
 	 */
-	public String operateOrderList() throws IOException{
+	public String operateOrderList() throws IOException {
 		SimpleDateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
 		SimpleDateFormat sdfHm = new SimpleDateFormat("HH:mm");
 		JSONObject jsonObject = new JSONObject();
@@ -2182,7 +2223,7 @@ public class YewuAction extends SuperAction {
 		for (Object object : orderList) {
 			Order order = (Order) object;
 			JSONObject rowObject = new JSONObject();
-			
+
 			rowObject.put("id", order.getId());
 			rowObject.put("content", order.getContent());
 			rowObject.put("led", order.getLed().getName());
@@ -2196,10 +2237,11 @@ public class YewuAction extends SuperAction {
 			rowObject.put("endtime", sdfHm.format(order.getEndtime()));
 			if (order.getPlaystrategy() == null) {
 				rowObject.put("playstrategy", "");
-			}else {
+			} else {
 				rowObject.put("playstrategy", order.getPlaystrategy().getStrategyname());
 			}
-//			List opereventList = baseService.getOpereventByOrderId(order.getId());
+			// List opereventList =
+			// baseService.getOpereventByOrderId(order.getId());
 			List alterrecordList = baseService.getAlterrecordByOrderId(order.getId());
 			if (alterrecordList.size() > 0) {
 				// 单据类型，指认刊，改刊，停刊
@@ -2208,20 +2250,21 @@ public class YewuAction extends SuperAction {
 				// 单据类型，指认刊，改刊，停刊
 				rowObject.put("operatetype", "认刊");
 			}
-			
+
 			jsonArr.put(rowObject);
-			
+
 		}
-		//查阅api，直接传入行数据的arr
+		// 查阅api，直接传入行数据的arr
 		jsonObject.put("rows", jsonArr);
-		
+
 		sentMsg(jsonArr.toString());
 		return null;
-		
+
 	}
 
 	/**
 	 * 占屏率图表，以日期列出
+	 * 
 	 * @return
 	 * @throws Exception
 	 */
@@ -2276,7 +2319,7 @@ public class YewuAction extends SuperAction {
 		jsonObject1.put("commOccus", commOccus);
 
 		jsonObject.put("ledOccuRates", jsonObject1);
-		
+
 		System.out.println(jsonObject.toString());
 
 		sentMsg(jsonObject.toString());
@@ -3227,7 +3270,7 @@ public class YewuAction extends SuperAction {
 	// ratiosCount[k] += Double.parseDouble(df.format(ratios[j][k]));
 	// } catch (Exception e) {
 	// e.printStackTrace();
-	// // 
+	// //
 	// }
 	// // System.out.println(ratiosCount[k]);
 	// }
@@ -3466,8 +3509,8 @@ public class YewuAction extends SuperAction {
 	// return null;
 	//
 	// }
-	
-	public void calcOrderMd5(){
+
+	public void calcOrderMd5() {
 		renkanshuService.calcOrderMd5Service();
 	}
 
