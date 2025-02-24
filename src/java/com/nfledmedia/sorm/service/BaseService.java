@@ -72,15 +72,15 @@ public class BaseService {
 
 	}
 
-	public List attributeList() {
+	public List<Attribute> attributeList() {
 		return attributeDAO.findAll();
 	}
 
-	public List industryList() {
+	public List<Industry> industryList() {
 		return industryDAO.findAll();
 	}
 
-	public List channelList() {
+	public List<Channel> channelList() {
 		return channelDAO.findAll();
 	}
 
@@ -92,7 +92,7 @@ public class BaseService {
 		this.publishdetailDAO = publishdetailDAO;
 	}
 
-	public List<?> clientsList() {
+	public List<String> clientsList() {
 		List<Publishdetail> pbsdtlList = publishdetailDAO.findAll();
 		List<String> strList = new ArrayList<String>();
 		Set cset = new HashSet();

@@ -57,7 +57,7 @@ public class RenkanshuService {
 	 * @param keyword
 	 * @return
 	 */
-	public List getContentsLikeKeyword(String keyword){
+	public List<Order> getContentsLikeKeyword(String keyword){
 			
 		return orderDAO.findLikeKeyword(OrderDAO.CONTENT, keyword);
 		

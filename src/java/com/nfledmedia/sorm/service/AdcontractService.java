@@ -103,7 +103,7 @@ public class AdcontractService {
 	 * @param keyword
 	 * @return
 	 */
-	public List getClientsLikeKeyword(String keyword) {
+	public List<Adcontract> getClientsLikeKeyword(String keyword) {
 
 		return adcontractDAO.findLikeKeyword(AdcontractDAO.CLIENT, keyword);
 
@@ -115,7 +115,7 @@ public class AdcontractService {
 	 * @param keyword
 	 * @return
 	 */
-	public List getAgencysLikeKeyword(String keyword) {
+	public List<Adcontract> getAgencysLikeKeyword(String keyword) {
 
 		return adcontractDAO.findLikeKeyword(AdcontractDAO.AGENCY, keyword);
 
@@ -248,14 +248,14 @@ public class AdcontractService {
 	 * @throws ParseException 
 	 * 
 	 */
-	public String alterAdvertisingService(String tid, Order newOrder, String operater, String[] ignoreProperties) {
+	public String alterAdvertisingService(String tid, Order newOrder, String operater, String[] preIgnoreProperties) {
 		String recallInfo = "";
 		Order order = orderDAO.findById(Integer.valueOf(tid));
 		Adcontract adcontract = order.getAdcontract();
-		String[] defaultIgnoreProperties = {"content", "led", "duration", "frequency", "startdate", "enddate", "starttime", "endtime", "playstrategy"};
+		String[] ignoreProperties = {"id", "content", "led", "duration", "frequency", "startdate", "enddate", "starttime", "endtime", "playstrategy"};
 		// 如果是批量操作，页面form中至少会传入1个值，led,如果不是批操作，则传回的值可能是长度为1的空数组
-		if (ignoreProperties.length > 0 && !"".equals(ignoreProperties[0])) {
-			ignoreProperties = defaultIgnoreProperties;
+		if (preIgnoreProperties.length > 0 && !"".equals(preIgnoreProperties[0])) {
+			ignoreProperties = preIgnoreProperties;
 		}
 		BeanUtils.copyProperties(order, newOrder, ignoreProperties);
 
@@ -289,6 +289,7 @@ public class AdcontractService {
 
 		// 2.写入新的publishidetail
 		Led led = ledDAO.findById(newOrder.getLed().getId());
+		// 增加轮播、包屏、其他形式播放策略后，针对之前的数据没有此项属性，避免空指针异常
 		Playstrategy ps = playstrategyDAO.findById(newOrder.getPlaystrategy().getId());
 		newOrder.setLed(led);
 		newOrder.setPlaystrategy(ps);
