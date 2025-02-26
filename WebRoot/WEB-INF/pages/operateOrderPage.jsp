@@ -85,6 +85,16 @@
 						</s:select>
 					</div>
 				</div>
+				
+				<div class="form-group col-lg-6 col-md-12">
+					<label for="" class="col-sm-3 control-label">单据类型</label>
+					<div class="col-sm-9">
+						<s:select name="adcontract.publishstyle.id" cssClass="form-control input-sm"
+							list="publishstyleList" listKey="id" listValue="name"
+							value="#adcontract.publishstyle.id" disabled="true">
+						</s:select>
+					</div>
+				</div>
 
 				<div class="form-group col-lg-6 col-md-12">
 					<label for="" class="col-sm-3 control-label">单据来源</label>
@@ -96,6 +106,14 @@
 					</div>
 				</div>
 
+				<div class="form-group col-lg-6 col-md-12">
+					<label for="" class="col-sm-3 control-label">合同金额</label>
+					<div class="col-sm-9">
+						<input class="form-control input-sm"  name="adcontract.amount" 
+						value='<s:property value="#adcontract.amount"/>' maxlength="20" readonly="readonly"></input>
+					</div>
+				</div>
+				
 				<div class="form-group col-lg-6 col-md-12">
 					<label for="" class="col-sm-3 control-label">下单人</label>
 					<div class="col-sm-9">

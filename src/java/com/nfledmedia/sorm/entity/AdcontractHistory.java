@@ -11,6 +11,7 @@ public class AdcontractHistory implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Integer sid;
 	private Clienttype clienttype;
 	private Operatetype operatetype;
@@ -26,6 +27,7 @@ public class AdcontractHistory implements java.io.Serializable {
 	private Timestamp lastModifytime;
 	private String placer;
 	private Timestamp modifiedtime;
+	private String amount;
 	private String operater;
 
 	// Constructors
@@ -44,7 +46,7 @@ public class AdcontractHistory implements java.io.Serializable {
 	/** full constructor */
 	public AdcontractHistory(Clienttype clienttype, Operatetype operatetype, Channel channel, Integer id, String sn, Date date,
 			String client, String agency, String remark, Timestamp createtime, String state, Timestamp lastModifytime, String placer,
-			Timestamp modifiedtime, String operater) {
+			Timestamp modifiedtime,String amount, String operater) {
 		this.clienttype = clienttype;
 		this.operatetype = operatetype;
 		this.channel = channel;
@@ -59,6 +61,7 @@ public class AdcontractHistory implements java.io.Serializable {
 		this.lastModifytime = lastModifytime;
 		this.placer = placer;
 		this.modifiedtime = modifiedtime;
+		this.amount = amount;
 		this.operater = operater;
 	}
 
@@ -184,6 +187,14 @@ public class AdcontractHistory implements java.io.Serializable {
 		this.modifiedtime = modifiedtime;
 	}
 
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
 	public String getOperater() {
 		return this.operater;
 	}
@@ -197,7 +208,7 @@ public class AdcontractHistory implements java.io.Serializable {
 		return "AdcontractHistory [sid=" + sid + ", clienttype=" + clienttype.getCtypedesc() + ", operatetype=" + operatetype.getOperatetype() + ", channel=" + channel.getChannelname()
 				+ ", id=" + id + ", sn=" + sn + ", date=" + date + ", client=" + client + ", agency=" + agency + ", remark=" + remark
 				+ ", createtime=" + createtime + ", state=" + state + ", lastModifytime=" + lastModifytime + ", placer=" + placer
-				+ ", modifiedtime=" + modifiedtime + ", operater=" + operater + "]";
+				+ ", modifiedtime=" + modifiedtime + ", amount=" + amount + ", operater=" + operater + "]";
 	}
 	
 	

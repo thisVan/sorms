@@ -11,17 +11,11 @@ package com.nfledmedia.sorm.service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
-import javax.swing.text.StyledEditorKit.ItalicAction;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +48,6 @@ import com.nfledmedia.sorm.entity.OrderHistory;
 import com.nfledmedia.sorm.entity.Playstrategy;
 import com.nfledmedia.sorm.entity.Publishdetail;
 import com.nfledmedia.sorm.entity.User;
-import com.nfledmedia.sorm.util.ClassesConvertTool;
 import com.nfledmedia.sorm.util.OrderCharacteristicValue;
 
 /**

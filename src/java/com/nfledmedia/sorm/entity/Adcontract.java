@@ -13,6 +13,7 @@ public class Adcontract implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Channel channel;
 	private Clienttype clienttype;
@@ -26,6 +27,7 @@ public class Adcontract implements java.io.Serializable {
 	private Timestamp createtime;
 	private String state;
 	private Timestamp lastModifytime;
+	private String amount;
 	private Set orders = new HashSet(0);
 
 	// Constructors
@@ -41,7 +43,7 @@ public class Adcontract implements java.io.Serializable {
 
 	/** full constructor */
 	public Adcontract(Channel channel, Clienttype clienttype, Publishstyle publishstyle, String sn, Date date, String client, String agency,
-			String placer, String remark, Timestamp createtime, String state, Timestamp lastModifytime, Set orders) {
+			String placer, String remark, Timestamp createtime, String state, Timestamp lastModifytime, String amount, Set orders) {
 		this.channel = channel;
 		this.clienttype = clienttype;
 		this.publishstyle = publishstyle;
@@ -54,6 +56,7 @@ public class Adcontract implements java.io.Serializable {
 		this.createtime = createtime;
 		this.state = state;
 		this.lastModifytime = lastModifytime;
+		this.amount = amount;
 		this.orders = orders;
 	}
 
@@ -163,20 +166,28 @@ public class Adcontract implements java.io.Serializable {
 		this.lastModifytime = lastModifytime;
 	}
 
+	public String getAmount() {
+		return amount;
+	}
+
+	public void setAmount(String amount) {
+		this.amount = amount;
+	}
+
 	public Set getOrders() {
 		return this.orders;
 	}
 
 	public void setOrders(Set orders) {
 		this.orders = orders;
-	}
+	}	
 
 	@Override
 	public String toString() {
-		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname() + ", clienttype=" + clienttype.getCtypedesc()
-				+ ", publishstyle=" + publishstyle.getName() + ", sn=" + sn + ", date=" + date + ", client=" + client + ", agency=" + agency
-				+ ", placer=" + placer + ", remark=" + remark + ", createtime=" + createtime + ", state=" + state + ", lastModifytime="
-				+ lastModifytime + "]";
+		return "Adcontract [id=" + id + ", channel=" + channel.getChannelname() + ", clienttype=" + clienttype.getCtypedesc() + ", publishstyle="
+				+ publishstyle.getName() + ", sn=" + sn + ", date=" + date + ", client=" + client + ", agency=" + agency
+				+ ", placer=" + placer + ", remark=" + remark + ", createtime=" + createtime + ", state=" + state
+				+ ", lastModifytime=" + lastModifytime + ", amount=" + amount + ", orders=" + orders + "]";
 	}
 
 	/**

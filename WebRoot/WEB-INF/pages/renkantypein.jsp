@@ -6,20 +6,16 @@
 <head>
 <link rel="icon" href="images/logo.png" type="image/x-icon" />
 <link rel="shortcut icon" href="images/logo.png" type="image/x-icon" />
-
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
 <meta http-equiv="description" content="单据录入">
-
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
 <link href="css/datepicker3.css" rel="stylesheet">
 <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
 <link href="css/bootstrap-table.css" rel="stylesheet">
-
 <link href="css/styles.css" rel="stylesheet">
 <link href="css/jquery-confirm.min.css" rel="stylesheet">
 <style type="text/css">
@@ -28,12 +24,10 @@
 	background-color: #ffeb3b;
 }
 </style>
-
 <!--Icons-->
 <script src="js/lumino.glyphs.js"></script>
 <script src="js/numeral.min.js"></script>
 <script src="js/jquery-confirm.min.js"></script>
-
 <!-- 本地存储和恢复 -->
 <!-- 自己写本地存储和恢复 -->
 <!-- <script type="text/javascript" src="js/jsLocalStore/jquery.json.js"></script>
@@ -43,9 +37,7 @@
 
 	//加
 	Number.prototype.add = function(arg) {
-		var r1,
-			r2,
-			m;
+		var r1, r2, m;
 		try {
 			r1 = this.toString().split(".")[1].length;
 		} catch (e) {
@@ -66,9 +58,7 @@
 
 	// 乘法
 	Number.prototype.mul = function(arg) {
-		var m = 0,
-			s1 = this.toString(),
-			s2 = arg.toString();
+		var m = 0, s1 = this.toString(), s2 = arg.toString();
 		try {
 			m += s1.split(".")[1].length;
 		} catch (e) {}
@@ -79,10 +69,7 @@
 	};
 	// 除法
 	Number.prototype.div = function(arg) {
-		var t1 = 0,
-			t2 = 0,
-			r1,
-			r2;
+		var t1 = 0, t2 = 0, r1, r2;
 		try {
 			t1 = this.toString().split(".")[1].length;
 		} catch (e) {}
@@ -107,18 +94,22 @@
 			"S" : this.getMilliseconds()
 		//毫秒   
 		};
-		if (/(y+)/.test(fmt))
+		if (/(y+)/.test(fmt)) {
 			fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-		for (var k in o)
-			if (new RegExp("(" + k + ")").test(fmt))
+		}
+			
+		for (var k in o) {
+			if (new RegExp("(" + k + ")").test(fmt)) {
 				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			}
+		}
+			
 		return fmt;
 	};
 
 	//全局顺序标识 
 	var globalIdentification;
 </script>
-
 <script type="text/javascript">
 	/**
 	 * 进行前端验证
@@ -137,23 +128,33 @@
 		var guanggaokh = document.getElementById("guanggaokanhu").value;
 		var dailigognsi = document.getElementById("guanggaodailigongsi").value;
 		if ((guanggaokh == null || guanggaokh == '' ) && (dailigognsi == null || dailigognsi == '')) {
-			document.getElementById("guanggaokanhu").focus();
 			alert("请输入广告刊户或广告代理公司！");
+			document.getElementById("guanggaokanhu").focus();
 			return false;
 		}
 	
 		var agmd = document.getElementById("agencymode").value;
 		if (agmd == null || agmd == '') {
-			document.getElementById("agencymode").focus();
 			alert("请选择客户属性！");
+			document.getElementById("agencymode").focus();
 			return false;
 		}
 		
 		var chlf = document.getElementById("channelfrom").value;
 		if (chlf == null || chlf == '') {
-			document.getElementById("channelfrom").focus();
 			alert("请选择单据来源！");
+			document.getElementById("channelfrom").focus();
 			return false;
+		}
+		
+		var amount = document.getElementById("amount").value;
+		if (amount == null || amount == '') {
+		} else {
+			if (isNaN(amount)) {
+				alert("请输入数字！");
+				document.getElementById("amount").focus();
+				return false;
+			}
 		}
 		
 		var fabuneirongitem = $("input[name='fabuneirongledtable']");
@@ -162,12 +163,11 @@
 			return false;
 		}
 		for (var i = 0; i < fabuneirongitem.length; i++) {
-			if (fabuneirongitem[i].value == null
-					|| fabuneirongitem[i].value == '') {
+			if (fabuneirongitem[i].value == null || fabuneirongitem[i].value == '') {
 				var j = i + 1;
 				var strt = "fabuneirong" + j;
-				document.getElementById(strt).focus();
 				alert("请输入发布内容！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 		}		
@@ -177,12 +177,12 @@
 			return false;
 		}
 		for (var i = 0; i < kaishiriqishanghua.length; i++) {
-			if (kaishiriqishanghua[i].value == null
-					|| kaishiriqishanghua[i].value == '') {
+			if (kaishiriqishanghua[i].value == null || kaishiriqishanghua[i].value == '') {
 				var j = i + 1;
 				var strt = "startdate" + j;
-				document.getElementById(strt).focus();
 				alert("请输入开始上画日期！");
+				document.getElementById(strt).focus();
+				
 				return false;
 			}
 		}
@@ -193,19 +193,18 @@
 			return false;
 		}
 		for (var i = 0; i < jieshuriqishanghua.length; i++) {
-			if (jieshuriqishanghua[i].value == null
-					|| jieshuriqishanghua[i].value == '') {
+			if (jieshuriqishanghua[i].value == null || jieshuriqishanghua[i].value == '') {
 				var j = i + 1;
 				var strt = "enddate" + j;
-				document.getElementById(strt).focus();
 				alert("请输入结束上画日期！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 			if (jieshuriqishanghua[i].value < kaishiriqishanghua[i].value) {
 				var j = i + 1;
 				var strt = "enddate" + j;
-				document.getElementById(strt).focus();
 				alert("结束日期不能在开始上画日期之前！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 		}
@@ -216,8 +215,7 @@
 			return false;
 		}
 		for (var i = 0; i < pincivali.length; i++) {
-			if (pincivali[i].value == null
-					|| pincivali[i].value == '') {
+			if (pincivali[i].value == null || pincivali[i].value == '') {
 				var j = i + 1;
 				var strt = "pinci" + j;
 				document.getElementById(strt).focus();
@@ -227,8 +225,9 @@
 			if(isNaN(pincivali[i].value)){
 				var j = i + 1;
 				var strt = "pinci" + j;
-				document.getElementById(strt).focus();
+				
 				alert("请输入数字！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 		}
@@ -242,15 +241,15 @@
 					|| shichangvali[i].value == '') {
 				var j = i + 1;
 				var strt = "shichang" + j;
-				document.getElementById(strt).focus();
 				alert("请输入广告时长！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 			if(isNaN(shichangvali[i].value)){
 				var j = i + 1;
 				var strt = "shichang" + j;
-				document.getElementById(strt).focus();
 				alert("请输入数字！");
+				document.getElementById(strt).focus();
 				return false;
 			}
 		}
@@ -258,7 +257,7 @@
 		//不添加上画点位的不通过验证
 		var shanghuadianweicounts = $("#table tbody tr").length;
 		if(shanghuadianweicounts < 1){
-			alert("请至少添加一条广告发布！");
+			$.alert("请至少添加一条广告发布详情！");
 			return false;
 		}
 			
@@ -276,29 +275,26 @@
 				dataType : "json",
 				success : function(data) {
 					if (data.state == 0) {
-						alert(data.info);
+						$.alert(data.info);
 						location.href = "renkantypein";
 					} else {
-						alert(data.info);
+						$.alert(data.info);
 					}
 				},
 				error : function(XMLHttpRequest, textStatus, errorThrown) {
 					var errorMsg = '提交失败，请联系管理员处理！\n错误代码：XMLHttpRequest.readyState['+XMLHttpRequest.readyState+']\nXMLHttpRequest.status['+XMLHttpRequest.status+']\ntextStatus['+textStatus+']';
-					alert(errorMsg);
+					$.alert(errorMsg);
 					$("#submit_button").attr('disabled', false);
 				}
 			});
 		}
 	}
 </script>
-
 <!--[if lt IE 9]>
 <script src="js/html5shiv.js"></script>
 <script src="js/respond.min.js"></script>
 <![endif]-->
-
 </head>
-
 <body style="font-family: '微软雅黑';">
 	<div class="main">
 		<!--/.row-->
@@ -311,9 +307,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="">
-					<form role="form" id="renkanshuform" enctype="multipart/form-data"
-						class="form-horizontal">
-
+					<form role="form" id="renkanshuform" enctype="multipart/form-data" class="form-horizontal">
 						<%-- <div class="form-group form-inline col-md-12 col-lg-6 ">
 								<label style="width: 24%;text-align: left;" for="dtp_input2" class="control-label">认刊日期<span class="text-danger">*</span></label> 
 								<input type="date" id="dtp_input2" name="adcontractdate" value="" class="form-control " onchange="fillRenkanbianhao()" />
@@ -323,76 +317,45 @@
 								<label style="width: 24%;text-align: left;" class="control-label" for="renkanshubianhao">单据编号<span class="text-danger">*</span></label> 
 								<input id="renkanshubianhao" class="form-control" name="adcontract.sn">
 							</div> --%>
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="guanggaokanhu">广告刊户</label> <input
-								class="form-control input-sm" id="guanggaokanhu"
-								name="adcontract.client" data-provide="typeahead">
+							<label style="width: 24%; text-align: left;" class="control-label" for="guanggaokanhu">广告刊户</label> <input class="form-control input-sm" id="guanggaokanhu" name="adcontract.client" data-provide="typeahead">
 						</div>
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="guanggaodailigongsi">代理公司</label> <input
-								id="guanggaodailigongsi" name="adcontract.agency"
-								class="form-control input-sm" data-provide="typeahead">
+							<label style="width: 24%; text-align: left;" class="control-label" for="guanggaodailigongsi">代理公司</label> <input id="guanggaodailigongsi" name="adcontract.agency" class="form-control input-sm" data-provide="typeahead">
 						</div>
-
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="agencymode">客户属性</label> <select name="clienttype_id"
-								class="form-control input-sm" id="agencymode"
-								style="width:153px;">
+							<label style="width: 24%; text-align: left;" class="control-label" for="agencymode">客户属性<span class="text-danger">*</span></label> <select name="clienttype_id" class="form-control input-sm" id="agencymode" style="width: 153px;">
 								<option value="">-请选择客户属性--</option>
 								<s:iterator value="#clienttypeList">
-									<option value='<s:property value="id"/>'><s:property
-											value="ctypedesc" /></option>
+									<option value='<s:property value="id"/>'><s:property value="ctypedesc" /></option>
 								</s:iterator>
 							</select>
-
 						</div>
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="channelfrom">单据类型<span class="text-danger">*</span></label>
-							<select name="publishstyle.id" class="form-control input-sm"
-								id="channelfrom" style="width:153px;">
+							<label style="width: 24%; text-align: left;" class="control-label" for="channelfrom">单据类型<span class="text-danger">*</span></label> <select name="publishstyle.id" class="form-control input-sm" id="channelfrom" style="width: 153px;">
 								<option value="">-请选择单据类型--</option>
 								<s:iterator value="#publishstyleList">
-									<option value='<s:property value="id"/>'><s:property
-											value="name" /></option>
+									<option value='<s:property value="id"/>'><s:property value="name" /></option>
 								</s:iterator>
 							</select>
-
 						</div>
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="channelfrom">单据来源<span class="text-danger">*</span></label>
-							<select name="channel_id" class="form-control input-sm"
-								id="channelfrom" style="width:153px;">
-								<option value="">-请选择单据来源--</option>
+							<label style="width: 24%; text-align: left;" class="control-label" for="channelfrom">单据来源<span class="text-danger">*</span></label> <select name="channel_id" class="form-control input-sm" id="channelfrom" style="width: 153px;">
+								<!-- <option value="">-请选择单据来源--</option> -->
 								<s:iterator value="#channelList">
-									<option value='<s:property value="id"/>'><s:property
-											value="channelname" /></option>
+									<option value='<s:property value="id"/>'><s:property value="channelname" /></option>
 								</s:iterator>
 							</select>
-
 						</div>
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="guanggaokanhu">下单人</label> <input
-								class="form-control input-sm" id="placer"
-								name="adcontract.placer">
+							<label style="width: 24%; text-align: left;" class="control-label" for="amount">合同金额</label> <input id="amount" name="adcontract.amount" class="form-control input-sm">
 						</div>
-
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%;text-align: left;" class="control-label"
-								for="guanggaokanhu">备注</label>
-							<input class="form-control input-sm" id="renkanshubeizhu" name="adcontract.remark">
+							<label style="width: 24%; text-align: left;" class="control-label" for="guanggaokanhu">下单人</label> <input class="form-control input-sm" id="placer" name="adcontract.placer">
 						</div>
-
+						<div class="form-group form-inline col-md-12 col-lg-6 ">
+							<label style="width: 24%; text-align: left;" class="control-label" for="guanggaokanhu">备注</label> <input class="form-control input-sm" id="renkanshubeizhu" name="adcontract.remark">
+						</div>
 						<script type="text/javascript">
 								//设置上画点位options
 								var optionselectled = "<s:iterator value="#ledList"><option value='<s:property value="id"/>'><s:property value="name"/></option></s:iterator>";
@@ -500,25 +463,14 @@
 
 									var id = $(obj).attr("id");
 									var indexlastele = id.charAt(8);
-									var confirmidshichang = "shichang"
-											+ indexlastele;
+									var confirmidshichang = "shichang" + indexlastele;
 									var confirmidpinci = "pinci" + indexlastele;
-									var selectshichang = document
-											.getElementById(confirmidshichang).value;
-									var selectpinci = document
-											.getElementById(confirmidpinci).value;
-									var kanlijiacal = Math
-											.round(kanlijiaclassic
-													* ((selectpinci - 60) / 30 * 0.3 + 1)
-													* ((selectshichang - 15) / 15 * 0.35 + 1)
-													+ 0.5);
+									var selectshichang = document.getElementById(confirmidshichang).value;
+									var selectpinci = document.getElementById(confirmidpinci).value;
+									var kanlijiacal = Math.round(kanlijiaclassic * ((selectpinci - 60) / 30 * 0.3 + 1) * ((selectshichang - 15) / 15 * 0.35 + 1) + 0.5);
 									document.getElementById(id).value = kanlijiacal;
-									var kanlijiaxiaoji = document
-											.getElementById("guanggaoshuliang"
-													+ indexlastele).value
-											* kanlijiacal;
-									document.getElementById("kanlijiaxiaoji"
-											+ indexlastele).value = kanlijiaxiaoji;
+									var kanlijiaxiaoji = document.getElementById("guanggaoshuliang" + indexlastele).value * kanlijiacal;
+									document.getElementById("kanlijiaxiaoji" + indexlastele).value = kanlijiaxiaoji;
 								}
 
 								function calPublishPrice(obj) {
@@ -530,54 +482,41 @@
 									var thepointid = "shanghuadianwei" + index;
 									var confirmidshichang = "shichang" + index;
 									var confirmidpinci = "pinci" + index;
-									var selectshichang = document
-											.getElementById(confirmidshichang).value;
-									var selectpinci = document
-											.getElementById(confirmidpinci).value;
+									var selectshichang = document.getElementById(confirmidshichang).value;
+									var selectpinci = document.getElementById(confirmidpinci).value;
 
-									var date1 = new Date($("#" + starttimeid)
-											.val()); //开始时间
-									var date2 = new Date($("#" + endtimeid)
-											.val()); //结束时间
-									var date3 = date2.getTime()
-											- date1.getTime(); //时间差的毫秒数
-									var days = Math.floor(date3
-											/ (24 * 3600 * 1000)) + 1;
+									var date1 = new Date($("#" + starttimeid).val()); //开始时间
+									var date2 = new Date($("#" + endtimeid).val()); //结束时间
+									var date3 = date2.getTime() - date1.getTime(); //时间差的毫秒数
+									var days = Math.floor(date3 / (24 * 3600 * 1000)) + 1;
 									var weeks = days.div(7);
 									//获取刊例价
-									var pPrice = returnPublishPrice($(
-											"#" + thepointid).val());
+									var pPrice = returnPublishPrice($("#" + thepointid).val());
 									//计算特殊刊例价系数
 									//var k = 0.0007.mul(Number(selectpinci).mul(Number(selectshichang))) + 0.028.mul(Number(selectshichang)) - 0.0005.mul(Number(selectpinci)) - 0.02;
-									var k = specificPublishPriceCoefficient(
-											selectshichang, selectpinci);
+									var k = specificPublishPriceCoefficient(selectshichang, selectpinci);
 									var pPrice = Math.round(pPrice.mul(k));
 									var totalPrice = weeks.mul(pPrice);
-									$("#guanggaoshuliang" + index).val(
-											weeks.toFixed(2))
-									$("#kanlijia" + index)
-											.val(
-													numberFormat(totalPrice
-															.toFixed(2)));
+									$("#guanggaoshuliang" + index).val(weeks.toFixed(2))
+									$("#kanlijia" + index).val(numberFormat(totalPrice.toFixed(2)));
 
 									kanlijiaonchange();
 								}
 
 								function returnPublishPrice(ledId) {
 									var thePublishPrice = 0;
-									$
-											.ajax({
-												url : "returnLedPublishPrice.action",
-												type : "post",
-												async : false,
-												data : {
-													ledId : ledId
-												},
-												dataType : "json",
-												success : function(data) {
-													thePublishPrice = data.publishPrice;
-												}
-											});
+									$.ajax({
+										url : "returnLedPublishPrice.action",
+										type : "post",
+										async : false,
+										data : {
+											ledId : ledId
+										},
+										dataType : "json",
+										success : function(data) {
+											thePublishPrice = data.publishPrice;
+										}
+									});
 									return thePublishPrice;
 								}
 								
@@ -605,42 +544,31 @@
 								function kanlijiaonchange() {
 									var kanlijiaxiaojiarr = [];
 									var kanlijiazongji = 0;
-									$("input[name='kanlijialedtable']")
-											.each(
-													function(i, o) {
-														//  a.push($(o).val()); 将数据存入数组
-														//前台格式化的去除格式化
-														kanlijiaxiaojiarr[i] = numberUnFormat($(
-																o).val());
-														// 刊例价相加
-														kanlijiazongji = Number(
-																kanlijiazongji)
-																.add(
-																		Number(kanlijiaxiaojiarr[i]));
-														numberFormat4This(o);
-													});
-									document.getElementById("kanliheji").value = kanlijiazongji
-											.toFixed(2);
+									$("input[name='kanlijialedtable']").each(
+										function(i, o) {
+											//  a.push($(o).val()); 将数据存入数组
+											//前台格式化的去除格式化
+											kanlijiaxiaojiarr[i] = numberUnFormat($(o).val());
+											// 刊例价相加
+											kanlijiazongji = Number(kanlijiazongji).add(Number(kanlijiaxiaojiarr[i]));
+											numberFormat4This(o);
+										});
+									document.getElementById("kanliheji").value = kanlijiazongji.toFixed(2);
 
 								}
 
 								function hejishifuonchange(obj) {
 									var kanlijiaxiaojiarr = [];
 									var kanlijiazongji = 0;
-									$("input[name='kanlijiaxiaojiledtable']")
-											.each(
-													function(i, o) {
-														//  a.push($(o).val()); 将数据存入数组
-														//前台格式化的去除格式化
-														kanlijiaxiaojiarr[i] = numberUnFormat($(
-																o).val());
-														// 刊例价相加
-														kanlijiazongji = Number(
-																kanlijiazongji)
-																.add(
-																		Number(kanlijiaxiaojiarr[i]));
-														numberFormat4This(obj);
-													});
+									$("input[name='kanlijiaxiaojiledtable']").each(
+										function(i, o) {
+											//  a.push($(o).val()); 将数据存入数组
+											//前台格式化的去除格式化
+											kanlijiaxiaojiarr[i] = numberUnFormat($(o).val());
+											// 刊例价相加
+											kanlijiazongji = Number(kanlijiazongji).add(Number(kanlijiaxiaojiarr[i]));
+											numberFormat4This(obj);
+									});
 									document.getElementById("hejishifujine").value = kanlijiazongji;
 									kanlijiaonchange();
 
@@ -653,26 +581,21 @@
 								}
 
 								function unformatBeforeSubmit(obj) {
-									var widgetNameSelector = "input[name='"
-											+ obj + "']";
-									$(widgetNameSelector)
-											.each(
-													function(i, o) {
-														//  a.push($(o).val()); 将数据存入数组
-														//前台格式化的去除格式化
-														var numberValue = numberUnFormat($(
-																o).val());
-														$(o).val(numberValue);
-													});
+									var widgetNameSelector = "input[name='" + obj + "']";
+									$(widgetNameSelector).each(
+										function(i, o) {
+											//  a.push($(o).val()); 将数据存入数组
+											//前台格式化的去除格式化
+											var numberValue = numberUnFormat($(
+													o).val());
+											$(o).val(numberValue);
+									});
 									var kanlijiaobj = $("#kanliheji");
 									var shifuobj = $("#hejishifujine");
 									var waigouobj = $("#purchasecost");
-									kanlijiaobj.val(numberUnFormat(waigouobj
-											.val()));
-									shifuobj
-											.val(numberUnFormat(shifuobj.val()));
-									waigouobj.val(numberUnFormat(waigouobj
-											.val()));
+									kanlijiaobj.val(numberUnFormat(waigouobj.val()));
+									shifuobj.val(numberUnFormat(shifuobj.val()));
+									waigouobj.val(numberUnFormat(waigouobj.val()));
 								}
 
 								function numberFormat4This(obj) {
@@ -715,22 +638,13 @@
 									var seqflag;
 
 									//把flag存进去
-									if (sdstr == localStorage
-											.getItem("assistantIdentify")) {
-										globalIdentification = parseInt(
-												localStorage
-														.getItem("globalIdentification"),
-												10) + 1;
-										localStorage.setItem(
-												"globalIdentification",
-												globalIdentification);
+									if (sdstr == localStorage.getItem("assistantIdentify")) {
+										globalIdentification = parseInt(localStorage.getItem("globalIdentification"),10) + 1;
+										localStorage.setItem("globalIdentification", globalIdentification);
 									} else {
 										globalIdentification = 0;
-										localStorage.setItem(
-												"assistantIdentify", sdstr);
-										localStorage.setItem(
-												"globalIdentification",
-												globalIdentification);
+										localStorage.setItem("assistantIdentify", sdstr);
+										localStorage.setItem("globalIdentification", globalIdentification);
 									}
 									if (globalIdentification < 10) {
 										seqflag = "0" + globalIdentification;
@@ -765,14 +679,11 @@
 									var arrayledsz = new Array();
 									for (var i = 0, lgt = arrayledshort.length; i < lgt; i++) {
 										if (arrayledshort[i][0] < 300) {
-											arrayledgs
-													.push(arrayledshort[i][0]);
+											arrayledgs.push(arrayledshort[i][0]);
 											if (arrayledshort[i][0] < 200) {
-												arrayledgz
-														.push(arrayledshort[i][0]);
+												arrayledgz.push(arrayledshort[i][0]);
 											} else {
-												arrayledsz
-														.push(arrayledshort[i][0]);
+												arrayledsz.push(arrayledshort[i][0]);
 											}
 
 										}
@@ -788,17 +699,12 @@
 											console.log(elt);
 											var index = i + 1;
 											$("#addled").click();
-											var o = $("#shanghuadianwei"
-													+ index);
-											$("#guanggaoleixing" + index).val(
-													packleixing);
-											$("#shichang" + index).val(
-													packshichang);
+											var o = $("#shanghuadianwei" + index);
+											$("#guanggaoleixing" + index).val(packleixing);
+											$("#shichang" + index).val(packshichang);
 											$("#pinci" + index).val(packpinci);
-											$("#starttime" + index).val(
-													packksshijian);
-											$("#endtime" + index).val(
-													packjsshijian);
+											$("#starttime" + index).val(packksshijian);
+											$("#endtime" + index).val(packjsshijian);
 											o.val(elt[0]);
 											calPublishPrice(o);
 										});
@@ -807,17 +713,12 @@
 											console.log(elt);
 											var index = i + 1;
 											$("#addled").click();
-											var o = $("#shanghuadianwei"
-													+ index);
-											$("#guanggaoleixing" + index).val(
-													packleixing);
-											$("#shichang" + index).val(
-													packshichang);
+											var o = $("#shanghuadianwei" + index);
+											$("#guanggaoleixing" + index).val(packleixing);
+											$("#shichang" + index).val(packshichang);
 											$("#pinci" + index).val(packpinci);
-											$("#starttime" + index).val(
-													packksshijian);
-											$("#endtime" + index).val(
-													packjsshijian);
+											$("#starttime" + index).val(packksshijian);
+											$("#endtime" + index).val(packjsshijian);
 											o.val(elt);
 											calPublishPrice(o);
 										});
@@ -826,17 +727,12 @@
 											console.log(elt);
 											var index = i + 1;
 											$("#addled").click();
-											var o = $("#shanghuadianwei"
-													+ index);
-											$("#guanggaoleixing" + index).val(
-													packleixing);
-											$("#shichang" + index).val(
-													packshichang);
+											var o = $("#shanghuadianwei" + index);
+											$("#guanggaoleixing" + index).val(packleixing);
+											$("#shichang" + index).val(packshichang);
 											$("#pinci" + index).val(packpinci);
-											$("#starttime" + index).val(
-													packksshijian);
-											$("#endtime" + index).val(
-													packjsshijian);
+											$("#starttime" + index).val(packksshijian);
+											$("#endtime" + index).val(packjsshijian);
 											o.val(elt);
 											calPublishPrice(o);
 										});
@@ -845,17 +741,12 @@
 											console.log(elt);
 											var index = i + 1;
 											$("#addled").click();
-											var o = $("#shanghuadianwei"
-													+ index);
-											$("#guanggaoleixing" + index).val(
-													packleixing);
-											$("#shichang" + index).val(
-													packshichang);
+											var o = $("#shanghuadianwei" + index);
+											$("#guanggaoleixing" + index).val(packleixing);
+											$("#shichang" + index).val(packshichang);
 											$("#pinci" + index).val(packpinci);
-											$("#starttime" + index).val(
-													packksshijian);
-											$("#endtime" + index).val(
-													packjsshijian);
+											$("#starttime" + index).val(packksshijian);
+											$("#endtime" + index).val(packjsshijian);
 											o.val(elt);
 											calPublishPrice(o);
 										});
@@ -864,46 +755,33 @@
 
 								function calRealPrice() {
 									var kanlijiazongji = $("#kanliheji").val();
-									var hejishifuvalue = $("#hejishifujine")
-											.val();
-									var nenetrevenue = Number(hejishifuvalue)
-											.sub($("#purchasecost").val());
+									var hejishifuvalue = $("#hejishifujine").val();
+									var nenetrevenue = Number(hejishifuvalue).sub($("#purchasecost").val());
 									if (hejishifuvalue == "") {
 										alert("请输入实付合计金额，之后再点击计算刊例按钮进行计算！");
-										document
-												.getElementById("hejishifujine")
-												.focus();
+										document.getElementById("hejishifujine").focus();
 									}
 									var tmpvalue = 0;
 									var thisKanlijia = 0;
 									var thistotal = 0;
 									var tblindex;
 									var theobj = $("input[name='kanlijialedtable']");
-									theobj
-											.each(function(i, o) {
-												tblindex = parseInt(o.id
-														.replace(/[^0-9]/ig, ""))
-												thisKanlijia = numberUnFormat($(
-														o).val());
-												tmpvalue = (Number(nenetrevenue)
-														.div(kanlijiazongji))
-														.mul(thisKanlijia)
-														.toFixed(2);
-												var o1 = $("#kanlijiaxiaoji"
-														+ tblindex);
-												if (i == theobj.length - 1) {
-													o1.val(Number(nenetrevenue)
-															.sub(thistotal));
-												} else {
-													o1.val(tmpvalue);
-												}
+									theobj.each(function(i, o) {
+										tblindex = parseInt(o.id.replace(/[^0-9]/ig, ""))
+										thisKanlijia = numberUnFormat($(o).val());
+										tmpvalue = (Number(nenetrevenue).div(kanlijiazongji)).mul(thisKanlijia).toFixed(2);
+										var o1 = $("#kanlijiaxiaoji" + tblindex);
+										if (i == theobj.length - 1) {
+											o1.val(Number(nenetrevenue).sub(thistotal));
+										} else {
+											o1.val(tmpvalue);
+										}
 
-												thistotal = thistotal
-														.add(tmpvalue);
-												console.log(o1.val());
-												// 刊例价相加
-												numberFormat4This(o1);
-											});
+										thistotal = thistotal.add(tmpvalue);
+										console.log(o1.val());
+										// 刊例价相加
+										numberFormat4This(o1);
+									});
 									var kanlijiaobj = $("#kanliheji");
 									var shifuobj = $("#hejishifujine");
 									var waigouobj = $("#purchasecost");
@@ -918,19 +796,18 @@
 
 								function returnPublishPrice(ledId) {
 									var thePublishPrice = 0;
-									$
-											.ajax({
-												url : "returnLedPublishPrice.action",
-												type : "post",
-												async : false,
-												data : {
-													ledId : ledId
-												},
-												dataType : "json",
-												success : function(data) {
-													thePublishPrice = data.publishPrice;
-												}
-											});
+									$.ajax({
+										url : "returnLedPublishPrice.action",
+										type : "post",
+										async : false,
+										data : {
+											ledId : ledId
+										},
+										dataType : "json",
+										success : function(data) {
+											thePublishPrice = data.publishPrice;
+										}
+									});
 									return thePublishPrice;
 								}
 
@@ -974,63 +851,31 @@
 									$("#tellAdvertisingInfo-modal").modal('show');
 
 									//确认
-									$("#tellAdvertisingInfo-ok")
-											.click(
-													function() {
-														packleixing = $(
-																"#packleixing")
-																.val();
-														packshichang = $(
-																"#packshichang")
-																.val();
-														packpinci = $(
-																"#packpinci")
-																.val();
-														packksshijian = $(
-																"#packksshijian")
-																.val();
-														packjsshijian = $(
-																"#packjsshijian")
-																.val();
-														if (packleixing != ""
-																&& packshichang != ""
-																&& packpinci != ""
-																&& packksshijian != ""
-																&& packjsshijian != "") {
-															console
-																	.log(packleixing
-																			+ " --"
-																			+ packshichang
-																			+ "--"
-																			+ packpinci
-																			+ "--"
-																			+ packksshijian
-																			+ "--"
-																			+ packjsshijian);
-															$("#tellAdvertisingInfo-modal").modal('hide');
-															packageScreen(obj);
-															var shifu = $(
-																	"#hejishifujine")
-																	.val();
-															if (shifu == "") {
-																alert("请输入实付金额！");
-																document
-																		.getElementById(
-																				"hejishifujine")
-																		.focus();
-															}
-														} else {
-															$.alert("请输入上画信息！");
-														}
-													});
+									$("#tellAdvertisingInfo-ok").click(function() {
+										packleixing = $("#packleixing").val();
+										packshichang = $("#packshichang").val();
+										packpinci = $("#packpinci").val();
+										packksshijian = $("#packksshijian").val();
+										packjsshijian = $("#packjsshijian").val();
+										if (packleixing != "" && packshichang != "" && packpinci != "" && packksshijian != "" && packjsshijian != "") {
+											console.log(packleixing + " --" + packshichang + "--" + packpinci + "--" + packksshijian + "--" + packjsshijian);
+											$("#tellAdvertisingInfo-modal").modal('hide');
+											packageScreen(obj);
+											var shifu = $("#hejishifujine").val();
+											if (shifu == "") {
+												$.alert("请输入实付金额！");
+												document.getElementById("hejishifujine").focus();
+											}
+										} else {
+											$.alert("请输入上画信息！");
+										}
+									});
 								}
 
 								function cleanScrTable() {
 									$("#table tbody").html("");
 								}
 							</script>
-
-
 						<div class="col-lg-12 col-md-12">
 							<fieldset>
 								<legend>
@@ -1057,22 +902,13 @@
 										<tbody></tbody>
 									</table>
 								</div>
-
 								<div class="form-group">
-									<a class="btn btn-link" id="addleds"><span id="addled"
-										class="glyphicon glyphicon-plus" style="font-family: '微软雅黑';">
-											添加</span></a>
-									<button type="button" class="btn btn-danger"
-											id="cleanScreensTable" onclick="cleanScrTable()">清空列表</button>
-									<button type="button" class="btn btn-prime" id="allOwnScreens"
-										onclick="packageScreens(this)" style="display: none;">全部自有屏</button>
-									<button type="button" class="btn btn-prime" id="gsScreens"
-										onclick="packageScreens(this)" style="display: none;">广深屏</button>
-									<button type="button" class="btn btn-prime" id="gzScreens"
-										onclick="packageScreens(this)" style="display: none;">广州屏</button>
-									<button type="button" class="btn btn-prime" id="szScreens"
-										onclick="packageScreens(this)" style="display: none;">深圳屏</button>
-
+									<a class="btn btn-link" id="addleds"><span id="addled" class="glyphicon glyphicon-plus" style="font-family: '微软雅黑';"> 添加</span></a>
+									<button type="button" class="btn btn-danger" id="cleanScreensTable" onclick="cleanScrTable()">清空列表</button>
+									<button type="button" class="btn btn-prime" id="allOwnScreens" onclick="packageScreens(this)" style="display: none;">全部自有屏</button>
+									<button type="button" class="btn btn-prime" id="gsScreens" onclick="packageScreens(this)" style="display: none;">广深屏</button>
+									<button type="button" class="btn btn-prime" id="gzScreens" onclick="packageScreens(this)" style="display: none;">广州屏</button>
+									<button type="button" class="btn btn-prime" id="szScreens" onclick="packageScreens(this)" style="display: none;">深圳屏</button>
 									<!-- <div class="pull-right">
 										<button type="button" class="btn btn-danger"
 											id="cleanScreensTable" onclick="cleanScrTable()">清空列表</button>
@@ -1080,16 +916,11 @@
 								</div>
 							</fieldset>
 						</div>
-
-						<div style="text-align:center;" class="col-md-12">
-							<button type="button" id="store" class="btn"
-								style="display: none;">保存</button>
-							<button type="button" id="restore" class="btn"
-								style="display: none;">恢复</button>
-							<button type="button" id="submit_button" class="btn btn-primary"
-								onclick="doSubmit()">提交</button>
+						<div style="text-align: center;" class="col-md-12">
+							<button type="button" id="store" class="btn" style="display: none;">保存</button>
+							<button type="button" id="restore" class="btn" style="display: none;">恢复</button>
+							<button type="button" id="submit_button" class="btn btn-primary" onclick="doSubmit()">提交</button>
 							<button type="reset" class="btn btn-default">取消</button>
-
 						</div>
 					</form>
 				</div>
@@ -1097,18 +928,16 @@
 			<!-- /.col-->
 		</div>
 		<!-- /.row -->
-
 		<div class="modal fade" id="addIndustry-modal">
 			<div class="modal-dialog ">
 				<div class="modal-content">
 					<div class="modal-header h3">添加行业</div>
-					<div class="modal-body " style="text-align:center">
+					<div class="modal-body " style="text-align: center">
 						<form id="addIndustryForm" class="form-horizontal" role="form">
 							<div class="form-group ">
 								<label for="account" class="col-sm-3 control-label">行业名称</label>
 								<div class="col-sm-4 has-success">
-									<input type="text" class="form-control" id="industryname"
-										name="industryname" maxlength="20">
+									<input type="text" class="form-control" id="industryname" name="industryname" maxlength="20">
 								</div>
 							</div>
 							<!--<div class="form-group ">
@@ -1133,12 +962,11 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
-
 		<div class="modal fade" id="tellAdvertisingInfo-modal">
 			<div class="modal-dialog ">
 				<div class="modal-content">
 					<div class="modal-header h4">上画信息</div>
-					<div class="modal-body " style="text-align:center">
+					<div class="modal-body " style="text-align: center">
 						<form id="formeditOrder" class="form-horizontal" role="form">
 							<div class="form-group ">
 								<label for="role" class="col-sm-3 control-label">广告类型</label>
@@ -1153,34 +981,28 @@
 									</select>
 								</div>
 							</div>
-
 							<div class="form-group ">
 								<label for="account" class="col-sm-3 control-label">时长</label>
 								<div class="col-sm-4 has-success">
-									<input type="text" class="form-control" id="packshichang"
-										value="15" maxlength="20">
+									<input type="text" class="form-control" id="packshichang" value="15" maxlength="20">
 								</div>
 							</div>
 							<div class="form-group ">
 								<label for="account" class="col-sm-3 control-label">频次</label>
 								<div class="col-sm-4 has-success">
-									<input type="text" class="form-control" id="packpinci"
-										value="60" maxlength="20">
+									<input type="text" class="form-control" id="packpinci" value="60" maxlength="20">
 								</div>
 							</div>
 							<div class="form-group ">
 								<label for="account" class="col-sm-3 control-label">播放开始时间</label>
 								<div class="col-sm-4 has-success">
-									<input type="date" class="form-control" id="packksshijian"
-										maxlength="20">
+									<input type="date" class="form-control" id="packksshijian" maxlength="20">
 								</div>
 							</div>
-
 							<div class="form-group ">
 								<label for="account" class="col-sm-3 control-label">播放结束时间</label>
 								<div class="col-sm-4 has-success">
-									<input type="date" class="form-control" id="packjsshijian"
-										maxlength="20">
+									<input type="date" class="form-control" id="packjsshijian" maxlength="20">
 								</div>
 							</div>
 						</form>
@@ -1192,7 +1014,6 @@
 						<button id="tellAdvertisingInfo-ok" class="btn btn-success">
 							<i class="fa fa-check-circle"></i>确认
 						</button>
-
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -1200,17 +1021,13 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
-
 	</div>
 	<!--/.main-->
-
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/king-common.js"></script>
 	<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
 	<script src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-
 	<script type="text/javascript" src="js/bootstrap-table.js"></script>
-
 	<script type="text/javascript" src="js/bootstrap3-typeahead.min.js"></script>
 	<!--
     	作者：this.van@hotmail.com
@@ -1261,11 +1078,11 @@
 			var requirefill = Number(requirepay).div(Number(fenqiindex));
 			var arrfukuanfangshi = [ "现金", "支票", "汇票", "其他" ];
 			for (var i = 1; i <= fenqiindex; i++) {
-				$("#fukuantable>tbody")
-					.append(
-						'<tr><td width="15%">第'
-						+ i
-						+ '期<input id="fenqiming' + i + '" name="fenqimingcheng" class="hidden" value="第' + i + '期"/></td><td width="25%"><input name="fenqijine" class="form-control" type="number" id="fenqifukuanjine' + i + '" value="' + requirefill + '" /></td><td width="25%"><input class="form-control" name="fenqifukuanshijian" type="date" id="fenqishijian' + i + '" /></td><td width="20%"><select id="selectfukuanfangshi' + i + '" class="form-control" name="fukuanfangshi"></select></td><td width="15%"><input class="form-control" name="fukuanbeizhu" type="text" id="fukuanbeizhu' + i + '" /></td></tr>');
+				$("#fukuantable>tbody").append(
+					'<tr><td width="15%">第' + i + '期<input id="fenqiming' + i + '" name="fenqimingcheng" class="hidden" value="第' + i + '期"/></td><td width="25%"><input name="fenqijine" class="form-control" type="number" id="fenqifukuanjine' 
+					+ i + '" value="' + requirefill + '" /></td><td width="25%"><input class="form-control" name="fenqifukuanshijian" type="date" id="fenqishijian' + i + '" /></td><td width="20%"><select id="selectfukuanfangshi'
+					+ i + '" class="form-control" name="fukuanfangshi"></select></td><td width="15%"><input class="form-control" name="fukuanbeizhu" type="text" id="fukuanbeizhu' + i + '" /></td></tr>'
+				);
 	
 				var fukuanfangshiid = "selectfukuanfangshi" + i;
 				for (var j = 0; j < arrfukuanfangshi.length; j++) {
@@ -1338,7 +1155,6 @@
 	
 		});
 	</script>
-
 	<script type="text/javascript">
 	
 		var localStorageStateTip = "";
@@ -1414,7 +1230,6 @@
 					kanlijialedtablelocal.push($(this).val());
 				});
 	
-	
 				var fenqimingcheng = new Array();
 				$("input[name='fenqimingcheng']").each(function() {
 					fenqimingcheng.push($(this).val());
@@ -1455,10 +1270,6 @@
 				localStorageStateTip = "认刊书保存成功！";
 			}
 	
-	
-	
-	
-	
 		}
 		function localFormStorageRestore() {
 			var shanghuadianweiledtabletojs = localStorage.getItem("shanghuadianweiledtable").split(",");
@@ -1474,20 +1285,13 @@
 				for (var j = 1; j <= shanghuadianweiledtabletojs.length; j++) {
 					$("#table>tbody").append(
 						'<tr><td><select name="shanghuadianweiledtable"  class="form-control" id="shanghuadianwei' + j + '" onchange="kanliclassiconchange(this)">'
-						+ optionselectHtml.join()
-						+ '</select></td><td><select name="guanggaoleixingledtable"  class="form-control" id="guanggaoleixing' + j + '" >'
-						+ optionselectguanggaoleixing.join()
-						+ '</select></td><td ><div class=""><input name="starttimeledtable" class="form-control" type="date" id="starttime' +
-						j
-						+ '" /></div></td><td><div class=""><input name="endtimeledtable"  class="form-control" type="date" id="endtime' + j + '" /></div></td><td><div class=""><input name="guanggaoshuliangledtable"  class="form-control" type="text" id="guanggaoshuliang'
-						+ j
-						+ '" value="4" /></div></td><td><input name="pinciledtable" class="form-control" id="pinci'
-						+ j
-						+ '" ></input></td><td><input name="shichangledtable" class="form-control" id="shichang' + j + '" ></input></td><td ><input name="kanlijialedtable" class="form-control " id="kanlijia'
-						+ j
-						+ '" ></input></td><td><div class=""><input name="kanlijiaxiaojiledtable" class="form-control" value="0" id="kanlijiaxiaoji'
-						+ j
-						+ '" onblur="kanlijiaonchange()" ></input></div></td><td><a class="form-control" onclick="deltr(this)"><span class="glyphicon glyphicon-remove"></span></a></td></tr>');
+						+ optionselectHtml.join() + '</select></td><td><select name="guanggaoleixingledtable"  class="form-control" id="guanggaoleixing' 
+						+ j + '" >' + optionselectguanggaoleixing.join() + '</select></td><td ><div class=""><input name="starttimeledtable" class="form-control" type="date" id="starttime' 
+						+ j + '" /></div></td><td><div class=""><input name="endtimeledtable"  class="form-control" type="date" id="endtime' + j + '" /></div></td><td><div class=""><input name="guanggaoshuliangledtable"  class="form-control" type="text" id="guanggaoshuliang'
+						+ j + '" value="4" /></div></td><td><input name="pinciledtable" class="form-control" id="pinci'
+						+ j + '" ></input></td><td><input name="shichangledtable" class="form-control" id="shichang' + j + '" ></input></td><td ><input name="kanlijialedtable" class="form-control " id="kanlijia'
+						+ j + '" ></input></td><td><div class=""><input name="kanlijiaxiaojiledtable" class="form-control" value="0" id="kanlijiaxiaoji'
+						+ j + '" onblur="kanlijiaonchange()" ></input></div></td><td><a class="form-control" onclick="deltr(this)"><span class="glyphicon glyphicon-remove"></span></a></td></tr>');
 	
 				}
 			}
@@ -1535,26 +1339,19 @@
 	
 			}
 	
-			var fenqijine = localStorage.getItem("renkanshufukuan.fenqijine").split(
-				",");
-			var fenqifukuanshijian = localStorage.getItem(
-				"renkanshufukuan.fenqifukuanshijian").split(",");
-			var fukuanfangshi = localStorage.getItem("renkanshufukuan.fukuanfangshi")
-				.split(",");
-			var fukuanbeizhu = localStorage.getItem("renkanshufukuan.fukuanbeizhu")
-				.split(",");
-			var fenqimingcheng = localStorage
-				.getItem("renkanshufukuan.fenqimingcheng").split(",");
+			var fenqijine = localStorage.getItem("renkanshufukuan.fenqijine").split(",");
+			var fenqifukuanshijian = localStorage.getItem("renkanshufukuan.fenqifukuanshijian").split(",");
+			var fukuanfangshi = localStorage.getItem("renkanshufukuan.fukuanfangshi").split(",");
+			var fukuanbeizhu = localStorage.getItem("renkanshufukuan.fukuanbeizhu").split(",");
+			var fenqimingcheng = localStorage.getItem("renkanshufukuan.fenqimingcheng").split(",");
 	
 			if (localStorage.getItem("renkanshufukuan.fenqimingcheng").length > 0) {
 				switchFenqiItem(fenqimingcheng.length);
 				for (var j = 1; j <= fenqimingcheng.length; j++) {
 					$("#fenqifukuanjine" + j + "").val(fenqijine[j - 1]);
 					$("#fenqishijian" + j + "").val(fenqifukuanshijian[j - 1]);
-					$("#selectfukuanfangshi" + j + "")
-						.val(fukuanfangshi[j - 1]);
+					$("#selectfukuanfangshi" + j + "").val(fukuanfangshi[j - 1]);
 					$("#fukuanbeizhu" + j + "").val(fukuanbeizhu[j - 1]);
-	
 				}
 			}
 	
@@ -1593,29 +1390,27 @@
 	
 		window.setInterval("localFormStorageSave()", 180000);
 	</script>
-
 	<script>
 		!function($) {
 			$(document).on(
 				"click",
 				"ul.nav li.parent > a > span.icon",
 				function() {
-					$(this).find('em:first').toggleClass(
-							"glyphicon-minus");
-				});
+					$(this).find('em:first').toggleClass("glyphicon-minus");
+			});
 			$(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
 		}(window.jQuery);
 
 		$(window).on('resize', function() {
-			if ($(window).width() > 768)
-				$('#sidebar-collapse').collapse('show')
+			if ($(window).width() > 768){
+				$('#sidebar-collapse').collapse('show');
+			}
 		})
 		$(window).on('resize', function() {
-			if ($(window).width() <= 767)
-				$('#sidebar-collapse').collapse('hide')
+			if ($(window).width() <= 767){
+				$('#sidebar-collapse').collapse('hide');
+			}
 		})
 	</script>
-
 </body>
-
 </html>

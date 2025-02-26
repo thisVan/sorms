@@ -94,7 +94,15 @@
 						</s:select>
 					</div>
 				</div>
-
+				
+				<div class="form-group col-lg-6 col-md-12">
+					<label for="account" class="col-sm-3 control-label">合同金额</label>
+					<div class="col-sm-9">
+						<input type="text" class="form-control input-sm" name="adcontract.amount"
+							value='<s:property value="#adcontract.amount"/>' maxlength="20">
+					</div>
+				</div>
+				
 				<div class="form-group col-lg-6 col-md-12">
 					<label for="" class="col-sm-3 control-label">下单人</label>
 					<div class="col-sm-9">
@@ -218,6 +226,7 @@
 		var originalAdcontractclienttype = '${adcontract.clienttype.id}';
 		var originalAdcontractchannel = '${adcontract.channel.id}';
 		var originalAdcontractpublishstyle = '${adcontract.publishstyle.id}';
+		var originalAdcontractamount = '${adcontract.amount}';
 		var originalAdcontractremark = '${adcontract.remark}';
 		var originalAdcontractplacer = '${adcontract.placer}';
 	
@@ -238,8 +247,7 @@
 	
 			//时间需要格式化为HH:mm:ss格式，否则后台无法封装对象
 			if ($("#starttime1").val().length == 5) {
-				$("#starttime1")
-						.val($("#starttime1").val() + ":00");
+				$("#starttime1").val($("#starttime1").val() + ":00");
 			}
 			if ($("#endtime1").val().length == 5) {
 				$("#endtime1").val($("#endtime1").val() + ":00");
@@ -252,6 +260,7 @@
 					&& $("select[name='adcontract.publishstyle.id']").val() == originalAdcontractpublishstyle
 					&& $("select[name='channel.id']").val() == originalAdcontractchannel
 					&& $("select[name='clienttype.id']").val() == originalAdcontractclienttype
+					&& $("select[name='adcontract.amount']").val() == originalAdcontractamount
 					&& $("input[name='order.content']").val() == originalOrdercontent
 					&& $("select[name='led.id']").val() == originalOrderled
 					&& $("select[name='industry.industryid']").val() == originalOrderindustry
