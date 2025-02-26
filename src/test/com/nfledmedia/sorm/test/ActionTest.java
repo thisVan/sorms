@@ -1,19 +1,14 @@
 package com.nfledmedia.sorm.test;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.annotation.Resource;
 
-import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.util.StringUtils;
 
 import com.nfledmedia.sorm.action.RenkanAction;
 import com.nfledmedia.sorm.action.UserAction;
@@ -73,7 +68,7 @@ public class ActionTest extends AbstractJUnit4SpringContextTests{
 	}
 	
 	@Test
-	public void updateOrderTest() throws JSONException, IOException {
+	public void updateOrderTest() throws IOException {
 		renkanAction.updateOrder();
 	}
 
