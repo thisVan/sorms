@@ -102,9 +102,9 @@
 							</div>
 
 							<div class="row">
-								<div class="col-sm-0 pull-right">
-									<button type="button" class="btn btn-info btn-sm" id="exactQuery">查询</button>
-									<button class="btn btn-danger btn-sm" id="clearExactForm">清除</button>
+								<div class="col-sm-2 pull-right">
+									<button type="button" class="btn btn-info btn-sm pull-right" id="exactQuery">查询</button>
+									<button class="btn btn-danger btn-sm pull-right" id="clearExactForm">清除</button>
 								</div>
 								<div class="col-sm-6 pull-right">
 									<button type="button" class="btn btn-success btn-sm" id="exportExcel">资源管理表</button>
