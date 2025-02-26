@@ -14,16 +14,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.gson.JsonObject;
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
-import com.nfledmedia.sorm.dao.OrderDAO;
 import com.nfledmedia.sorm.entity.Adcontract;
 import com.nfledmedia.sorm.entity.Attribute;
 import com.nfledmedia.sorm.entity.Channel;
@@ -219,7 +217,7 @@ public class RenkanAction extends SuperAction {
 	public void setAdcontractdate(String adcontractdate) {
 		this.adcontractdate = adcontractdate;
 	}
-
+	
 	// 无法接受的数据使用string接收
 	private String kanlizongjia;
 	private Integer renkanshuauditId;
@@ -422,17 +420,17 @@ public class RenkanAction extends SuperAction {
 
 	private String saveStateInfo;
 
-	public String saverenkan() throws JSONException, IOException {
-		JSONObject jsonObject = new JSONObject();
+	public String saverenkan() throws IOException {
+		JsonObject jsonObject = new JsonObject();
 		String tip;
 		if ("success".equals(trySave())) {
 			tip = "您填写的信息已经提交成功！";
-			jsonObject.put("state", 0);
-			jsonObject.put("info", tip);
+			jsonObject.addProperty("state", 0);
+			jsonObject.addProperty("info", tip);
 		} else {
 			tip = saveStateInfo;
-			jsonObject.put("state", -1);
-			jsonObject.put("info", tip);
+			jsonObject.addProperty("state", -1);
+			jsonObject.addProperty("info", tip);
 		}
 				
 		sentMsg(jsonObject.toString());
@@ -458,9 +456,8 @@ public class RenkanAction extends SuperAction {
 			Channel cha = new Channel();
 			cha.setId(Integer.parseInt(channel_id));
 			adcontract.setChannel(cha);
-
 			adcontract.setPublishstyle(publishstyle);
-
+			
 			adcontract.setCreatetime(new Timestamp(System.currentTimeMillis()));
 			adcontract.setState(TypeCollections.ADCONTRACT_ACTIVE_STATE);
 
@@ -567,8 +564,8 @@ public class RenkanAction extends SuperAction {
 
 		String recallTip = "操作成功！".equals(info) ? info : "操作失败，请联系管理员处理！";
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", recallTip);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("info", recallTip);
 
 		sentMsg(jsonObject.toString());
 	}
@@ -597,8 +594,8 @@ public class RenkanAction extends SuperAction {
 
 		String recallTip = "操作成功！".equals(info) ? info : "操作失败，请联系管理员处理！";
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", recallTip);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("info", recallTip);
 
 		sentMsg(jsonObject.toString());
 		return null;
@@ -628,15 +625,15 @@ public class RenkanAction extends SuperAction {
 
 		String recallTip = "操作成功！".equals(info) ? info : "操作失败，请联系管理员处理！";
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", recallTip);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("info", recallTip);
 
 		sentMsg(jsonObject.toString());
 		return null;
 	}
 
 	@Transactional
-	public String updateOrder() throws JSONException, IOException {
+	public String updateOrder() throws IOException {
 		ActionContext ctx = ActionContext.getContext();
 		User user = adcontractService.getUserById((Integer) ctx.getSession().get(CommonConstant.SESSION_ID));
 		String tip = "";
@@ -672,15 +669,15 @@ public class RenkanAction extends SuperAction {
 		} else {
 			tip = "提交失败，请联系管理员处理！";
 		}
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("state", 0);
-		jsonObject.put("info", tip);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("state", 0);
+		jsonObject.addProperty("info", tip);
 		sentMsg(jsonObject.toString());
 		return null;
 
 	}
 
-	public String deletethisOrder() throws JSONException, IOException {
+	public String deletethisOrder() throws IOException {
 		ActionContext ctx = ActionContext.getContext();
 		User user = adcontractService.getUserById((Integer) ctx.getSession().get(CommonConstant.SESSION_ID));
 		String tip = "";
@@ -692,9 +689,9 @@ public class RenkanAction extends SuperAction {
 		} else {
 			tip = "提交失败，请联系管理员处理！";
 		}
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("state", 0);
-		jsonObject.put("info", tip);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("state", 0);
+		jsonObject.addProperty("info", tip);
 		sentMsg(jsonObject.toString());
 		return null;
 	}
