@@ -102,15 +102,15 @@
 							</div>
 
 							<div class="row">
-								<div class="col-sm-2 pull-right">
+								<div class="col-sm-2 pull-right" style="padding-top: 5px; padding-bottom: 5px;">
 									<button type="button" class="btn btn-info btn-sm pull-right" id="exactQuery">查询</button>
 									<button class="btn btn-danger btn-sm pull-right" id="clearExactForm">清除</button>
 								</div>
-								<div class="col-sm-6 pull-right">
-									<button type="button" class="btn btn-success btn-sm" id="exportExcel">资源管理表</button>
-									<button type="button" class="btn btn-success btn-sm" id="exportContentStatisticExcel">广告发布内容汇总表</button>
-									<button type="button" class="btn btn-success btn-sm" id="exportContentArrangementExcel">广告发布安排表</button>
-									<button type="button" class="btn btn-success btn-sm" id="exportOrderDetailExcel">下单明细表</button>
+								<div class="col-sm-10" style="padding-top: 5px; padding-bottom: 5px;">
+									<button type="button" class="btn btn-success btn-sm pull-right" id="exportOrderDetailExcel">下单明细表</button>
+									<button type="button" class="btn btn-success btn-sm pull-right" id="exportContentArrangementExcel">广告发布安排表</button>
+									<button type="button" class="btn btn-success btn-sm pull-right" id="exportContentStatisticExcel">广告发布内容汇总表</button>
+									<button type="button" class="btn btn-success btn-sm pull-right" id="exportExcel">资源管理表</button>
 								</div>
 							</div>
 							<div class="row"></div>
@@ -197,6 +197,9 @@
 <script src="js/daterangepicker2.1.30.js"></script>
 <script>
 	var operateisdisabled = "";
+	
+	var startTime = "";
+	var endTime = "";
 
 	var dateRangeSQL = "";
 	var dateRangeSQLByDateStart = "";
@@ -206,13 +209,12 @@
 	if ((localStorage.getItem("dateRange_Local") != null) && (localStorage.getItem("dateRange_Local") != "")) {
 		daterangepicker_startdate = localStorage.getItem("dateRange_Local").split(" 至 ")[0];
 		daterangepicker_enddate = localStorage.getItem("dateRange_Local").split(" 至 ")[1];
+		startTime = daterangepicker_startdate;
+		endTime = daterangepicker_enddate;
 	} else {
 		daterangepicker_startdate = moment().format("YYYY-MM-DD");
 		daterangepicker_enddate = moment().add(7, "days").format("YYYY-MM-DD");
 	}
-
-	var startTime = "";
-	var endTime = "";
 
 	var ledArray = new Array();
 	var ledNameArray = new Array();
@@ -281,7 +283,7 @@
 			mtype : "GET",
 			datatype : "json",
 			colNames : ['上画点位', '客户', '代理公司', '客户属性', '下单属性', '发布内容', '频次', '时长', '起止日期', '时段', '下单人', '备注', ''],
-			height : 400,
+			height : "500px",
 			rowNum : '<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>',
 			rowList : [10, 20, 30],
 			pager : "jqgrid-pager",
@@ -435,6 +437,7 @@
 		});
 
 		$("#clearExactForm").click(function() {
+			localStorage.clear();
 			location.reload();
 			return false;
 		});
