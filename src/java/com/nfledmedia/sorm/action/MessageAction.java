@@ -12,12 +12,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.entity.Message;
 import com.nfledmedia.sorm.service.MessageService;
@@ -71,27 +70,27 @@ public class MessageAction extends SuperAction implements ModelDriven<Message> {
 		Page result = messageService.getMessageList(
 				(Integer) session.get(CommonConstant.SESSION_ID), sidx, sord,
 				page, rows);
-		JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
-		JSONArray jsonArray = new JSONArray();
+		JsonObject jsonObject = PageToJson.toJsonWithoutData(result);
+		JsonArray jsonArray = new JsonArray();
 		List data = result.getResult();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 		DateFormat sdf2TS = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// System.out.println("…………………………………………………MessageAction：……………………………………………………………………………");
 		for (int i = 0, size = data.size(); i < size; i++) {
 			Object[] row = (Object[]) data.get(i);
-			JSONObject jsonObject2 = new JSONObject();
-			jsonObject2.put("id", row[0]); // 加入id
-			JSONArray jsonArray2 = new JSONArray(); // 求取cell
-			jsonArray2.put(row[1]); // 状态
-			jsonArray2.put(sdf2TS.format((Timestamp) row[2])); // 时间
-			jsonArray2.put(row[3]);
+			JsonObject jsonObject2 = new JsonObject();
+			jsonObject2.addProperty("id", (String) row[0]); // 加入id
+			JsonArray jsonArray2 = new JsonArray(); // 求取cell
+			jsonArray2.add((String) row[1]); // 状态
+			jsonArray2.add(sdf2TS.format((Timestamp) row[2])); // 时间
+			jsonArray2.add((String) row[3]);
 
-			jsonObject2.put("cell", jsonArray2); // 加入cell
+			jsonObject2.add("cell", jsonArray2); // 加入cell
 
-			jsonArray.put(jsonObject2);
+			jsonArray.add(jsonObject2);
 
 		}
-		jsonObject.put("rows", jsonArray); // 加入rows
+		jsonObject.add("rows", jsonArray); // 加入rows
 
 		sentMsg(jsonObject.toString());
 		return null;

@@ -2,7 +2,8 @@ package com.nfledmedia.sorm.util;
 
 import java.io.*;
 
-import net.sf.json.JSONObject;
+import com.google.gson.JsonObject;
+
 
 /**
  * 项目名称：sorm 
@@ -49,7 +50,7 @@ public class CreateJsonFile {
 	 * @param fileName
 	 * @since JDK 1.6
 	 */
-	public static void writeJson(String path, JSONObject json, String fileName) {
+	public static void writeJson(String path, JsonObject json, String fileName) {
 
 		BufferedWriter writer = null;
 		File file = new File(path + fileName + ".json");

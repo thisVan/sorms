@@ -3,18 +3,19 @@ package com.nfledmedia.sorm.util;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.json.JSONArray;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 
 public class JsonarrayDistinct {
 	
-	public static JSONArray jsonarrayDistinct(JSONArray array){
-		Set<Object> set = new HashSet<Object>();
-		for (Object o : array) {
-			set.add(o);
+	public static JsonArray jsonarrayDistinct(JsonArray array){
+		Set<String> set = new HashSet<String>();
+		for (JsonElement o : array) {
+			set.add(o.getAsString());
 		}
-		JSONArray jsonArray = new JSONArray();
-		for (Object object : set) {
-			jsonArray.put(object);
+		JsonArray jsonArray = new JsonArray();
+		for (String object : set) {
+			jsonArray.add(object);;
 		}
 		return jsonArray;
 		

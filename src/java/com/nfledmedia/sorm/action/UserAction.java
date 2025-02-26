@@ -1,7 +1,23 @@
 package com.nfledmedia.sorm.action;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+
+import com.google.gson.JsonObject;
 import com.nfledmedia.sorm.entity.Resource;
-import com.nfledmedia.sorm.entity.Role;
 import com.nfledmedia.sorm.entity.RoleResource;
 import com.nfledmedia.sorm.entity.User;
 import com.nfledmedia.sorm.service.ResourceService;
@@ -10,25 +26,6 @@ import com.nfledmedia.sorm.service.YewuService;
 import com.nfledmedia.sorm.util.MD5Util;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ModelDriven;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.apache.struts2.ServletActionContext;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 
 @Controller
 public class UserAction extends SuperAction implements ModelDriven<User> {
@@ -158,14 +155,13 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 		return "success";
 	}
 
-	public String getAllRole() throws Exception {
-		List result = null;
-		result = this.userService.getAllRole();
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", result);
-		sentMsg(jsonObject.toString());
-		return null;
-	}
+//	public String getAllRole() throws Exception {
+//		List result = this.userService.getAllRole();
+//		JsonObject jsonObject = new JsonObject();
+//		jsonObject.addProperty("info", result);
+//		sentMsg(jsonObject.toString());
+//		return null;
+//	}
 
 	/**
 	 * 修改密码
@@ -201,8 +197,8 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 			tipInfo = "必填选项未填写！";
 		}
 
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("info", tipInfo);
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("info", tipInfo);
 		sentMsg(jsonObject.toString());
 
 		return null;
