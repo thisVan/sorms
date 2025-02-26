@@ -99,7 +99,7 @@
 					<label for="account" class="col-sm-3 control-label">合同金额</label>
 					<div class="col-sm-9">
 						<input type="text" class="form-control input-sm" name="adcontract.amount"
-							value='<s:property value="#adcontract.amount"/>' maxlength="20">
+							value='<s:property value="#adcontract.amount"/>' type="number" maxlength="20">
 					</div>
 				</div>
 				

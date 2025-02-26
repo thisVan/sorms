@@ -348,7 +348,7 @@
 							</select>
 						</div>
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
-							<label style="width: 24%; text-align: left;" class="control-label" for="amount">合同金额</label> <input id="amount" name="adcontract.amount" class="form-control input-sm">
+							<label style="width: 24%; text-align: left;" class="control-label" for="amount">合同金额</label> <input id="amount" name="adcontract.amount" class="form-control input-sm" type="number">
 						</div>
 						<div class="form-group form-inline col-md-12 col-lg-6 ">
 							<label style="width: 24%; text-align: left;" class="control-label" for="guanggaokanhu">下单人</label> <input class="form-control input-sm" id="placer" name="adcontract.placer">
