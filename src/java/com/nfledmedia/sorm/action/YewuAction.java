@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,12 +24,12 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.struts2.ServletActionContext;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.nfledmedia.sorm.cons.CommonConstant;
 import com.nfledmedia.sorm.cons.TypeCollections;
 import com.nfledmedia.sorm.entity.Adcontract;
@@ -286,6 +287,325 @@ public class YewuAction extends SuperAction {
 		this.yewuyuan = yewuyuan;
 	}
 
+	public int getPage() {
+		return page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
+	public String getSidx() {
+		return sidx;
+	}
+
+	public void setSidx(String sidx) {
+		this.sidx = sidx;
+	}
+
+	public String getSord() {
+		return sord;
+	}
+
+	public void setSord(String sord) {
+		this.sord = sord;
+	}
+
+	public int getRows() {
+		return rows;
+	}
+
+	public void setRows(int rows) {
+		this.rows = rows;
+	}
+
+	public boolean is_search() {
+		return _search;
+	}
+
+	public void set_search(boolean _search) {
+		this._search = _search;
+	}
+
+	public String getSearchField() {
+		return searchField;
+	}
+
+	public void setSearchField(String searchField) {
+		this.searchField = searchField;
+	}
+
+	public String getSearchString() {
+		return searchString;
+	}
+
+	public void setSearchString(String searchString) {
+		this.searchString = searchString;
+	}
+
+	public String getSearchOper() {
+		return searchOper;
+	}
+
+	public void setSearchOper(String searchOper) {
+		this.searchOper = searchOper;
+	}
+
+	public Integer getTid() {
+		return tid;
+	}
+
+	public void setTid(Integer tid) {
+		this.tid = tid;
+	}
+
+	public Integer getYewuId() {
+		return yewuId;
+	}
+
+	public void setYewuId(Integer yewuId) {
+		this.yewuId = yewuId;
+	}
+
+	public String getLedId() {
+		return ledId;
+	}
+
+	public void setLedId(String ledId) {
+		this.ledId = ledId;
+	}
+
+	public Integer getShichang() {
+		return shichang;
+	}
+
+	public void setShichang(Integer shichang) {
+		this.shichang = shichang;
+	}
+
+	public Integer getPinci() {
+		return pinci;
+	}
+
+	public void setPinci(Integer pinci) {
+		this.pinci = pinci;
+	}
+
+	public Date getKaishishijian() {
+		return kaishishijian;
+	}
+
+	public void setKaishishijian(Date kaishishijian) {
+		this.kaishishijian = kaishishijian;
+	}
+
+	public Date getJieshushijian() {
+		return jieshushijian;
+	}
+
+	public void setJieshushijian(Date jieshushijian) {
+		this.jieshushijian = jieshushijian;
+	}
+
+	public Double getShuliang() {
+		return shuliang;
+	}
+
+	public void setShuliang(Double shuliang) {
+		this.shuliang = shuliang;
+	}
+
+	public String getGuanggaoneirong() {
+		return guanggaoneirong;
+	}
+
+	public void setGuanggaoneirong(String guanggaoneirong) {
+		this.guanggaoneirong = guanggaoneirong;
+	}
+
+	public Short getIndustryId() {
+		return industryId;
+	}
+
+	public void setIndustryId(Short industryId) {
+		this.industryId = industryId;
+	}
+
+	public String getTimeRange() {
+		return timeRange;
+	}
+
+	public void setTimeRange(String timeRange) {
+		this.timeRange = timeRange;
+	}
+
+	public String getIndustry() {
+		return industry;
+	}
+
+	public void setIndustry(String industry) {
+		this.industry = industry;
+	}
+
+	public String getLed() {
+		return led;
+	}
+
+	public void setLed(String led) {
+		this.led = led;
+	}
+
+	public String getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(String startTime) {
+		this.startTime = startTime;
+	}
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getSelectclassifyind() {
+		return selectclassifyind;
+	}
+
+	public void setSelectclassifyind(String selectclassifyind) {
+		this.selectclassifyind = selectclassifyind;
+	}
+
+	public String getSelectbumenid() {
+		return selectbumenid;
+	}
+
+	public void setSelectbumenid(String selectbumenid) {
+		this.selectbumenid = selectbumenid;
+	}
+
+	public String getLeixing() {
+		return leixing;
+	}
+
+	public void setLeixing(String leixing) {
+		this.leixing = leixing;
+	}
+
+	public String getKanhu() {
+		return kanhu;
+	}
+
+	public void setKanhu(String kanhu) {
+		this.kanhu = kanhu;
+	}
+
+	public String getUpdateReason() {
+		return updateReason;
+	}
+
+	public void setUpdateReason(String updateReason) {
+		this.updateReason = updateReason;
+	}
+
+	public String getAddReason() {
+		return addReason;
+	}
+
+	public void setAddReason(String addReason) {
+		this.addReason = addReason;
+	}
+
+	public String getRenkanbianhao() {
+		return renkanbianhao;
+	}
+
+	public void setRenkanbianhao(String renkanbianhao) {
+		this.renkanbianhao = renkanbianhao;
+	}
+
+	public int getAnnualIndustry() {
+		return annualIndustry;
+	}
+
+	public void setAnnualIndustry(int annualIndustry) {
+		this.annualIndustry = annualIndustry;
+	}
+
+	/**
+	 * @return the annualIndustry1
+	 */
+	public int getAnnualIndustry1() {
+		return annualIndustry1;
+	}
+
+	/**
+	 * @param annualIndustry1
+	 *            the annualIndustry1 to set
+	 */
+	public void setAnnualIndustry1(int annualIndustry1) {
+		this.annualIndustry1 = annualIndustry1;
+	}
+
+	public int getAnnualYeji() {
+		return annualYeji;
+	}
+
+	public void setAnnualYeji(int annualYeji) {
+		this.annualYeji = annualYeji;
+	}
+
+	public int getAnnualLedSum() {
+		return annualLedSum;
+	}
+
+	public void setAnnualLedSum(int annualLedSum) {
+		this.annualLedSum = annualLedSum;
+	}
+
+	public Integer getGoalYwyId() {
+		return goalYwyId;
+	}
+
+	public void setGoalYwyId(Integer goalYwyId) {
+		this.goalYwyId = goalYwyId;
+	}
+
+	public Integer getYear() {
+		return year;
+	}
+
+	public void setYear(Integer year) {
+		this.year = year;
+	}
+
+	public Integer getMonth() {
+		return month;
+	}
+
+	public void setMonth(Integer month) {
+		this.month = month;
+	}
+
+	public String getNd() {
+		return nd;
+	}
+
+	public void setNd(String nd) {
+		this.nd = nd;
+	}
+	
 	private void sentMsg(String content) throws IOException {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setCharacterEncoding("utf-8");
@@ -299,36 +619,36 @@ public class YewuAction extends SuperAction {
 	// 添加新的行业，返回更新的列表，同时前台更新
 	public void addIndustryCustomer() throws Exception {
 		String info = renkanshuService.saveIndustry(industryname);
-		JSONObject jsonObject = new JSONObject();
-		JSONArray industryIdArr = new JSONArray();
-		JSONArray industryNameArr = new JSONArray();
+		JsonObject jsonObject = new JsonObject();
+		JsonArray industryIdArr = new JsonArray();
+		JsonArray industryNameArr = new JsonArray();
 		Short this_id = null;
 		List<Industry> list = baseService.industryList();
 		for (Industry ind : list) {
-			industryIdArr.put(ind.getIndustryid());
-			industryNameArr.put(ind.getIndustryname());
+			industryIdArr.add(ind.getIndustryid());
+			industryNameArr.add(ind.getIndustryname());
 			if (industryname.equals(ind.getIndustryname())) {
 				this_id = ind.getIndustryid();
 			} ;
 		}
-		jsonObject.put("info", info);
-		jsonObject.put("ind_ids", industryIdArr);
-		jsonObject.put("ind_names", industryNameArr);
-		jsonObject.put("thisIndId", this_id);
+		jsonObject.addProperty("info", info);
+		jsonObject.add("ind_ids", industryIdArr);
+		jsonObject.add("ind_names", industryNameArr);
+		jsonObject.addProperty("thisIndId", this_id);
 
 		sentMsg(jsonObject.toString());
 
 	}
 
 	public String autocompleteclient() throws IOException {
-		JSONArray jsonArray = new JSONArray();
+		JsonArray jsonArray = new JsonArray();
 		List<Adcontract> list = adcontractService.getClientsLikeKeyword(keyword);
 		for (Adcontract adcontract : list) {
 			if (!"".equals(adcontract.getClient()) && adcontract != null) {
-				jsonArray.put(adcontract.getClient());
+				jsonArray.add(adcontract.getClient());
 			}
 		}
-		JSONArray arr = new JSONArray();
+		JsonArray arr = new JsonArray();
 		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
@@ -337,14 +657,14 @@ public class YewuAction extends SuperAction {
 	}
 
 	public String autocompleteagency() throws IOException {
-		JSONArray jsonArray = new JSONArray();
+		JsonArray jsonArray = new JsonArray();
 		List<Adcontract> list = adcontractService.getAgencysLikeKeyword(keyword);
 		for (Adcontract adcontract : list) {
 			if (!"".equals(adcontract.getAgency()) && adcontract != null) {
-				jsonArray.put(adcontract.getAgency());
+				jsonArray.add(adcontract.getAgency());
 			}
 		}
-		JSONArray arr = new JSONArray();
+		JsonArray arr = new JsonArray();
 		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
@@ -353,14 +673,14 @@ public class YewuAction extends SuperAction {
 	}
 
 	public String autocompletecontent() throws IOException {
-		JSONArray jsonArray = new JSONArray();
+		JsonArray jsonArray = new JsonArray();
 		List<Order> list = renkanshuService.getContentsLikeKeyword(keyword);
 		for (Order o : list) {
 			if (!"".equals(o.getContent()) && o != null) {
-				jsonArray.put(o.getContent());
+				jsonArray.add(o.getContent());
 			}
 		}
-		JSONArray arr = new JSONArray();
+		JsonArray arr = new JsonArray();
 		arr = JsonarrayDistinct.jsonarrayDistinct(jsonArray);
 		System.out.println("jsonArray:" + arr.toString());
 		sentMsg(arr.toString());
@@ -390,32 +710,32 @@ public class YewuAction extends SuperAction {
 			result = renkanshuService.getPublishdetailManageListByKeyword(searchString, sidx, sord, page, rows);
 		}
 
-		JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
-		JSONArray jsonArray = new JSONArray();
+		JsonObject jsonObject = PageToJson.toJsonWithoutData(result);
+		JsonArray jsonArray = new JsonArray();
 		List data = result.getResult();
 
 		for (int i = 0, size = data.size(); i < size; i++) {
 
 			Object[] row = (Object[]) data.get(i);
 
-			JSONObject jsonObject1 = new JSONObject();
-			jsonObject1.put("id", row[1]);// 订单编号
+			JsonObject jsonObject1 = new JsonObject();
+			jsonObject1.addProperty("id", (String) row[1]);// 订单编号
 
-			JSONArray jsonArray2 = new JSONArray(); // 求取cell
-			jsonArray2.put(row[2]);// 上画点位
-			jsonArray2.put(row[3]);// 客户
-			jsonArray2.put(row[6]);// 客户属性
-			jsonArray2.put(row[5]);// 下单属性
-			jsonArray2.put(row[4]);// 发布内容
-			jsonArray2.put(row[7]);// 广告频次
-			jsonArray2.put(row[9]);// 广告时长
-			jsonArray2.put(sdf.format(row[10]));// 日期
-			jsonArray2.put(tdf.format(row[11]) + "-" + tdf.format(row[12]));// 时段
-			jsonObject1.put("cell", jsonArray2); // 加入cell
+			JsonArray jsonArray2 = new JsonArray(); // 求取cell
+			jsonArray2.add((String) row[2]);// 上画点位
+			jsonArray2.add((String) row[3]);// 客户
+			jsonArray2.add((String) row[6]);// 客户属性
+			jsonArray2.add((String) row[5]);// 下单属性
+			jsonArray2.add((String) row[4]);// 发布内容
+			jsonArray2.add((String) row[7]);// 广告频次
+			jsonArray2.add((String) row[9]);// 广告时长
+			jsonArray2.add(sdf.format(row[10]));// 日期
+			jsonArray2.add(tdf.format(row[11]) + "-" + tdf.format(row[12]));// 时段
+			jsonObject1.add("cell", jsonArray2); // 加入cell
 
-			jsonArray.put(jsonObject1);
+			jsonArray.add(jsonObject1);
 		}
-		jsonObject.put("rows", jsonArray); // 加入rows
+		jsonObject.add("rows", jsonArray); // 加入rows
 		System.out.println("jsonObject:" + jsonObject.toString());
 		sentMsg(jsonObject.toString());
 		return null;
@@ -437,39 +757,39 @@ public class YewuAction extends SuperAction {
 			result = renkanshuService.getRenkanshuManageListByKeyword(searchString, sidx, sord, page, rows);
 		}
 
-		JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
-		JSONArray jsonArray = new JSONArray();
+		JsonObject jsonObject = PageToJson.toJsonWithoutData(result);
+		JsonArray jsonArray = new JsonArray();
 		List data = result.getResult();
 
 		for (int i = 0, size = data.size(); i < size; i++) {
 
 			Object[] row = (Object[]) data.get(i);
 
-			JSONObject jsonObject1 = new JSONObject();
-			jsonObject1.put("id", row[0]);// 订单编号
-			JSONArray jsonArray2 = new JSONArray(); // 求取cell
-			jsonArray2.put(row[1]);// 上画点位
-			jsonArray2.put(row[2]);// 客户
-			jsonArray2.put(row[3]);// 代理公司
+			JsonObject jsonObject1 = new JsonObject();
+			jsonObject1.addProperty("id", row[0].toString());// 订单编号
+			JsonArray jsonArray2 = new JsonArray(); // 求取cell
+			jsonArray2.add((String) row[1]);// 上画点位
+			jsonArray2.add((String) row[2]);// 客户
+			jsonArray2.add((String) row[3]);// 代理公司
 			// 放入客户
 			// if (null != row[3] && !"".equals(row[3])) {
 			// jsonArray2.put(row[3]);
 			// } else {
 			// jsonArray2.put(row[2]);
 			// }
-			jsonArray2.put(row[14]);// 客户属性
-			jsonArray2.put(row[13]);// 下单属性
-			jsonArray2.put(row[4]);// 发布内容
-			jsonArray2.put(row[5]);// 广告频次
-			jsonArray2.put(row[7]);// 广告时长
-			jsonArray2.put(sdf.format(row[8]) + " - " + sdf.format(row[9]));// 起止日期
-			jsonArray2.put(tdf.format(row[10]) + "-" + tdf.format(row[11]));// 时段
-			jsonArray2.put(row[15]);// 下单人
-			jsonArray2.put(row[12]);// 备注
-			jsonObject1.put("cell", jsonArray2); // 加入cell
-			jsonArray.put(jsonObject1);
+			jsonArray2.add((String) row[14]);// 客户属性
+			jsonArray2.add((String) row[13]);// 下单属性
+			jsonArray2.add((String) row[4]);// 发布内容
+			jsonArray2.add(row[5].toString());// 广告频次
+			jsonArray2.add(row[7].toString());// 广告时长
+			jsonArray2.add(sdf.format(row[8]) + " - " + sdf.format(row[9]));// 起止日期
+			jsonArray2.add(tdf.format(row[10]) + "-" + tdf.format(row[11]));// 时段
+			jsonArray2.add((String) row[15]);// 下单人
+			jsonArray2.add((String) row[12]);// 备注
+			jsonObject1.add("cell", jsonArray2); // 加入cell
+			jsonArray.add(jsonObject1);
 		}
-		jsonObject.put("rows", jsonArray); // 加入rows
+		jsonObject.add("rows", jsonArray); // 加入rows
 		System.out.println("jsonObject:" + jsonObject.toString());
 		sentMsg(jsonObject.toString());
 		return null;
@@ -1529,7 +1849,6 @@ public class YewuAction extends SuperAction {
 					dateInx = cal.getTime();
 				}
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
 
 				e.printStackTrace();
 			}
@@ -1763,11 +2082,13 @@ public class YewuAction extends SuperAction {
 			order2ArrayList.add(order.getLed().getName());// 屏点
 			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
 			order2ArrayList.add(order.getAdcontract().getAgency());// 代理公司
+			order2ArrayList.add(NumberFormat.getCurrencyInstance().format(order.getAdcontract().getAmount()));// 合同金额
 			order2ArrayList.add(order.getContent());// 广告内容
 			order2ArrayList.add(sdfMd.format(order.getStartdate()));// 上（改、停、撤）刊日期
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
 			order2ArrayList.add(order.getDuration());// 时长
 			order2ArrayList.add(order.getFrequency());// 频次
+			
 			// order2ArrayList.add("");// 排播接单人
 			order2ArrayList.add(order.getAdcontract().getPlacer());// 下单人
 			order2ArrayList.add(order.getAdcontract().getRemark() == null ? "" : order.getAdcontract().getRemark());// 备注
@@ -1780,7 +2101,7 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
+		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "合同金额", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
 				"下单人", "备注"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
@@ -1921,21 +2242,21 @@ public class YewuAction extends SuperAction {
 		// 数据集
 		List dataList = yewuService.avgOccuByMonthsReportService(year, led);
 
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArrayMonths = new JSONArray();
-		JSONArray jsonArrayOccupys = new JSONArray();
-		JSONArray jsonArrayDurations = new JSONArray();
+		JsonObject jsonObject = new JsonObject();
+		JsonArray jsonArrayMonths = new JsonArray();
+		JsonArray jsonArrayOccupys = new JsonArray();
+		JsonArray jsonArrayDurations = new JsonArray();
 
 		for (int i = 0, size = dataList.size(); i < size; i++) {
-			JSONObject json = new JSONObject();
+			JsonObject json = new JsonObject();
 			List list = (List) dataList.get(i);
-			jsonArrayMonths.put(list.get(0) + "月");// 订单编号
-			jsonArrayOccupys.put(doubleDotDF.format((double) list.get(1) * 100));
-			jsonArrayDurations.put(doubleDotDF.format(list.get(2)) + " h");
+			jsonArrayMonths.add(list.get(0) + "月");
+			jsonArrayOccupys.add(doubleDotDF.format((double) list.get(1) * 100));
+			jsonArrayDurations.add(doubleDotDF.format(list.get(2)) + " h");
 		}
-		jsonObject.put("months", jsonArrayMonths);
-		jsonObject.put("occupys", jsonArrayOccupys);
-		jsonObject.put("durations", jsonArrayDurations);
+		jsonObject.add("months", jsonArrayMonths);
+		jsonObject.add("occupys", jsonArrayOccupys);
+		jsonObject.add("durations", jsonArrayDurations);
 
 		String chartTitle = "";
 		if (led != null && "".equals(led)) {
@@ -1943,7 +2264,7 @@ public class YewuAction extends SuperAction {
 		} else {
 			chartTitle = led + year + "年平均占屏率";
 		}
-		jsonObject.put("title", chartTitle);
+		jsonObject.addProperty("title", chartTitle);
 		System.out.println("jsonObject:" + jsonObject.toString());
 		sentMsg(jsonObject.toString());
 		return null;
@@ -2063,7 +2384,7 @@ public class YewuAction extends SuperAction {
 		// Map session = ActionContext.getContext().getSession();
 		// Integer id = (Integer) session.get(CommonConstant.SESSION_ID);
 		DecimalFormat df = new DecimalFormat("0.00");
-		JSONObject jsonObject = new JSONObject();
+		JsonObject jsonObject = new JsonObject();
 		List<Led> leds = yewuService.getAllAvaiLed();
 		// data类型为map组成的list
 		// String dateRangeSQL = "2017-11-30 2017-11-30";
@@ -2079,8 +2400,8 @@ public class YewuAction extends SuperAction {
 		String ledName = "";
 		double ledOccuRate = 0;
 
-		JSONArray ledNames = new JSONArray();
-		JSONArray ledOccus = new JSONArray();
+		JsonArray ledNames = new JsonArray();
+		JsonArray ledOccus = new JsonArray();
 		for (int i = 0, size = leds.size(); i < size; i++) {
 
 			ledName = ((Led) leds.get(i)).getName();
@@ -2096,29 +2417,18 @@ public class YewuAction extends SuperAction {
 				ledOccuRate = 0;
 			}
 
-			ledNames.put(ledName);
-			ledOccus.put(df.format(ledOccuRate));
+			ledNames.add(ledName);
+			ledOccus.add(df.format(ledOccuRate));
 		}
 
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put("ledName", ledNames);
-		jsonObject1.put("ledOccuRate", ledOccus);
+		JsonObject jsonObject1 = new JsonObject();
+		jsonObject1.add("ledName", ledNames);
+		jsonObject1.add("ledOccuRate", ledOccus);
 
-		jsonObject.put("ledOccuRates", jsonObject1);
+		jsonObject.add("ledOccuRates", jsonObject1);
 		// jsonObject.put("errorMsg", "服务器错误！");
 		sentMsg(jsonObject.toString());
 		return null;
-	}
-
-	public String returnLedSSTime() throws Exception {
-
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("state", 0);
-		jsonObject.put("startTime", baseService.returnSETimeByLedId(Integer.parseInt(ledId))[0]);
-		jsonObject.put("endTime", baseService.returnSETimeByLedId(Integer.parseInt(ledId))[1]);
-		sentMsg(jsonObject.toString());
-		return null;
-
 	}
 
 	public String updateOrderPage() throws Exception {
@@ -2150,6 +2460,7 @@ public class YewuAction extends SuperAction {
 		Adcontract adcontract = adcontractService.getAdcontractById(adcontractid);
 		ctx.put("ledList", baseService.ledList());
 		ctx.put("industryList", baseService.industryList());
+		ctx.put("publishstyleList", baseService.publishstyleList());
 		ctx.put("attributeList", baseService.attributeList());
 		ctx.put("clienttypeList", baseService.clienttypeList());
 		ctx.put("playstrategyList", baseService.strategyList());
@@ -2166,29 +2477,28 @@ public class YewuAction extends SuperAction {
 	 * @throws IOException
 	 */
 	public String getAlterrecordsByOrderid() throws IOException {
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArray = new JSONArray();
+		JsonObject jsonObject = new JsonObject();
+		JsonArray jsonArray = new JsonArray();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.M.d");
 		SimpleDateFormat fullDateFormat = new SimpleDateFormat("yyyy.M.d HH:mm:ss");
 		List<Alterrecord> altrList = baseService.getAlterrecordByOrderId(orderid);
 		for (Alterrecord alterrecord : altrList) {
 
-			JSONObject json = new JSONObject();
-			json.put("adcontent", alterrecord.getAdcontent());
-			json.put("ledname", alterrecord.getLedname());
-			json.put("duration", alterrecord.getDuration());
-			json.put("frequency", alterrecord.getFrequency());
-			json.put("datetimeRange",
-					dateFormat.format(alterrecord.getDatestart()) + "-" + dateFormat.format(alterrecord.getDateend()));
-			json.put("operatetype", alterrecord.getOperatetype().getOperatetype());
-			json.put("playstrategyname", alterrecord.getPlaystrategyname());
-			json.put("operatetime", fullDateFormat.format(alterrecord.getCreatetime()));
+			JsonObject json = new JsonObject();
+			json.addProperty("adcontent", alterrecord.getAdcontent());
+			json.addProperty("ledname", alterrecord.getLedname());
+			json.addProperty("duration", alterrecord.getDuration());
+			json.addProperty("frequency", alterrecord.getFrequency());
+			json.addProperty("datetimeRange", dateFormat.format(alterrecord.getDatestart()) + "-" + dateFormat.format(alterrecord.getDateend()));
+			json.addProperty("operatetype", alterrecord.getOperatetype().getOperatetype());
+			json.addProperty("playstrategyname", alterrecord.getPlaystrategyname());
+			json.addProperty("operatetime", fullDateFormat.format(alterrecord.getCreatetime()));
 
-			jsonArray.put(json);
+			jsonArray.add(json);
 		}
-		jsonObject.put("state", 0);
-		jsonObject.put("listSize", jsonArray.length());
-		jsonObject.put("listData", jsonArray);
+		jsonObject.addProperty("state", 0);
+		jsonObject.addProperty("listSize", jsonArray.size());
+		jsonObject.add("listData", jsonArray);
 		sentMsg(jsonObject.toString());
 		return null;
 	}
@@ -2200,10 +2510,10 @@ public class YewuAction extends SuperAction {
 	 * @throws IOException
 	 */
 	public String getAdcontractidByOrderid() throws IOException {
-		JSONObject jsonObject = new JSONObject();
+		JsonObject jsonObject = new JsonObject();
 		Adcontract adc = adcontractService.getAdcontractByOrderId(orderid);
-		jsonObject.put("state", 0);
-		jsonObject.put("info", adc.getId());
+		jsonObject.addProperty("state", 0);
+		jsonObject.addProperty("info", adc.getId());
 		sentMsg(jsonObject.toString());
 		return null;
 	}
@@ -2217,45 +2527,45 @@ public class YewuAction extends SuperAction {
 	public String operateOrderList() throws IOException {
 		SimpleDateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
 		SimpleDateFormat sdfHm = new SimpleDateFormat("HH:mm");
-		JSONObject jsonObject = new JSONObject();
-		JSONArray jsonArr = new JSONArray();
+		JsonObject jsonObject = new JsonObject();
+		JsonArray jsonArr = new JsonArray();
 		List orderList = adcontractService.getOrdersByAdcontractId(Integer.valueOf(adcontractid));
 		for (Object object : orderList) {
 			Order order = (Order) object;
-			JSONObject rowObject = new JSONObject();
+			JsonObject rowObject = new JsonObject();
 
-			rowObject.put("id", order.getId());
-			rowObject.put("content", order.getContent());
-			rowObject.put("led", order.getLed().getName());
-			rowObject.put("industry", order.getIndustry().getIndustryname());
-			rowObject.put("attribute", order.getAttribute().getAttributename());
-			rowObject.put("frequency", order.getFrequency());
-			rowObject.put("duration", order.getDuration());
-			rowObject.put("startdate", sdfMd.format(order.getStartdate()));
-			rowObject.put("enddate", sdfMd.format(order.getEnddate()));
-			rowObject.put("starttime", sdfHm.format(order.getStarttime()));
-			rowObject.put("endtime", sdfHm.format(order.getEndtime()));
+			rowObject.addProperty("id", order.getId());
+			rowObject.addProperty("content", order.getContent());
+			rowObject.addProperty("led", order.getLed().getName());
+			rowObject.addProperty("industry", order.getIndustry().getIndustryname());
+			rowObject.addProperty("attribute", order.getAttribute().getAttributename());
+			rowObject.addProperty("frequency", order.getFrequency());
+			rowObject.addProperty("duration", order.getDuration());
+			rowObject.addProperty("startdate", sdfMd.format(order.getStartdate()));
+			rowObject.addProperty("enddate", sdfMd.format(order.getEnddate()));
+			rowObject.addProperty("starttime", sdfHm.format(order.getStarttime()));
+			rowObject.addProperty("endtime", sdfHm.format(order.getEndtime()));
 			if (order.getPlaystrategy() == null) {
-				rowObject.put("playstrategy", "");
+				rowObject.addProperty("playstrategy", "");
 			} else {
-				rowObject.put("playstrategy", order.getPlaystrategy().getStrategyname());
+				rowObject.addProperty("playstrategy", order.getPlaystrategy().getStrategyname());
 			}
 			// List opereventList =
 			// baseService.getOpereventByOrderId(order.getId());
 			List alterrecordList = baseService.getAlterrecordByOrderId(order.getId());
 			if (alterrecordList.size() > 0) {
 				// 单据类型，指认刊，改刊，停刊
-				rowObject.put("operatetype", ((Alterrecord) alterrecordList.get(0)).getOperatetype().getOperatetype());
+				rowObject.addProperty("operatetype", ((Alterrecord) alterrecordList.get(0)).getOperatetype().getOperatetype());
 			} else {
 				// 单据类型，指认刊，改刊，停刊
-				rowObject.put("operatetype", "认刊");
+				rowObject.addProperty("operatetype", "认刊");
 			}
 
-			jsonArr.put(rowObject);
+			jsonArr.add(rowObject);
 
 		}
 		// 查阅api，直接传入行数据的arr
-		jsonObject.put("rows", jsonArr);
+		jsonObject.add("rows", jsonArr);
 
 		sentMsg(jsonArr.toString());
 		return null;
@@ -2273,7 +2583,7 @@ public class YewuAction extends SuperAction {
 		DecimalFormat df = new DecimalFormat("0.00");
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat ssdf = new SimpleDateFormat("MM-dd");
-		JSONObject jsonObject = new JSONObject();
+		JsonObject jsonObject = new JsonObject();
 		Led led = baseService.getLedById(Integer.valueOf(ledId));
 		List<Led> leds = yewuService.getLedListByName(led.getName());
 		// data类型为map组成的list
@@ -2281,11 +2591,11 @@ public class YewuAction extends SuperAction {
 			dateRangeSQL = sdf.format(new Date()) + " " + sdf.format(new Date());
 		}
 
-		JSONArray dateLegend = new JSONArray();
-		JSONArray totalOccus = new JSONArray();
-		JSONArray bussOccus = new JSONArray();
-		JSONArray presOccus = new JSONArray();
-		JSONArray commOccus = new JSONArray();
+		JsonArray dateLegend = new JsonArray();
+		JsonArray totalOccus = new JsonArray();
+		JsonArray bussOccus = new JsonArray();
+		JsonArray presOccus = new JsonArray();
+		JsonArray commOccus = new JsonArray();
 
 		// 遍历日期
 		Date dateInx = sdf.parse(dateRangeSQL.split(" ")[0]);
@@ -2294,16 +2604,16 @@ public class YewuAction extends SuperAction {
 			String dateRangeStr = dateRange + " " + dateRange;
 			List<Map<String, Integer>> occuDataList = yewuService.calAvgScreenOccuRate4AllScreen(dateRangeStr, leds);
 
-			totalOccus.put(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(0).get(led.getName()))
+			totalOccus.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(0).get(led.getName()))
 					/ (double) occuDataList.get(1).get(led.getName()) * 100));
-			bussOccus.put(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(2).get(led.getName()))
+			bussOccus.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(2).get(led.getName()))
 					/ (double) occuDataList.get(1).get(led.getName()) * 100));
-			presOccus.put(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(3).get(led.getName()))
+			presOccus.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(3).get(led.getName()))
 					/ (double) occuDataList.get(1).get(led.getName()) * 100));
-			commOccus.put(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(4).get(led.getName()))
+			commOccus.add(df.format(TypeNullProcess.nullValueProcess(occuDataList.get(4).get(led.getName()))
 					/ (double) occuDataList.get(1).get(led.getName()) * 100));
 
-			dateLegend.put(ssdf.format(dateInx));
+			dateLegend.add(ssdf.format(dateInx));
 
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(dateInx);
@@ -2311,14 +2621,14 @@ public class YewuAction extends SuperAction {
 			dateInx = cal.getTime();
 		}
 
-		JSONObject jsonObject1 = new JSONObject();
-		jsonObject1.put("dateLegend", dateLegend);
-		jsonObject1.put("totalOccus", totalOccus);
-		jsonObject1.put("bussOccus", bussOccus);
-		jsonObject1.put("presOccus", presOccus);
-		jsonObject1.put("commOccus", commOccus);
+		JsonObject jsonObject1 = new JsonObject();
+		jsonObject1.add("dateLegend", dateLegend);
+		jsonObject1.add("totalOccus", totalOccus);
+		jsonObject1.add("bussOccus", bussOccus);
+		jsonObject1.add("presOccus", presOccus);
+		jsonObject1.add("commOccus", commOccus);
 
-		jsonObject.put("ledOccuRates", jsonObject1);
+		jsonObject.add("ledOccuRates", jsonObject1);
 
 		System.out.println(jsonObject.toString());
 
@@ -2336,332 +2646,18 @@ public class YewuAction extends SuperAction {
 		return str;
 	}
 
-	public String getAllClients() throws JSONException, IOException {
-		JSONObject jsonObject = new JSONObject();
-		jsonObject.put("clients", baseService.clientsList());
+	public String getAllClients() throws IOException {
+		
+		Gson gson = new Gson();
+		JsonObject jsonObject = new JsonObject();
+		JsonArray jsonArray = new JsonArray();
+		List<String> list = baseService.clientsList();
+		
+		jsonObject.add("clients", gson.toJsonTree(list, List.class).getAsJsonArray());
 		sentMsg(jsonObject.toString());
 		return null;
 	}
-
-	public int getPage() {
-		return page;
-	}
-
-	public void setPage(int page) {
-		this.page = page;
-	}
-
-	public String getSidx() {
-		return sidx;
-	}
-
-	public void setSidx(String sidx) {
-		this.sidx = sidx;
-	}
-
-	public String getSord() {
-		return sord;
-	}
-
-	public void setSord(String sord) {
-		this.sord = sord;
-	}
-
-	public int getRows() {
-		return rows;
-	}
-
-	public void setRows(int rows) {
-		this.rows = rows;
-	}
-
-	public boolean is_search() {
-		return _search;
-	}
-
-	public void set_search(boolean _search) {
-		this._search = _search;
-	}
-
-	public String getSearchField() {
-		return searchField;
-	}
-
-	public void setSearchField(String searchField) {
-		this.searchField = searchField;
-	}
-
-	public String getSearchString() {
-		return searchString;
-	}
-
-	public void setSearchString(String searchString) {
-		this.searchString = searchString;
-	}
-
-	public String getSearchOper() {
-		return searchOper;
-	}
-
-	public void setSearchOper(String searchOper) {
-		this.searchOper = searchOper;
-	}
-
-	public Integer getTid() {
-		return tid;
-	}
-
-	public void setTid(Integer tid) {
-		this.tid = tid;
-	}
-
-	public Integer getYewuId() {
-		return yewuId;
-	}
-
-	public void setYewuId(Integer yewuId) {
-		this.yewuId = yewuId;
-	}
-
-	public String getLedId() {
-		return ledId;
-	}
-
-	public void setLedId(String ledId) {
-		this.ledId = ledId;
-	}
-
-	public Integer getShichang() {
-		return shichang;
-	}
-
-	public void setShichang(Integer shichang) {
-		this.shichang = shichang;
-	}
-
-	public Integer getPinci() {
-		return pinci;
-	}
-
-	public void setPinci(Integer pinci) {
-		this.pinci = pinci;
-	}
-
-	public Date getKaishishijian() {
-		return kaishishijian;
-	}
-
-	public void setKaishishijian(Date kaishishijian) {
-		this.kaishishijian = kaishishijian;
-	}
-
-	public Date getJieshushijian() {
-		return jieshushijian;
-	}
-
-	public void setJieshushijian(Date jieshushijian) {
-		this.jieshushijian = jieshushijian;
-	}
-
-	public Double getShuliang() {
-		return shuliang;
-	}
-
-	public void setShuliang(Double shuliang) {
-		this.shuliang = shuliang;
-	}
-
-	public String getGuanggaoneirong() {
-		return guanggaoneirong;
-	}
-
-	public void setGuanggaoneirong(String guanggaoneirong) {
-		this.guanggaoneirong = guanggaoneirong;
-	}
-
-	public Short getIndustryId() {
-		return industryId;
-	}
-
-	public void setIndustryId(Short industryId) {
-		this.industryId = industryId;
-	}
-
-	public String getTimeRange() {
-		return timeRange;
-	}
-
-	public void setTimeRange(String timeRange) {
-		this.timeRange = timeRange;
-	}
-
-	public String getIndustry() {
-		return industry;
-	}
-
-	public void setIndustry(String industry) {
-		this.industry = industry;
-	}
-
-	public String getLed() {
-		return led;
-	}
-
-	public void setLed(String led) {
-		this.led = led;
-	}
-
-	public String getStartTime() {
-		return startTime;
-	}
-
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-
-	public String getEndTime() {
-		return endTime;
-	}
-
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-
-	public String getState() {
-		return state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	public String getSelectclassifyind() {
-		return selectclassifyind;
-	}
-
-	public void setSelectclassifyind(String selectclassifyind) {
-		this.selectclassifyind = selectclassifyind;
-	}
-
-	public String getSelectbumenid() {
-		return selectbumenid;
-	}
-
-	public void setSelectbumenid(String selectbumenid) {
-		this.selectbumenid = selectbumenid;
-	}
-
-	public String getLeixing() {
-		return leixing;
-	}
-
-	public void setLeixing(String leixing) {
-		this.leixing = leixing;
-	}
-
-	public String getKanhu() {
-		return kanhu;
-	}
-
-	public void setKanhu(String kanhu) {
-		this.kanhu = kanhu;
-	}
-
-	public String getUpdateReason() {
-		return updateReason;
-	}
-
-	public void setUpdateReason(String updateReason) {
-		this.updateReason = updateReason;
-	}
-
-	public String getAddReason() {
-		return addReason;
-	}
-
-	public void setAddReason(String addReason) {
-		this.addReason = addReason;
-	}
-
-	public String getRenkanbianhao() {
-		return renkanbianhao;
-	}
-
-	public void setRenkanbianhao(String renkanbianhao) {
-		this.renkanbianhao = renkanbianhao;
-	}
-
-	public int getAnnualIndustry() {
-		return annualIndustry;
-	}
-
-	public void setAnnualIndustry(int annualIndustry) {
-		this.annualIndustry = annualIndustry;
-	}
-
-	/**
-	 * @return the annualIndustry1
-	 */
-	public int getAnnualIndustry1() {
-		return annualIndustry1;
-	}
-
-	/**
-	 * @param annualIndustry1
-	 *            the annualIndustry1 to set
-	 */
-	public void setAnnualIndustry1(int annualIndustry1) {
-		this.annualIndustry1 = annualIndustry1;
-	}
-
-	public int getAnnualYeji() {
-		return annualYeji;
-	}
-
-	public void setAnnualYeji(int annualYeji) {
-		this.annualYeji = annualYeji;
-	}
-
-	public int getAnnualLedSum() {
-		return annualLedSum;
-	}
-
-	public void setAnnualLedSum(int annualLedSum) {
-		this.annualLedSum = annualLedSum;
-	}
-
-	public Integer getGoalYwyId() {
-		return goalYwyId;
-	}
-
-	public void setGoalYwyId(Integer goalYwyId) {
-		this.goalYwyId = goalYwyId;
-	}
-
-	public Integer getYear() {
-		return year;
-	}
-
-	public void setYear(Integer year) {
-		this.year = year;
-	}
-
-	public Integer getMonth() {
-		return month;
-	}
-
-	public void setMonth(Integer month) {
-		this.month = month;
-	}
-
-	public String getNd() {
-		return nd;
-	}
-
-	public void setNd(String nd) {
-		this.nd = nd;
-	}
-
+	
 	// public String industryAnnualSumExport() throws Exception {
 	// System.out.println("------------industryAnnualSumExport----------");
 	// int annual;
@@ -2723,8 +2719,8 @@ public class YewuAction extends SuperAction {
 	// }
 	// }
 	// }
-	// JSONArray jsonArray = new JSONArray();
-	// JSONObject jsonObject = new JSONObject();
+	// JsonArray jsonArray = new JsonArray();
+	// JsonObject jsonObject = new JsonObject();
 	//
 	// List list = new ArrayList();
 	//
@@ -2766,8 +2762,8 @@ public class YewuAction extends SuperAction {
 	// result = yewuService.getAvgScreenOccuRateListByKeyword(sidx, sord, page,
 	// rows, searchString, dateRangeSQL);
 	//
-	// JSONObject jsonObject = PageToJson.toJsonWithoutData(result);
-	// JSONArray jsonArray = new JSONArray();
+	// JsonObject jsonObject = PageToJson.toJsonWithoutData(result);
+	// JsonArray jsonArray = new JsonArray();
 	// List data = result.getResult();
 	//
 	// SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
@@ -2775,9 +2771,9 @@ public class YewuAction extends SuperAction {
 	//
 	// Object[] row = (Object[]) data.get(i);
 	//
-	// JSONObject jsonObject1 = new JSONObject();
+	// JsonObject jsonObject1 = new JsonObject();
 	// // jsonObject1.put("id", row[0]);
-	// JSONArray jsonArray2 = new JSONArray(); // 求取cell
+	// JsonArray jsonArray2 = new JsonArray(); // 求取cell
 	//
 	// jsonArray2.put(row[0]); // 年份
 	// jsonArray2.put(row[1]); // 自有屏
@@ -2785,7 +2781,7 @@ public class YewuAction extends SuperAction {
 	// jsonArray2.put(row[3]); // 占屏率
 	//
 	// jsonObject1.put("cell", jsonArray2); // 加入cell
-	// jsonArray.put(jsonObject1);
+	// jsonArray.add(jsonObject1);
 	// }
 	// jsonObject.put("rows", jsonArray); // 加入rows
 	// // System.out.println("jsonObject:" + jsonObject.toString());
@@ -2939,7 +2935,7 @@ public class YewuAction extends SuperAction {
 	// }
 
 	// public String updateOrder() throws Exception {
-	// JSONObject jsonObject = new JSONObject();
+	// JsonObject jsonObject = new JsonObject();
 	// Map session = ActionContext.getContext().getSession();
 	// Integer userID = (Integer) session.get(CommonConstant.SESSION_ID);
 	// System.out.println("………………………………updateOrder……………………………………" + userID + " "
@@ -2958,7 +2954,7 @@ public class YewuAction extends SuperAction {
 	// }
 
 	// public String upOrder() throws Exception {
-	// JSONObject jsonObject = new JSONObject();
+	// JsonObject jsonObject = new JsonObject();
 	// Map session = ActionContext.getContext().getSession();
 	// Integer userID = (Integer) session.get(CommonConstant.SESSION_ID);
 	// yewuService.upOrder(userID, tid, upReason);
@@ -2969,7 +2965,7 @@ public class YewuAction extends SuperAction {
 	// }
 	//
 	// public String addOrder() throws Exception {
-	// JSONObject jsonObject = new JSONObject();
+	// JsonObject jsonObject = new JsonObject();
 	// Map session = ActionContext.getContext().getSession();
 	// Integer userID = (Integer) session.get(CommonConstant.SESSION_ID);
 	// Renkanshu renkanshu =
@@ -3092,12 +3088,12 @@ public class YewuAction extends SuperAction {
 	// System.out.println("-----------------------------------------------------");
 	// System.out.println("集合大小：" + tset.size());
 	// System.out.println("数组长度：" + ratios.length);
-	// JSONArray jsonArray = new JSONArray();
+	// JsonArray jsonArray = new JsonArray();
 	// Iterator<String> iterator = tset.iterator();
 	// // String str;
-	// JSONArray jsonArray1 = new JSONArray();
-	// JSONArray jsonArray2 = new JSONArray();
-	// JSONArray jsonArray3 = new JSONArray();
+	// JsonArray jsonArray1 = new JsonArray();
+	// JsonArray jsonArray2 = new JsonArray();
+	// JsonArray jsonArray3 = new JsonArray();
 	// jsonArray1.put("a");
 	// jsonArray2.put(0.001);
 	// jsonArray3.put(0);
@@ -3119,11 +3115,11 @@ public class YewuAction extends SuperAction {
 	// ctx.put("ratios", jsonArray2);
 	// ctx.put("amounts", jsonArray3);
 	//
-	// JSONArray jsonArrayModal = new JSONArray();
+	// JsonArray jsonArrayModal = new JsonArray();
 	//
 	// for (int i = 0, length = distinctResult4modal.size(); i < length; i++) {
 	// Object[] objects = (Object[]) distinctResult4modal.get(i);
-	// JSONObject jsonObjectModalCell = new JSONObject();
+	// JsonObject jsonObjectModalCell = new JsonObject();
 	//
 	// jsonObjectModalCell.put("industry", objects[0]);
 	// jsonObjectModalCell.put("client", objects[1]);
@@ -3143,7 +3139,7 @@ public class YewuAction extends SuperAction {
 	//
 	// // ctx.put("industryclassifys", yewuService.getAllIndustryclassify());
 	//
-	// // JSONObject jsonObjectA = new JSONObject();
+	// // JsonObject jsonObjectA = new JsonObject();
 	// // jsonObjectA.put("industryArr", jsonArray1);
 	// // jsonObjectA.put("ratioArr", jsonArray2);
 	// //
@@ -3308,13 +3304,13 @@ public class YewuAction extends SuperAction {
 	// // long totalCount=listIndustryclassfy.size();
 	// // Page page=Page(startIndex, totalCount, rows, listIndustryclassfy);
 	//
-	// JSONArray jsonArray = new JSONArray();
-	// JSONObject jsonObject = new JSONObject();
+	// JsonArray jsonArray = new JsonArray();
+	// JsonObject jsonObject = new JsonObject();
 	// for (int i = 0, size = listIndustryclassfy.size(); i < size; i++) {
 	// // Object[] row = (Object[]) result[j].get(i);
 	//
-	// JSONObject jsonObject1 = new JSONObject();
-	// JSONArray jsonArray2 = new JSONArray(); // 求取cell
+	// JsonObject jsonObject1 = new JsonObject();
+	// JsonArray jsonArray2 = new JsonArray(); // 求取cell
 	//
 	// jsonArray2.put(IndustryClassfyName[i]);// 行业
 	//
@@ -3334,12 +3330,12 @@ public class YewuAction extends SuperAction {
 	// jsonArray2.put(Double.parseDouble(df.format(ratiosCount[i])));
 	//
 	// jsonObject1.put("cell", jsonArray2); // 加入cell
-	// jsonArray.put(jsonObject1);
+	// jsonArray.add(jsonObject1);
 	// }
 	// // System.out.println("jsonObject");
 	// // System.out.println(jsonArray.length());
-	// JSONArray jsonArrayIndustryClassify = new JSONArray();
-	// JSONArray jsonArrayRatios = new JSONArray();
+	// JsonArray jsonArrayIndustryClassify = new JsonArray();
+	// JsonArray jsonArrayRatios = new JsonArray();
 	// for (int i = 0; i < 10; i++) {
 	// jsonArrayIndustryClassify.put(IndustryClassfyName[i]);
 	// jsonArrayRatios.put(Double.parseDouble(df.format(ratiosCount[i])));
