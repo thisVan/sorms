@@ -2082,7 +2082,12 @@ public class YewuAction extends SuperAction {
 			order2ArrayList.add(order.getLed().getName());// 屏点
 			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
 			order2ArrayList.add(order.getAdcontract().getAgency());// 代理公司
-			order2ArrayList.add(NumberFormat.getCurrencyInstance().format(order.getAdcontract().getAmount()));// 合同金额
+			if (order.getAdcontract().getAmount() == null || "".equals(order.getAdcontract().getAmount())) {
+				order2ArrayList.add("");// 合同金额
+			} else {
+				order2ArrayList.add(NumberFormat.getCurrencyInstance().format(Double.valueOf(order.getAdcontract().getAmount())));// 合同金额
+			}
+			
 			order2ArrayList.add(order.getContent());// 广告内容
 			order2ArrayList.add(sdfMd.format(order.getStartdate()));// 上（改、停、撤）刊日期
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
