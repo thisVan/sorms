@@ -135,7 +135,7 @@ public class YewuAction extends SuperAction {
 
 	/**
 	 * @param orderid
-	 *            the orderid to set
+	 * the orderid to set
 	 */
 	public void setOrderid(Integer orderid) {
 		this.orderid = orderid;
@@ -2565,6 +2565,49 @@ public class YewuAction extends SuperAction {
 				// 单据类型，指认刊，改刊，停刊
 				rowObject.addProperty("operatetype", "认刊");
 			}
+
+			jsonArr.add(rowObject);
+
+		}
+		// 查阅api，直接传入行数据的arr
+		jsonObject.add("rows", jsonArr);
+
+		sentMsg(jsonArr.toString());
+		return null;
+
+	}
+	
+	/**
+	 * 改刊页面加载orderhistory列表
+	 * 
+	 * @return String
+	 * @throws IOException
+	 */
+	public String orderOperateHistory() throws IOException {
+		SimpleDateFormat sdfMd = new SimpleDateFormat("yyyy.M.d");
+		SimpleDateFormat sdfHm = new SimpleDateFormat("HH:mm");
+		SimpleDateFormat sdfymdHm = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+		JsonObject jsonObject = new JsonObject();
+		JsonArray jsonArr = new JsonArray();
+		List alterrecordList = adcontractService.getAlterrecordsByOrderidSort(orderid);
+		for (Object object : alterrecordList) {
+			Alterrecord alterrecord = (Alterrecord) object;
+			JsonObject rowObject = new JsonObject();
+
+			rowObject.addProperty("alterdate", sdfymdHm.format(alterrecord.getAlterdate()));
+			rowObject.addProperty("operater", alterrecord.getOperater());
+			rowObject.addProperty("content", alterrecord.getAdcontent());
+			rowObject.addProperty("led", alterrecord.getLedname());
+			rowObject.addProperty("frequency", alterrecord.getFrequency());
+			rowObject.addProperty("duration", alterrecord.getDuration());
+			rowObject.addProperty("startdate", sdfMd.format(alterrecord.getDatestart()));
+			rowObject.addProperty("enddate", sdfMd.format(alterrecord.getDateend()));
+			if (alterrecord.getPlaystrategyname() == null) {
+				rowObject.addProperty("playstrategy", "");
+			} else {
+				rowObject.addProperty("playstrategy", alterrecord.getPlaystrategyname());
+			}
+			rowObject.addProperty("operatetype", alterrecord.getOperatetype().getOperatetype());
 
 			jsonArr.add(rowObject);
 

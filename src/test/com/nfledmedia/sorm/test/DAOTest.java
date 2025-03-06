@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -128,7 +129,7 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 		com.nfledmedia.sorm.entity.Order order = orderDAO.findById(2278);
 		System.out.println(order.toString());
 		OrderHistory oh = new OrderHistory();
-		oh = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, oh);
+		oh = (OrderHistory) new ClassesConvertTool().convertObject1ToObject2(order, oh);
 		Operatetype op = operatetypeDAO.findById((short) 1);
 		oh.setOperatetype(new Operatetype((short) 1));
 		oh.setOperater("admin");
@@ -156,7 +157,7 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 		OrderHistory oh = new OrderHistory();
 		OrderHistory oh1 = new OrderHistory();
 		
-		oh = (OrderHistory) new ClassesConvertTool().makeObject1ToObject2(order, oh);
+		oh = (OrderHistory) new ClassesConvertTool().convertObject1ToObject2(order, oh);
 		BeanUtils.copyProperties(order, oh1);
 		
 		oh.setOperatetype(operatetypeDAO.findById((short) 1));
@@ -218,7 +219,6 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 			List list = alterrecordDAO.findByOrderId(47);
 			System.out.println(list.size());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -230,5 +230,13 @@ public class DAOTest extends AbstractJUnit4SpringContextTests {
 		map = publishdetailDAO.getAvgOccuDataset(2019,"南都楼顶");
 		System.out.println(System.currentTimeMillis());
 		System.out.println(map);
+	}
+	
+	@Test
+	public void testAlterrecordDAO() {
+		List list = alterrecordDAO.findByProperty("order.id",23962);
+		for (Object object : list) {
+			System.out.println(object);
+		}
 	}
 }

@@ -233,9 +233,17 @@
 					</div>
 					<div class="modal-body " >
 						<form id="batchStopAdvertise_form" action="" class="form-horizontal" role="form">
-							<div class="form-group">
+							<!-- <div class="form-group">
 							    <label for="name">日期</label>
 							    <input type="date" class="form-control" name="adEndDate" id="adEndDate" />
+							</div> -->
+							<div class="form-group">
+							    <label for="name">开始日期</label>
+							    <input type="date" class="form-control" name="stopAdvertiseDateFrom" id="stopAdvertiseDateFrom" />
+							</div>
+							<div class="form-group">
+							    <label for="name">结束日期</label>
+							    <input type="date" class="form-control" name="stopAdvertiseDateTo" id="stopAdvertiseDateTo" />
 							</div>
 							<div class="form-group">
 							    <label for="name">备注</label>
@@ -260,19 +268,35 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
+		
+		<!-- Button trigger modal -->
+		
+		
+		<!-- Modal -->
+		<div class="modal fade" id="alterHistoryModal" aria-labelledby="alterHistoryModalLabel" >
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h3 class="modal-title " id="alterHistoryModalLabel">改停撤刊记录</h3>
+		      </div>
+		      <div class="modal-body" id="alterHistoryModalBodyContent">
+		      
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="closeAlterHistoryModal()">关闭</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 
 		</div>
 	</div>
-	<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
-	<script src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
-
-</body>
-</html>
-<content tag="scripts">
-<script src="js/king-common.js"></script>
-<script src="js/moment.js"></script>
-<script src="js/daterangepicker.js"></script>
-<script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.js"></script>
+<script type="text/javascript" src="js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script type="text/javascript" src="js/king-common.js"></script>
+<script type="text/javascript" src="js/moment.js"></script>
+<script type="text/javascript" src="js/daterangepicker.js"></script>
+<script type="text/javascript" >
 
 	var nameValid = true;
 
@@ -456,7 +480,8 @@
 				title : '播放策略'
 			}, {
 				field : 'operatetype',
-				title : '单据类型'
+				title : '单据类型',
+				formatter : operateFormatter
 			}, {
 				field : 'action',
 				title : '操作',
@@ -472,6 +497,24 @@
 		});	
 
 	});
+	
+	// 查看改停撤刊历史
+	function operateFormatter(value, row, index) {
+		//orderListRows.push(row);
+		var result = "";
+		console.log(value, row, index);
+		if (value == "认刊") {
+			result = value;
+		} else {
+			result = "<a href='javascript:;' class='btn btn-xs blue' onclick='showAlterHistory(" + row.id + ")' title='查看改刊记录'>" + value + "</a>";
+		}
+		return result;
+	}
+	
+	function closeAlterHistoryModal() {
+		$("#alterHistoryModalBodyContent").html("");
+		$("#alterHistoryModal").modal('hide');
+	}
 
 	//操作栏的格式化
 	function actionFormatter(value, row, index) {
@@ -483,8 +526,34 @@
 
 		return result;
 	}
-	
-	function alterAdvertise(rowIndex){
+
+	function showAlterHistory(orderid) {
+		
+		console.log(orderid);
+		
+		$.ajax({
+			url : "orderOperateHistory.action?orderid=" + orderid,
+			async : false,
+			success : function(result) {
+				let alterhistorycontent = "";
+				console.log(result);
+				const jsonArr = JSON.parse(result);
+				if (result.length > 0) {
+					for (var i = 0; i < jsonArr.length; i++) {
+						alterhistorycontent += "操作时间：" + jsonArr[i].alterdate + " 操作人：" + jsonArr[i].operater + " 屏点：" + jsonArr[i].operater + " 时长：" + jsonArr[i].duration 
+						+ " 频次：" + jsonArr[i].frequency + " 开始日期：" + jsonArr[i].startdate + " 结束日期：" + jsonArr[i].enddate + " 播放策略：" + jsonArr[i].playstrategy + "<br>";
+						console.log(jsonArr[i]);
+					}
+				}
+				
+				$("#alterHistoryModalBodyContent").html(alterhistorycontent);
+			}
+		});
+
+		$("#alterHistoryModal").modal('show');
+	}
+
+	function alterAdvertise(rowIndex) {
 		checkLocalStorageSupport();
 		console.log("dataRows=" + orderListRows.length);
 		var target = orderListRows[rowIndex];
@@ -496,49 +565,49 @@
 		var eds = target.enddate;
 		var sdsarr = sds.split(".");
 		var edsarr = eds.split(".");
-		for(var i=0;i<sdsarr.length;i++){
-			if(sdsarr[i] < 10){
-				sdsarr[i] = 0+sdsarr[i];
+		for (var i = 0; i < sdsarr.length; i++) {
+			if (sdsarr[i] < 10) {
+				sdsarr[i] = 0 + sdsarr[i];
 			}
 		}
-		for(var i=0;i<edsarr.length;i++){
-			if(edsarr[i] < 10){
-				edsarr[i] = 0+edsarr[i];
+		for (var i = 0; i < edsarr.length; i++) {
+			if (edsarr[i] < 10) {
+				edsarr[i] = 0 + edsarr[i];
 			}
 		}
 		var sdsstr = "";
 		var edsstr = "";
-		for(var i=0;i<sdsarr.length;i++){
-			sdsstr += sdsarr[i]+"-";
-			edsstr += edsarr[i]+"-";
-		}	
-		$("input[name='order.startdate']").val(sdsstr.substr(0, sdsstr.length-1));
-		$("input[name='order.enddate']").val(edsstr.substr(0, edsstr.length-1));
+		for (var i = 0; i < sdsarr.length; i++) {
+			sdsstr += sdsarr[i] + "-";
+			edsstr += edsarr[i] + "-";
+		}
+		$("input[name='order.startdate']").val(sdsstr.substr(0, sdsstr.length - 1));
+		$("input[name='order.enddate']").val(edsstr.substr(0, edsstr.length - 1));
 		$("input[name='order.starttime']").val(target.starttime + ":00");
 		$("input[name='order.endtime']").val(target.endtime + ":00");
 		$("input[name='tid']").val(target.id);
 		console.log("tid=" + $("input[name='tid']").val());
-			
+
 		$("select[name='order.led.id']").find("option").filter(function(index) {
-    		return target.led === $(this).text();
+			return target.led === $(this).text();
 		}).attr("selected", true);
-		
+
 		$("select[name='order.playstrategy.id']").find("option").filter(function(index) {
-    		return target.playstrategy === $(this).text();
+			return target.playstrategy === $(this).text();
 		}).attr("selected", true);
 		var orderdetaildata = "<h4>原单内容</h4>";
-			orderdetaildata += "发布内容："+target.content+"<br>";
-			orderdetaildata += "上画点位："+target.led+"<br>";
-			orderdetaildata += "时长："+target.duration+"<br>";
-			orderdetaildata += "频次："+target.frequency+"<br>";		
-			orderdetaildata += "起止日期："+target.startdate+" - "+target.enddate+"<br>";
-			orderdetaildata += "起止时间："+target.starttime+" - "+target.endtime+"<br>";
-			orderdetaildata += "播放策略："+target.playstrategy+"<br>";
-			
+		orderdetaildata += "发布内容：" + target.content + "<br>";
+		orderdetaildata += "上画点位：" + target.led + "<br>";
+		orderdetaildata += "时长：" + target.duration + "<br>";
+		orderdetaildata += "频次：" + target.frequency + "<br>";
+		orderdetaildata += "起止日期：" + target.startdate + " - " + target.enddate + "<br>";
+		orderdetaildata += "起止时间：" + target.starttime + " - " + target.endtime + "<br>";
+		orderdetaildata += "播放策略：" + target.playstrategy + "<br>";
+
 		localStorage.setItem("singleRowSelected", rowIndex);
 		var selectedRows = $("#tb_order").bootstrapTable('getSelections')
 		//多选的时候，不显示原单内容，显示确认改刊信息
-		if(selectedRows.length > 1){
+		if (selectedRows.length > 1) {
 			var alterPropertiesCheckbox = "<h4>改刊信息</h4>";
 			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='content' id='contentCheck' onclick='checkSelect(this)'>发布内容</button>";
 			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='duration' id='durationCheck' onclick='checkSelect(this)'>时长</button>";
@@ -547,10 +616,10 @@
 			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='enddate' id='enddateCheck' onclick='checkSelect(this)'>结束日期</button>";
 			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='starttime' id='starttimeCheck' onclick='checkSelect(this)'>开始时间</button>";
 			alterPropertiesCheckbox += "<button type='button' class='btn btn-default' name='propertiesCheck' value='endtime' id='endtimeCheck' onclick='checkSelect(this)'>结束时间</button>";
-	
+
 			orderdetaildata = alterPropertiesCheckbox;
 		}
-			
+
 		$("#showOriginOrderdetail").html(orderdetaildata);
 		$("#modal-alterAdvertise").modal('show');
 	}
@@ -558,7 +627,7 @@
 	$("#ok").click(function() {
 		//禁用按钮，防止重复提交
 		$("#ok").attr('disabled', 'disabled');
-		
+
 		var str1 = $("input[name='order.starttime']").val();
 		var str2 = $("input[name='order.endtime']").val();
 		if (str1.length < 8) {
@@ -585,14 +654,14 @@
 			confirmTip = "你选中了多条数据，确定要改刊吗？"
 		}
 		var propertiesButtonCheck = $(":input[name='propertiesCheck']");
-		if(propertiesButtonCheck.length > 0){
-			for(var i=0; i< propertiesButtonCheck.length; i++){
-				if($(propertiesButtonCheck[i]).hasClass("btn-success")){
+		if (propertiesButtonCheck.length > 0) {
+			for (var i = 0; i < propertiesButtonCheck.length; i++) {
+				if ($(propertiesButtonCheck[i]).hasClass("btn-success")) {
 					alterPropertiesArray.push($(propertiesButtonCheck[i]).val());
 				}
 			}
 		}
-		if(orderArray.length > 1 && alterPropertiesArray < 1){
+		if (orderArray.length > 1 && alterPropertiesArray < 1) {
 			alert("请点击指定改刊信息！<br>点击选中，再次点击可以取消选中。");
 			return;
 		}
@@ -627,15 +696,18 @@
 							dataType : "json",
 							traditional : true,
 							async : false,
-							success : function(data) {			
+							success : function(data) {
 								if (data.state === 0) {
 									location.reload();
 								} else {
-									$.alert({title:"系统提示",content:data.info});
+									$.alert({
+										title : "系统提示",
+										content : data.info
+									});
 									$('#tb_order').bootstrapTable('refresh');
-								}								
+								}
 							},
-							error : function(XMLHttpRequest, textStatus, errorThrown) {								
+							error : function(XMLHttpRequest, textStatus, errorThrown) {
 								$.alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
 							}
 						});
@@ -663,6 +735,8 @@
 		var selectedRows = $("#tb_order").bootstrapTable('getSelections');
 		var orderArray = new Array();
 		var adEndDate = $("#adEndDate").val();
+		var stopAdvertiseDateFrom = $("#stopAdvertiseDateFrom").val();
+		var stopAdvertiseDateTo = $("#stopAdvertiseDateTo").val();
 		var remark = $("#batchStopAdRemark").val();
 
 		var confirmTip = "确定要" + localStorage.getItem("stopOrRevoke") + "吗？";
@@ -721,18 +795,23 @@
 							data : {
 								tid : orderListRows[localStorage.getItem("singleRowSelected")].id,
 								orderArray : orderArray,
-								adEndDate : adEndDate,
+								//adEndDate : adEndDate,
+								stopAdvertiseDateFrom : stopAdvertiseDateFrom,
+								stopAdvertiseDateTo : stopAdvertiseDateTo,
 								remark : remark
 							},
 							type : "post",
 							dataType : "json",
 							traditional : true,
-							async: false,
+							async : false,
 							success : function(data) {
 								if (data.state === 0) {
 									location.reload();
 								} else {
-									$.alert({title:"系统提示",content:data.info});
+									$.alert({
+										title : "系统提示",
+										content : data.info
+									});
 									$('#tb_order').bootstrapTable('refresh');
 								}
 							},
@@ -740,9 +819,9 @@
 								$.alert('操作失败\nXMLHttpRequest.readyState[' + XMLHttpRequest.readyState + ']\nXMLHttpRequest.status[' + XMLHttpRequest.status + ']\ntextStatus[' + textStatus + ']');
 							}
 						});
-					localStorage.clear();
-					$("#modal-batchStopAdvertise").modal('hide');
-					$("#batchOperate_ok").removeAttr('disabled');
+						localStorage.clear();
+						$("#modal-batchStopAdvertise").modal('hide');
+						$("#batchOperate_ok").removeAttr('disabled');
 					},
 				},
 				cancel : {
@@ -765,9 +844,9 @@
 		localStorage.setItem("stopOrRevoke", "停刊");
 		localStorage.setItem("operateUrl", "stopAdvertisingAction.action");
 		$("#modal-batchStopAdvertise").modal('show');
-	}	
+	}
 
-	function revokeAdvertise(target) {	
+	function revokeAdvertise(target) {
 		checkLocalStorageSupport();
 		localStorage.setItem("singleRowSelected", target);
 		localStorage.setItem("stopOrRevoke", "撤刊");
@@ -775,42 +854,39 @@
 		$("#modal-batchStopAdvertise").modal('show');
 	}
 
-
 	function checkLocalStorageSupport() {
-		if(window.localStorage){			 
-		}else{
+		if (window.localStorage) {
+		} else {
 			alert('您的浏览器不支持本地功能，推荐使用Chrome内核浏览器进行操作！');
 			return;
 		}
 	}
-	
-	function completeConfirmContent(target){
+
+	function completeConfirmContent(target) {
 		var confirmContent = "";
-		confirmContent += "发布内容："+target.content+" ";
-		confirmContent += "上画点位："+target.led+" ";
-		confirmContent += "时长："+target.duration+" ";
-		confirmContent += "频次："+target.frequency+" ";		
-		confirmContent += "起止日期："+target.startdate+" - "+target.enddate+" ";
-		confirmContent += "起止时间："+target.starttime+" - "+target.endtime+" ";
-		confirmContent += "播放策略："+target.playstrategy+" ";
+		confirmContent += "发布内容：" + target.content + " ";
+		confirmContent += "上画点位：" + target.led + " ";
+		confirmContent += "时长：" + target.duration + " ";
+		confirmContent += "频次：" + target.frequency + " ";
+		confirmContent += "起止日期：" + target.startdate + " - " + target.enddate + " ";
+		confirmContent += "起止时间：" + target.starttime + " - " + target.endtime + " ";
+		confirmContent += "播放策略：" + target.playstrategy + " ";
 		confirmContent += "<br>";
-		
+
 		return confirmContent;
 	}
-	
-	function checkSelect(obj){
-		if($(obj).hasClass("btn-success")){
+
+	function checkSelect(obj) {
+		if ($(obj).hasClass("btn-success")) {
 			$(obj).removeClass("btn-success");
-		}else {
+		} else {
 			$(obj).addClass("btn-success");
 		}
 	}
-	
+
 	//加
 	Number.prototype.add = function(arg) {
-		var r1,
-			r2,
-			m;
+		var r1, r2, m;
 		try {
 			r1 = this.toString().split(".")[1].length;
 		} catch (e) {
@@ -831,35 +907,35 @@
 
 	// 乘法
 	Number.prototype.mul = function(arg) {
-		var m = 0,
-			s1 = this.toString(),
-			s2 = arg.toString();
+		var m = 0, s1 = this.toString(), s2 = arg.toString();
 		try {
 			m += s1.split(".")[1].length;
-		} catch (e) {}
+		} catch (e) {
+		}
 		try {
 			m += s2.split(".")[1].length;
-		} catch (e) {}
-		return Number(s1.replace(".", "")) * Number(s2.replace(".", ""))
-			/ Math.pow(10, m);
+		} catch (e) {
+		}
+		return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
 	};
 	// 除法
 	Number.prototype.div = function(arg) {
-		var t1 = 0,
-			t2 = 0,
-			r1,
-			r2;
+		var t1 = 0, t2 = 0, r1, r2;
 		try {
 			t1 = this.toString().split(".")[1].length;
-		} catch (e) {}
+		} catch (e) {
+		}
 		try {
 			t2 = arg.toString().split(".")[1].length;
-		} catch (e) {}
+		} catch (e) {
+		}
 		with (Math) {
-		r1 = Number(this.toString().replace(".", ""));
-		r2 = Number(arg.toString().replace(".", ""));
-		return (r1 / r2) * pow(10, t2 - t1);
+			r1 = Number(this.toString().replace(".", ""));
+			r2 = Number(arg.toString().replace(".", ""));
+			return (r1 / r2) * pow(10, t2 - t1);
 		}
 	};
 </script>
-</content>
+</body>
+</html>
+

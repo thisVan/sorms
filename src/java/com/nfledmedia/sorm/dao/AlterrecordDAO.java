@@ -61,8 +61,7 @@ public class AlterrecordDAO extends HibernateDaoSupport {
 	public Alterrecord findById(java.lang.Integer id) {
 		log.debug("getting Alterrecord instance with id: " + id);
 		try {
-			Alterrecord instance = (Alterrecord) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Alterrecord",
-					id);
+			Alterrecord instance = (Alterrecord) getHibernateTemplate().get("com.nfledmedia.sorm.entity.Alterrecord", id);
 			return instance;
 		} catch (RuntimeException re) {
 			log.error("get failed", re);
@@ -92,9 +91,24 @@ public class AlterrecordDAO extends HibernateDaoSupport {
 			throw re;
 		}
 	}
+	
+	public List findByPropertySort(String propertyName, Object value) {
+		log.debug("finding Alterrecord instance with property: " + propertyName + ", value: " + value);
+		try {
+			String queryString = "from Alterrecord as model where model." + propertyName + "= ? order by model.alterdate desc";
+			return getHibernateTemplate().find(queryString, value);
+		} catch (RuntimeException re) {
+			log.error("find by property name failed", re);
+			throw re;
+		}
+	}
 
 	public List findByOrderId(Object orderid) {
 		return findByProperty("order.id", orderid);
+	}
+	
+	public List findByOrderIdSort(Object orderid) {
+		return findByPropertySort("order.id", orderid);
 	}
 
 	public List findAll() {
@@ -152,7 +166,8 @@ public class AlterrecordDAO extends HibernateDaoSupport {
 		// Count查询
 		String countQueryString = " select count (*) " + removeSelect(removeOrders(hql));
 		// System.out.print(hql);
-		// System.out.print( getHibernateTemplate().find(countQueryString, values));
+		// System.out.print( getHibernateTemplate().find(countQueryString,
+		// values));
 		List countlist = getHibernateTemplate().find(countQueryString, values);
 		long totalCount = countlist.isEmpty() ? 0 : (Long) countlist.get(0);
 
@@ -198,10 +213,12 @@ public class AlterrecordDAO extends HibernateDaoSupport {
 	}
 
 	/**
-	 * 创建Query对象. 对于需要first,max,fetchsize,cache,cacheRegion等诸多设置的函数,可以在返回Query后自行设置.
+	 * 创建Query对象.
+	 * 对于需要first,max,fetchsize,cache,cacheRegion等诸多设置的函数,可以在返回Query后自行设置.
 	 * 留意可以连续设置
 	 * 
-	 * @param values 可变参数.
+	 * @param values
+	 *            可变参数.
 	 */
 	public Query createQuery(String hql, Object... values) {
 		// Assert.hasText(hql);

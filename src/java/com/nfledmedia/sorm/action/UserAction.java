@@ -230,10 +230,10 @@ public class UserAction extends SuperAction implements ModelDriven<User> {
 		try {
 			properties.load(new FileInputStream(configPath + "ipsconfig.properties"));
 			// 获得属性文件中的IP
-			String ips = properties.getProperty("allow_ip");
-			String excludes = properties.getProperty("exclude_user");
-			System.out.println("allow_ip=" + ips);
-			System.out.println("exclude_user=" + excludes);
+			String ips = properties.getProperty("allowip");
+			String excludes = properties.getProperty("excludeuser");
+			System.out.println("allowip=" + ips);
+			System.out.println("excludeuser=" + excludes);
 			if (!StringUtils.isEmpty(ips)) {
 				//校验用户在不在排除列表
 				if (!StringUtils.isEmpty(excludes)) {

@@ -64,6 +64,8 @@
 		<action name="operateOrderPage" class="com.nfledmedia.sorm.action.YewuAction" method="operateOrderPage">
 			<result>/WEB-INF/pages/operateOrderPage.jsp</result>
 		</action>
+		<action name="orderOperateHistory" class="com.nfledmedia.sorm.action.YewuAction" method="orderOperateHistory">
+		</action>
 		<action name="operateOrderList" class="com.nfledmedia.sorm.action.YewuAction" method="operateOrderList">
 		</action>
 		<!-- 改刊业务操作 -->

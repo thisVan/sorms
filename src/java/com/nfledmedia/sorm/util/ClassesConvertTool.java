@@ -12,11 +12,7 @@ package com.nfledmedia.sorm.util;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import com.mysql.fabric.xmlrpc.base.Array;
 
 /**
  * @ClassName ClassesConvertTool
@@ -27,7 +23,7 @@ import com.mysql.fabric.xmlrpc.base.Array;
  */
 public class ClassesConvertTool {
 
-	public Object makeObject1ToObject2(Object object1, Object object2) {
+	public static Object convertObject1ToObject2(Object object1, Object object2) {
 		Field[] fields1 = object1.getClass().getDeclaredFields();
 		Field[] fields2 = object2.getClass().getDeclaredFields();
 		if (null != fields1 && null != fields2) {

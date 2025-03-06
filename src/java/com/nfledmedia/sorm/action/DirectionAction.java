@@ -1,5 +1,7 @@
 package com.nfledmedia.sorm.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -14,9 +16,11 @@ import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ModelDriven;
 
 @Controller
-public class DirectionAction extends SuperAction implements ModelDriven<User> {
+public class DirectionAction extends SuperAction {
 
 	private static final long serialVersionUID = 1L;
+	
+	private static Logger logger = LoggerFactory.getLogger(DirectionAction.class);
 
 	@Autowired
 	private RoleService roleService;
@@ -70,6 +74,7 @@ public class DirectionAction extends SuperAction implements ModelDriven<User> {
 	}
 
 	public String screenOccupancyRate() throws Exception {
+		logger.info("进入screenOccupancyRate方法");
 		ActionContext ctx = ActionContext.getContext();
 		ctx.put("ledList", baseService.ledList());
 		return SUCCESS;
@@ -164,12 +169,6 @@ public class DirectionAction extends SuperAction implements ModelDriven<User> {
 
 	public String avgOccupancyRateByScreen() {
 		return SUCCESS;
-	}
-
-	@Override
-	public User getModel() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
