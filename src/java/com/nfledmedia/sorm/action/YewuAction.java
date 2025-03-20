@@ -2089,6 +2089,7 @@ public class YewuAction extends SuperAction {
 			}
 			
 			order2ArrayList.add(order.getContent());// 广告内容
+			order2ArrayList.add(order.getIndustry().getIndustryname());// 广告行业
 			order2ArrayList.add(sdfMd.format(order.getStartdate()));// 上（改、停、撤）刊日期
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
 			order2ArrayList.add(order.getDuration());// 时长
@@ -2106,7 +2107,7 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "合同金额", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
+		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "合同金额", "广告内容", "行业", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
 				"下单人", "备注"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
