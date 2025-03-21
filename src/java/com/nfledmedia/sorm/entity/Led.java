@@ -13,6 +13,7 @@ public class Led implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private String ledsn;
 	private String code;

@@ -8,6 +8,7 @@ public class RoleResourceId implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Role role;
 	private Integer position;
 

@@ -10,6 +10,7 @@ public class Message implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Long id;
 	private User recevier;
 	private Timestamp time;

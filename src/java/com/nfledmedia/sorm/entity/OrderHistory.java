@@ -12,6 +12,7 @@ public class OrderHistory implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Integer sid;
 	private Led led;
 	private Operatetype operatetype;

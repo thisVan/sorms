@@ -8,6 +8,7 @@ public class Publishstyle implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Short id;
 	private String name;
 	private String desc;

@@ -11,6 +11,7 @@ public class Publishdetail implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Integer id;
 	private Integer orderid;
 	private String client;

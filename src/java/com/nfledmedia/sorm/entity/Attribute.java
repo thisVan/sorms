@@ -12,6 +12,7 @@ public class Attribute implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Short id;
 	private String attributename;
 	private String attributedesc;

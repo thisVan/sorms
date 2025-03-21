@@ -11,6 +11,7 @@ public class Industry implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Short industryid;
 	private String industryname;
 	private Set orders = new HashSet(0);

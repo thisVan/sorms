@@ -11,6 +11,7 @@ public class Clienttype implements java.io.Serializable {
 
 	// Fields
 
+	private static final long serialVersionUID = 1L;
 	private Short id;
 	private String ctypedesc;
 	private Set adcontracts = new HashSet(0);
