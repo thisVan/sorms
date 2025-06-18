@@ -540,8 +540,16 @@
 				const jsonArr = JSON.parse(result);
 				if (result.length > 0) {
 					for (var i = 0; i < jsonArr.length; i++) {
-						alterhistorycontent += jsonArr[i].operatetype + ", 操作时间:" + jsonArr[i].alterdate + ", 操作人:" + jsonArr[i].operater + ", 屏点:" + jsonArr[i].led + ", 时长:" + jsonArr[i].duration 
-						+ ", 频次:" + jsonArr[i].frequency + ",投放日期:" + jsonArr[i].startdate + "至" + jsonArr[i].enddate + ", 播放策略;" + jsonArr[i].playstrategy + ", " + jsonArr[i].remark + "<br>";
+						let altercontent = "";
+						if (jsonArr[i].operatetype == "停刊") {
+							altercontent += ",停刊日期:" + jsonArr[i].startdate + "至" + jsonArr[i].enddate + "<br>";
+						} else if (jsonArr[i].operatetype == "撤刊") {
+							altercontent += ",撤刊日期:" + jsonArr[i].startdate + "至" + jsonArr[i].enddate + "<br>";
+						} else if (jsonArr[i].operatetype == "改刊") {
+							altercontent += ", " + jsonArr[i].remark + "<br>";
+						}
+						
+						alterhistorycontent += jsonArr[i].operatetype + ", 操作时间:" + jsonArr[i].alterdate + ", 操作人:" + jsonArr[i].operater + altercontent;
 						console.log(jsonArr[i]);
 					}
 				}
