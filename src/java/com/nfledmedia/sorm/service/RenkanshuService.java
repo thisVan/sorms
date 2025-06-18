@@ -86,13 +86,13 @@ public class RenkanshuService {
 	}
 	
 	public Page getRenkanshuManageList(String sidx, String sord, int pageNo, int pageSize) {
-		System.out.println("???????????yewuService:getYewuList:sidx:" + sidx);
+		System.out.println("yewuService:getYewuList:sidx:" + sidx);
 		System.out.println(pageSize);
 		return orderDAO.getRenkanshuManageList(sidx, sord, pageNo, pageSize);
 	}
 
 	public Page getRenkanshuManageListByKeyword(String keyword, String sidx, String sord, int pageNo, int pageSize) {
-		System.out.println("???????????yewuService:getRenkanshuManageListByKeyword:sidx:" + sidx);
+		System.out.println("yewuService:getRenkanshuManageListByKeyword:sidx:" + sidx);
 		return orderDAO.getRenkanshuManageListByKeyword(keyword, sidx, sord, pageNo, pageSize);
 	}
 	
