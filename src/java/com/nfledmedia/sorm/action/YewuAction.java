@@ -780,6 +780,7 @@ public class YewuAction extends SuperAction {
 			jsonArray2.add((String) row[14]);// 客户属性
 			jsonArray2.add((String) row[13]);// 下单属性
 			jsonArray2.add((String) row[4]);// 发布内容
+			jsonArray2.add((String) row[16]);// 行业
 			jsonArray2.add(row[5].toString());// 广告频次
 			jsonArray2.add(row[7].toString());// 广告时长
 			jsonArray2.add(sdf.format(row[8]) + " - " + sdf.format(row[9]));// 起止日期
@@ -2066,7 +2067,8 @@ public class YewuAction extends SuperAction {
 			}
 			order2ArrayList.add(order.getAdcontract().getChannel().getChannelname());// 单据来源
 			if (alterrecordListSize > 0) {
-				order2ArrayList.add(((Operevent) alterrecordList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
+//				order2ArrayList.add(((Operevent) alterrecordList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
+				order2ArrayList.add(((Alterrecord) alterrecordList.get(0)).getOperatetype().getOperatetype());// 单据类型，指认刊，改刊，停刊
 			} else {
 				Publishstyle operatestyle = order.getAdcontract().getPublishstyle();
 				if (operatestyle != null && !"".equals(operatestyle.getName())) {
@@ -2082,14 +2084,10 @@ public class YewuAction extends SuperAction {
 			order2ArrayList.add(order.getLed().getName());// 屏点
 			order2ArrayList.add(order.getAdcontract().getClient());// 上刊刊户
 			order2ArrayList.add(order.getAdcontract().getAgency());// 代理公司
-			if (order.getAdcontract().getAmount() == null || "".equals(order.getAdcontract().getAmount())) {
-				order2ArrayList.add("");// 合同金额
-			} else {
-				order2ArrayList.add(NumberFormat.getCurrencyInstance().format(Double.valueOf(order.getAdcontract().getAmount())));// 合同金额
-			}
+			
 			
 			order2ArrayList.add(order.getContent());// 广告内容
-			order2ArrayList.add(order.getIndustry().getIndustryname());// 广告行业
+			//order2ArrayList.add(order.getIndustry().getIndustryname());// 广告行业
 			order2ArrayList.add(sdfMd.format(order.getStartdate()));// 上（改、停、撤）刊日期
 			order2ArrayList.add(sdfMd.format(order.getEnddate()));// 下刊日期
 			order2ArrayList.add(order.getDuration());// 时长
@@ -2097,6 +2095,11 @@ public class YewuAction extends SuperAction {
 			
 			// order2ArrayList.add("");// 排播接单人
 			order2ArrayList.add(order.getAdcontract().getPlacer());// 下单人
+			if (order.getAdcontract().getAmount() == null || "".equals(order.getAdcontract().getAmount())) {
+				order2ArrayList.add("");// 合同金额
+			} else {
+				order2ArrayList.add(NumberFormat.getCurrencyInstance().format(Double.valueOf(order.getAdcontract().getAmount())));// 合同金额
+			}
 			order2ArrayList.add(order.getAdcontract().getRemark() == null ? "" : order.getAdcontract().getRemark());// 备注
 			dataResultList.add(order2ArrayList);
 		}
@@ -2107,8 +2110,8 @@ public class YewuAction extends SuperAction {
 
 		List resultList = new ArrayList();
 		List title = new ArrayList<String>();
-		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "合同金额", "广告内容", "行业", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
-				"下单人", "备注"};
+		String[] arr = {"单据时间", "单据来源", "单据类型", "区域", "屏点", "广告刊户", "代理公司", "广告内容", "上（改、停、撤）刊日期", "下刊日期", "时长", "频次",
+				"下单人", "合同金额", "备注"};
 		for (int k = 0; k < arr.length; k++) {
 			title.add(arr[k]);
 		}
@@ -2116,7 +2119,7 @@ public class YewuAction extends SuperAction {
 		// exportExcel方法只接受object[]此处将list转为object[]
 		String[] sheetTitles = new String[title.size()];
 		String[] timearrs = startTime.split("-");
-		String ledTimeRange = sdfMd.format(sdf.parse(startTime)) + " 至 " + sdfMd.format(sdf.parse(endTime));
+		String ledTimeRange = sdfMd.format(sdf.parse(startTime)) + "至" + sdfMd.format(sdf.parse(endTime));
 		if (startTime.equals(endTime)) {
 			ledTimeRange = sdfMd.format(sdf.parse(startTime));
 		}
@@ -2210,7 +2213,7 @@ public class YewuAction extends SuperAction {
 								columnWidth = cellWidth;
 							}
 							sheet.setColumnView(j, columnWidth);
-							System.out.println("列=" + j + "; 列宽=" + columnWidth);
+//							System.out.println("列=" + j + "; 列宽=" + columnWidth);
 						}
 					}
 				}
@@ -2609,6 +2612,7 @@ public class YewuAction extends SuperAction {
 				rowObject.addProperty("playstrategy", alterrecord.getPlaystrategyname());
 			}
 			rowObject.addProperty("operatetype", alterrecord.getOperatetype().getOperatetype());
+			rowObject.addProperty("remark", alterrecord.getRemark());
 
 			jsonArr.add(rowObject);
 

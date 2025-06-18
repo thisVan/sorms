@@ -41,7 +41,7 @@ public class OrderDAO extends HibernateDaoSupport {
 	public static final String MODIFIER = "modifier";
 	public static final String STATE = "state";
 	private static final String GET_ORDER_LIST = "select o.id, o.led.name, o.adcontract.client, o.adcontract.agency, o.content, o.frequency, o.addfreq, o.duration,"
-			+ "o.startdate, o.enddate, o.starttime, o.endtime, o.adcontract.remark, o.attribute.attributename, o.adcontract.clienttype.ctypedesc, o.adcontract.placer from Order o ";
+			+ "o.startdate, o.enddate, o.starttime, o.endtime, o.adcontract.remark, o.attribute.attributename, o.adcontract.clienttype.ctypedesc, o.adcontract.placer, o.industry.industryname from Order o ";
 
 	protected void initDao() {
 		// do nothing

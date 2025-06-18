@@ -282,7 +282,7 @@
 			url : "renkanshuManageList.action",
 			mtype : "GET",
 			datatype : "json",
-			colNames : ['上画点位', '客户', '代理公司', '客户属性', '下单属性', '发布内容', '频次', '时长', '起止日期', '时段', '下单人', '备注', ''],
+			colNames : ['上画点位', '客户', '代理公司', '客户属性', '下单属性', '发布内容', '行业', '频次', '时长', '起止日期', '时段', '下单人', '备注', ''],
 			height : "500px",
 			rowNum : '<s:property value="@com.nfledmedia.sorm.cons.CommonConstant@DEFAULT_PAGE_SIZE"/>',
 			rowList : [10, 20, 30],
@@ -322,6 +322,11 @@
 				index : "content",
 				align : "center",
 				width : "100px"
+			}, {
+				name : "industry.industryname",
+				index : "industry.industryname",
+				align : "center",
+				width : "80px"
 			}, {
 				name : "frequency",
 				index : "frequency",
@@ -405,7 +410,7 @@
 					dateRangeValue = " and " + dateRangeSQL;
 				}
 				searchFilter = " where o.state=" + "'<s:property value='@com.nfledmedia.sorm.cons.TypeCollections@ORDER_STATE_ACTIVE'/>'" + dateRangeValue + " and (o.adcontract.client like '%" + searchFilter +
-					"%' or o.adcontract.agency like '%" + searchFilter + "%' or o.content like '%" + searchFilter + "%' or o.led.name like '%" + searchFilter + "%' or o.adcontract.placer like '%" + searchFilter + "%')";
+					"%' or o.adcontract.agency like '%" + searchFilter + "%' or o.content like '%" + searchFilter + "%' or o.industry.industryname like '%" + searchFilter + "%' or o.led.name like '%" + searchFilter + "%' or o.adcontract.placer like '%" + searchFilter + "%')";
 				//console.log(searchFilter);
 				t[0].p.search = true;
 				$.extend(t[0].p.postData, {
