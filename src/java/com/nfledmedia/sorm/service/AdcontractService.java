@@ -11,6 +11,7 @@ package com.nfledmedia.sorm.service;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -194,8 +195,15 @@ public class AdcontractService {
 //	      order.setEnddate(new Date(newOrder.getStartdate().getTime() - 86400000L));
 //	      this.orderDAO.merge(order);
 //	    } 
+	    
+	    // 2025.6.17 逻辑修改，原单修改结束日期，并保存新单
+	    order.setEnddate(new Date(newOrder.getStartdate().getTime() - 86400000L));
+	    order.setModifier(operater);
+	    order.setModtime(new Timestamp(System.currentTimeMillis()));
+	    order.setOperatetime(new Timestamp(System.currentTimeMillis()));
+	    this.orderDAO.merge(order);
 
-	    // 不删除order，直接修改相关参数
+	    // 不删除order，保存相关参数到新单
 	    Order newOrderTransent = new Order();
 	    BeanUtils.copyProperties(newOrder, newOrderTransent);
 	    newOrder = newOrderTransent;
@@ -205,9 +213,10 @@ public class AdcontractService {
 	    newOrder.setOperatetime(new Timestamp(System.currentTimeMillis()));
 	    newOrder.setLed(led);
 	    newOrder.setMd5encrypt(OrderCharacteristicValue.calcCharacter(newOrder));
+	    newOrder.setId(null);
 	    System.out.println(newOrder);
 
-	    this.orderDAO.merge(newOrder);
+	    this.orderDAO.save(newOrder);
 	    
 	    Operevent operevent = new Operevent();
 	    operevent.setOrderId(newOrder.getId());
@@ -243,7 +252,14 @@ public class AdcontractService {
 
 		// 3.写入alterrecord
 		Alterrecord altr = createAlterrecord(newOrder, operater, TypeCollections.ADVERTISE_ALTER);
-		alterrecordDAO.save(altr);		
+		// 记录该刊前原单信息
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.M.d");
+		String originOderInfo = "原单[广告内容:" + orderHistory.getContent() + ", 屏点:" + orderHistory.getLed().getName()
+				+ ", 投放日期:" + sdf.format(orderHistory.getStartdate()) + "至" + sdf.format(orderHistory.getEnddate())
+				+ ", 时长:" + orderHistory.getDuration() + ", 频次:" + orderHistory.getFrequency() + ", 播放策略:"
+				+ orderHistory.getPlaystrategy().getStrategyname() + "]";
+		altr.setRemark(originOderInfo);
+		alterrecordDAO.save(altr);	
 
 		// 4.判断是否需要修改adcontract
 		adcontract = adcontractDAO.findById(adcontract.getId());
@@ -313,6 +329,9 @@ public class AdcontractService {
 			}
 		}
 
+		 // 更新order中operatetime，此处因为order为瞬时态，事务自动更新，不需要显式merge
+		order.setOperatetime(new Timestamp(System.currentTimeMillis()));
+		
 		// 3.写入alterrecord
 		Alterrecord altr = new Alterrecord();
 
@@ -374,6 +393,9 @@ public class AdcontractService {
 				publishdetailDAO.delete(publishdetail);
 			}
 		}
+		
+		 // 更新order中operatetime，此处因为order为瞬时态，事务自动更新，不需要显式merge
+		order.setOperatetime(new Timestamp(System.currentTimeMillis()));
 
 		// 2.写入alterrecord
 		Alterrecord altr = new Alterrecord();
@@ -382,6 +404,8 @@ public class AdcontractService {
 		altr.setDatestart(stopAdvertiseDateFrom);
 		altr.setDateend(stopAdvertiseDateTo);
 		altr.setLedname(order.getLed().getName());
+		altr.setDuration(order.getDuration());
+		altr.setFrequency(order.getFrequency());
 		altr.setOperater(operater);
 		altr.setOperatetype(new Operatetype(TypeCollections.ADVERTISE_REVOKE));
 		altr.setRemark(remark);

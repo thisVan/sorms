@@ -40,7 +40,7 @@ public class AlterrecordDAO extends HibernateDaoSupport {
 		log.debug("saving Alterrecord instance");
 		try {
 			getHibernateTemplate().save(transientInstance);
-			log.debug("save successful");
+			log.debug(transientInstance.toString() + "save successful");
 		} catch (RuntimeException re) {
 			log.error("save failed", re);
 			throw re;

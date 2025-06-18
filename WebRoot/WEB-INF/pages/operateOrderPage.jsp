@@ -239,11 +239,11 @@
 							</div> -->
 							<div class="form-group">
 							    <label for="name">开始日期</label>
-							    <input type="date" class="form-control" name="stopAdvertiseDateFrom" id="stopAdvertiseDateFrom" />
+							    <input type="date" class="form-control" name="stopAdvertiseDateFrom" id="stopAdvertiseDateFrom" max="2099-12-31"/>
 							</div>
 							<div class="form-group">
 							    <label for="name">结束日期</label>
-							    <input type="date" class="form-control" name="stopAdvertiseDateTo" id="stopAdvertiseDateTo" />
+							    <input type="date" class="form-control" name="stopAdvertiseDateTo" id="stopAdvertiseDateTo" max="2099-12-31"/>
 							</div>
 							<div class="form-group">
 							    <label for="name">备注</label>
@@ -540,8 +540,8 @@
 				const jsonArr = JSON.parse(result);
 				if (result.length > 0) {
 					for (var i = 0; i < jsonArr.length; i++) {
-						alterhistorycontent += "操作时间：" + jsonArr[i].alterdate + " 操作人：" + jsonArr[i].operater + " 屏点：" + jsonArr[i].operater + " 时长：" + jsonArr[i].duration 
-						+ " 频次：" + jsonArr[i].frequency + " 开始日期：" + jsonArr[i].startdate + " 结束日期：" + jsonArr[i].enddate + " 播放策略：" + jsonArr[i].playstrategy + "<br>";
+						alterhistorycontent += jsonArr[i].operatetype + ", 操作时间:" + jsonArr[i].alterdate + ", 操作人:" + jsonArr[i].operater + ", 屏点:" + jsonArr[i].led + ", 时长:" + jsonArr[i].duration 
+						+ ", 频次:" + jsonArr[i].frequency + ",投放日期:" + jsonArr[i].startdate + "至" + jsonArr[i].enddate + ", 播放策略;" + jsonArr[i].playstrategy + ", " + jsonArr[i].remark + "<br>";
 						console.log(jsonArr[i]);
 					}
 				}
